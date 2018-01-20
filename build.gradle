@@ -1,0 +1,51 @@
+
+plugins {
+    id "io.codearte.nexus-staging" version "0.11.0"
+}
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'signing'
+apply plugin: "io.codearte.nexus-staging"
+
+configurations {
+    wagon
+}
+
+dependencies {
+    testCompile "junit:junit:4.12"
+    wagon "org.apache.maven.wagon:wagon-ssh:3.0.0"
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint:all"
+}
+
+task javadocJar(type: Jar, dependsOn: classes) {
+    from javadoc
+    into "build/tmp"
+    classifier 'javadoc'
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    from sourceSets.main.allSource
+    into "build/tmp"
+    classifier 'sources'
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+if (project.hasProperty('signing.keyId')) {
+    signing {
+        sign configurations.archives
+    }
+}
+
+apply from: 'gradle/ext.gradle'
+apply from: 'gradle/publish.gradle'
