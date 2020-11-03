@@ -9,10 +9,10 @@ import org.xbib.graphics.chart.legend.Legend;
 import org.xbib.graphics.chart.plot.Plot;
 import org.xbib.graphics.chart.series.Series;
 import org.xbib.graphics.chart.style.Styler;
-import org.xbib.graphics.chart.io.vector.EPSGraphics2D;
-import org.xbib.graphics.chart.io.vector.PDFGraphics2D;
-import org.xbib.graphics.chart.io.vector.ProcessingPipeline;
-import org.xbib.graphics.chart.io.vector.SVGGraphics2D;
+import org.xbib.graphics.io.vector.VectorGraphics2D;
+import org.xbib.graphics.io.vector.eps.EPSGraphics2D;
+import org.xbib.graphics.io.vector.pdf.PDFGraphics2D;
+import org.xbib.graphics.io.vector.svg.SVGGraphics2D;
 
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -306,7 +306,7 @@ public abstract class Chart<ST extends Styler, S extends Series> {
      * @throws IIOInvalidTreeException if setting fails
      */
     private static void setDPI(IIOMetadata metadata, int DPI) throws IIOInvalidTreeException {
-        // for PNG, it's dots per millimeter
+        // for PNG, it's dots per millimeter?
         double dotsPerMilli = 1.0 * DPI / 10 / 2.54;
         IIOMetadataNode horiz = new IIOMetadataNode("HorizontalPixelSize");
         horiz.setAttribute("value", Double.toString(dotsPerMilli));
@@ -368,7 +368,7 @@ public abstract class Chart<ST extends Styler, S extends Series> {
 
     public void write(OutputStream outputStream, VectorGraphicsFormat vectorGraphicsFormat)
             throws IOException {
-        ProcessingPipeline g = null;
+        VectorGraphics2D g = null;
         switch (vectorGraphicsFormat) {
             case EPS:
                 g = new EPSGraphics2D(0.0, 0.0, getWidth(), getHeight());

@@ -886,7 +886,7 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
         commands.add(command);
     }
 
-    protected Iterable<Command<?>> getCommands() {
+    public Iterable<Command<?>> getCommands() {
         return commands;
     }
 

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.xbib.graphics.io.filters.FillPaintedShapeAsImageFilterTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2020-10-29T21:36:09" hostname="JorgPrantesMBP.fritz.box" time="1.957">
-  <properties/>
-  <testcase name="testFillShapeNotReplacedWithoutPaintCommand()" classname="org.xbib.graphics.io.filters.FillPaintedShapeAsImageFilterTest" time="0.013"/>
-  <testcase name="testFillShapeReplacedWithDrawImage()" classname="org.xbib.graphics.io.filters.FillPaintedShapeAsImageFilterTest" time="1.943"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

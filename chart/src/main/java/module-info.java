@@ -13,5 +13,6 @@ module org.xbib.graphics.chart {
     exports org.xbib.graphics.chart.style;
     exports org.xbib.graphics.chart.theme;
     exports org.xbib.graphics.chart.xy;
+    requires org.xbib.graphics.io.vector;
     requires transitive java.desktop;
 }

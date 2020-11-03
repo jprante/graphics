@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.xbib.graphics.io.vector.eps.EPSProcessorTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2020-10-29T21:36:11" hostname="JorgPrantesMBP.fritz.box" time="3.546">
-  <properties/>
-  <testcase name="envelopeForEmptyDocument()" classname="org.xbib.graphics.io.vector.eps.EPSProcessorTest" time="3.546"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
