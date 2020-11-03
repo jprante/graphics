@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
  */
 public class AnnotationCharacters {
 
-    private final static List<AnnotationControlCharacterFactory<?>> FACTORIES = new CopyOnWriteArrayList<AnnotationControlCharacterFactory<?>>();
+    private final static List<AnnotationControlCharacterFactory<?>> FACTORIES = new CopyOnWriteArrayList<>();
 
     static {
         register(new HyperlinkControlCharacterFactory());
@@ -218,10 +218,6 @@ public class AnnotationCharacters {
         private static Float defaultBaselineOffsetScale;
         private final UnderlineAnnotation line;
 
-        protected UnderlineControlCharacter() {
-            this(null, null);
-        }
-
         protected UnderlineControlCharacter(String baselineOffsetScaleValue,
                                             String lineWeightValue) {
             super("UNDERLINE", UnderlineControlCharacterFactory.TO_ESCAPE);
@@ -285,8 +281,8 @@ public class AnnotationCharacters {
             extends ControlCharacter {
 
         protected AnnotationControlCharacter(final String description,
-                                             final String charaterToEscape) {
-            super(description, charaterToEscape);
+                                             final String characterToEscape) {
+            super(description, characterToEscape);
         }
 
         /**
@@ -300,25 +296,4 @@ public class AnnotationCharacters {
         public abstract Class<T> getAnnotationType();
 
     }
-
-    public static void main(String[] args) {
-        Pattern PATTERN = Pattern
-                .compile("(?<!\\\\)(\\\\\\\\)*(__(\\{(-?\\d+(\\.\\d*)?)?\\:(-?\\d+(\\.\\d*)?)?\\})?)");
-        Matcher matcher = PATTERN.matcher("__");
-        System.out.println("matches: " + matcher.find());
-        if (!matcher.matches()) {
-            System.err.println("exit");
-            return;
-        }
-        System.out.println("start: " + matcher.start());
-        System.out.println("end: " + matcher.end());
-        System.out.println("groups: " + matcher.groupCount());
-        for (int i = 0; i < matcher.groupCount(); i++) {
-            System.out.println("group " + i + ": '" + matcher.group(i) + "'");
-        }
-        // 2 - -> 1: blanks, 4: size, 5: unit
-        // 7 + -> 6: blanks, 9: sign, 10: size, 11: unit
-        // 11 # -> 12: blanks, 15: number-sign, 16: size, 18: unit
-    }
-
 }
