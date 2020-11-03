@@ -1,51 +1,35 @@
-
 plugins {
-    id "io.codearte.nexus-staging" version "0.11.0"
+    id "de.marcphilipp.nexus-publish" version "0.4.0"
+    id "io.codearte.nexus-staging" version "0.21.1"
 }
 
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'signing'
-apply plugin: "io.codearte.nexus-staging"
-
-configurations {
-    wagon
+wrapper {
+    gradleVersion = "${rootProject.property('gradle.wrapper.version')}"
+    distributionType = Wrapper.DistributionType.ALL
 }
 
-dependencies {
-    testCompile "junit:junit:4.12"
-    wagon "org.apache.maven.wagon:wagon-ssh:3.0.0"
+ext {
+    user = 'jprante'
+    name = 'graphics'
+    description = 'A collection of graphics libraries for Java'
+    inceptionYear = '2020'
+    url = 'https://github.com/' + user + '/' + name
+    scmUrl = 'https://github.com/' + user + '/' + name
+    scmConnection = 'scm:git:git://github.com/' + user + '/' + name + '.git'
+    scmDeveloperConnection = 'scm:git:ssh://git@github.com:' + user + '/' + name + '.git'
+    issueManagementSystem = 'Github'
+    issueManagementUrl = ext.scmUrl + '/issues'
+    licenseName = 'The Apache License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+subprojects {
+    apply plugin: 'java-library'
 
-[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-tasks.withType(JavaCompile) {
-    options.compilerArgs << "-Xlint:all"
+    apply from: rootProject.file('gradle/ide/idea.gradle')
+    apply from: rootProject.file('gradle/compile/java.gradle')
+    apply from: rootProject.file('gradle/test/junit5.gradle')
+    apply from: rootProject.file('gradle/publishing/publication.gradle')
 }
 
-task javadocJar(type: Jar, dependsOn: classes) {
-    from javadoc
-    into "build/tmp"
-    classifier 'javadoc'
-}
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-    from sourceSets.main.allSource
-    into "build/tmp"
-    classifier 'sources'
-}
-
-artifacts {
-    archives javadocJar, sourcesJar
-}
-
-if (project.hasProperty('signing.keyId')) {
-    signing {
-        sign configurations.archives
-    }
-}
-
-apply from: 'gradle/ext.gradle'
-apply from: 'gradle/publish.gradle'
+apply from: rootProject.file('gradle/publishing/sonatype.gradle')

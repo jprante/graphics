@@ -1,0 +1,234 @@
+org/xbib/graphics/imageio/plugins/png/pngj/PngReaderFilter.java
+ org.xbib.graphics.imageio.plugins.png.pngj.PngReaderFilter
+ org.xbib.graphics.imageio.plugins.png.pngj.PngReaderFilter$1
+org/xbib/graphics/imageio/plugins/png/pngj/pixels/PixelsWriterDefault.java
+ org.xbib.graphics.imageio.plugins.png.pngj.pixels.PixelsWriterDefault
+org/xbib/graphics/imageio/plugins/png/pngj/IBytesConsumer.java
+ org.xbib.graphics.imageio.plugins.png.pngj.IBytesConsumer
+org/xbib/graphics/imageio/plugins/png/ScanlineProvider.java
+ org.xbib.graphics.imageio.plugins.png.ScanlineProvider
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/PngChunkMultiple.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngChunkMultiple
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/ChunkCopyBehaviour.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.ChunkCopyBehaviour
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.ChunkCopyBehaviour$1
+org/xbib/graphics/imageio/plugins/png/pngj/pixels/PixelsWriterMultiple.java
+ org.xbib.graphics.imageio.plugins.png.pngj.pixels.PixelsWriterMultiple
+org/xbib/graphics/imageio/plugins/png/RasterShortABGRProvider.java
+ org.xbib.graphics.imageio.plugins.png.RasterShortABGRProvider
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/PngChunkIEND.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngChunkIEND
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/PngMetadata.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngMetadata
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngMetadata$1
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/PngChunkSingle.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngChunkSingle
+org/xbib/graphics/imageio/plugins/png/pngj/Deinterlacer.java
+ org.xbib.graphics.imageio.plugins.png.pngj.Deinterlacer
+org/xbib/graphics/imageio/plugins/png/pngj/RowInfo.java
+ org.xbib.graphics.imageio.plugins.png.pngj.RowInfo
+org/xbib/graphics/imageio/plugins/png/pngj/pixels/DeflaterEstimatorLz4.java
+ org.xbib.graphics.imageio.plugins.png.pngj.pixels.DeflaterEstimatorLz4
+org/xbib/graphics/imageio/plugins/png/pngj/PngjOutputException.java
+ org.xbib.graphics.imageio.plugins.png.pngj.PngjOutputException
+org/xbib/graphics/imageio/plugins/png/RasterByteSingleBandSkippingBytesProvider.java
+ org.xbib.graphics.imageio.plugins.png.RasterByteSingleBandSkippingBytesProvider
+org/xbib/graphics/imageio/plugins/png/pngj/ChunkSeqReaderPng.java
+ org.xbib.graphics.imageio.plugins.png.pngj.ChunkSeqReaderPng
+ org.xbib.graphics.imageio.plugins.png.pngj.ChunkSeqReaderPng$1
+org/xbib/graphics/imageio/plugins/png/pngj/PngReaderByte.java
+ org.xbib.graphics.imageio.plugins.png.pngj.PngReaderByte
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/PngChunkSTER.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngChunkSTER
+org/xbib/graphics/imageio/plugins/png/pngj/IImageLineFactory.java
+ org.xbib.graphics.imageio.plugins.png.pngj.IImageLineFactory
+org/xbib/graphics/imageio/plugins/png/pngj/PngWriterHc.java
+ org.xbib.graphics.imageio.plugins.png.pngj.PngWriterHc
+org/xbib/graphics/imageio/plugins/png/pngj/IImageLineSetFactory.java
+ org.xbib.graphics.imageio.plugins.png.pngj.IImageLineSetFactory
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/PngChunkPLTE.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngChunkPLTE
+org/xbib/graphics/imageio/plugins/png/pngj/PngHelperInternal2.java
+ org.xbib.graphics.imageio.plugins.png.pngj.PngHelperInternal2
+org/xbib/graphics/imageio/plugins/png/RasterByteSingleBandProvider.java
+ org.xbib.graphics.imageio.plugins.png.RasterByteSingleBandProvider
+org/xbib/graphics/imageio/plugins/png/pngj/ChunkReader.java
+ org.xbib.graphics.imageio.plugins.png.pngj.ChunkReader
+ org.xbib.graphics.imageio.plugins.png.pngj.ChunkReader$ChunkReaderMode
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/ChunkFactory.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.ChunkFactory
+org/xbib/graphics/imageio/plugins/png/RasterByteRepackSingleBandProvider.java
+ org.xbib.graphics.imageio.plugins.png.RasterByteRepackSingleBandProvider
+org/xbib/graphics/imageio/plugins/png/RasterByteGrayAlphaProvider.java
+ org.xbib.graphics.imageio.plugins.png.RasterByteGrayAlphaProvider
+org/xbib/graphics/imageio/plugins/png/pngj/pixels/CompressorStreamLz4.java
+ org.xbib.graphics.imageio.plugins.png.pngj.pixels.CompressorStreamLz4
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/PngChunkICCP.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngChunkICCP
+org/xbib/graphics/imageio/plugins/png/RasterByteABGRProvider.java
+ org.xbib.graphics.imageio.plugins.png.RasterByteABGRProvider
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/PngChunk.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngChunk
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngChunk$ChunkOrderingConstraint
+org/xbib/graphics/imageio/plugins/png/ScanlineCursor.java
+ org.xbib.graphics.imageio.plugins.png.ScanlineCursor
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/ChunkPredicate.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.ChunkPredicate
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/ChunksListForWrite.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.ChunksListForWrite
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.ChunksListForWrite$1
+org/xbib/graphics/imageio/plugins/png/pngj/pixels/DeflaterEstimatorHjg.java
+ org.xbib.graphics.imageio.plugins.png.pngj.pixels.DeflaterEstimatorHjg
+org/xbib/graphics/imageio/plugins/png/pngj/ImageInfo.java
+ org.xbib.graphics.imageio.plugins.png.pngj.ImageInfo
+org/xbib/graphics/imageio/plugins/png/pngj/PngjBadSignature.java
+ org.xbib.graphics.imageio.plugins.png.pngj.PngjBadSignature
+org/xbib/graphics/imageio/plugins/png/pngj/ImageLineInt.java
+ org.xbib.graphics.imageio.plugins.png.pngj.ImageLineInt
+ org.xbib.graphics.imageio.plugins.png.pngj.ImageLineInt$1
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/PngChunkIDAT.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngChunkIDAT
+org/xbib/graphics/imageio/plugins/png/pngj/IdatChunkWriter.java
+ org.xbib.graphics.imageio.plugins.png.pngj.IdatChunkWriter
+org/xbib/graphics/imageio/plugins/png/pngj/PngjPrematureEnding.java
+ org.xbib.graphics.imageio.plugins.png.pngj.PngjPrematureEnding
+org/xbib/graphics/imageio/plugins/png/pngj/ImageLineByte.java
+ org.xbib.graphics.imageio.plugins.png.pngj.ImageLineByte
+ org.xbib.graphics.imageio.plugins.png.pngj.ImageLineByte$1
+org/xbib/graphics/imageio/plugins/png/pngj/PngReaderApng.java
+ org.xbib.graphics.imageio.plugins.png.pngj.PngReaderApng
+ org.xbib.graphics.imageio.plugins.png.pngj.PngReaderApng$1
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/ChunksList.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.ChunksList
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.ChunksList$1
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.ChunksList$2
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.ChunksList$3
+org/xbib/graphics/imageio/plugins/png/pngj/IImageLineSet.java
+ org.xbib.graphics.imageio.plugins.png.pngj.IImageLineSet
+org/xbib/graphics/imageio/plugins/png/pngj/ChunkSeqSkipping.java
+ org.xbib.graphics.imageio.plugins.png.pngj.ChunkSeqSkipping
+ org.xbib.graphics.imageio.plugins.png.pngj.ChunkSeqSkipping$1
+org/xbib/graphics/imageio/plugins/png/pngj/IImageLineArray.java
+ org.xbib.graphics.imageio.plugins.png.pngj.IImageLineArray
+org/xbib/graphics/imageio/plugins/png/pngj/PngjException.java
+ org.xbib.graphics.imageio.plugins.png.pngj.PngjException
+org/xbib/graphics/imageio/plugins/png/pngj/ErrorBehaviour.java
+ org.xbib.graphics.imageio.plugins.png.pngj.ErrorBehaviour
+org/xbib/graphics/imageio/plugins/png/pngj/ChunkSeqBuffering.java
+ org.xbib.graphics.imageio.plugins.png.pngj.ChunkSeqBuffering
+org/xbib/graphics/imageio/plugins/png/pngj/BufferedStreamFeeder.java
+ org.xbib.graphics.imageio.plugins.png.pngj.BufferedStreamFeeder
+org/xbib/graphics/imageio/plugins/png/pngj/PngReaderInt.java
+ org.xbib.graphics.imageio.plugins.png.pngj.PngReaderInt
+org/xbib/graphics/imageio/plugins/png/pngj/PngjExceptionInternal.java
+ org.xbib.graphics.imageio.plugins.png.pngj.PngjExceptionInternal
+org/xbib/graphics/imageio/plugins/png/pngj/PngjUnsupportedException.java
+ org.xbib.graphics.imageio.plugins.png.pngj.PngjUnsupportedException
+org/xbib/graphics/imageio/plugins/png/pngj/ImageLineSetDefault.java
+ org.xbib.graphics.imageio.plugins.png.pngj.ImageLineSetDefault
+ org.xbib.graphics.imageio.plugins.png.pngj.ImageLineSetDefault$1
+ org.xbib.graphics.imageio.plugins.png.pngj.ImageLineSetDefault$1$1
+org/xbib/graphics/imageio/plugins/png/RasterShortGrayAlphaProvider.java
+ org.xbib.graphics.imageio.plugins.png.RasterShortGrayAlphaProvider
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/ChunkLoadBehaviour.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.ChunkLoadBehaviour
+org/xbib/graphics/imageio/plugins/png/pngj/ImageLineHelper.java
+ org.xbib.graphics.imageio.plugins.png.pngj.ImageLineHelper
+org/xbib/graphics/imageio/plugins/png/pngj/IPngWriterFactory.java
+ org.xbib.graphics.imageio.plugins.png.pngj.IPngWriterFactory
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/PngBadCharsetException.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngBadCharsetException
+org/xbib/graphics/imageio/plugins/png/AbstractScanlineProvider.java
+ org.xbib.graphics.imageio.plugins.png.AbstractScanlineProvider
+org/xbib/graphics/imageio/plugins/png/pngj/PngjBadCrcException.java
+ org.xbib.graphics.imageio.plugins.png.pngj.PngjBadCrcException
+org/xbib/graphics/imageio/plugins/png/RasterIntABGRProvider.java
+ org.xbib.graphics.imageio.plugins.png.RasterIntABGRProvider
+org/xbib/graphics/imageio/plugins/png/pngj/PngjInputException.java
+ org.xbib.graphics.imageio.plugins.png.pngj.PngjInputException
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/PngChunkUNKNOWN.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngChunkUNKNOWN
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/PngChunkTEXT.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngChunkTEXT
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/PngChunkITXT.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngChunkITXT
+org/xbib/graphics/imageio/plugins/png/ScanlineProviderFactory.java
+ org.xbib.graphics.imageio.plugins.png.ScanlineProviderFactory
+org/xbib/graphics/imageio/plugins/png/pngj/IChunkFactory.java
+ org.xbib.graphics.imageio.plugins.png.pngj.IChunkFactory
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/PngChunkZTXT.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngChunkZTXT
+org/xbib/graphics/imageio/plugins/png/pngj/DeflatedChunksSet.java
+ org.xbib.graphics.imageio.plugins.png.pngj.DeflatedChunksSet
+ org.xbib.graphics.imageio.plugins.png.pngj.DeflatedChunksSet$State
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/PngChunkTextVar.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngChunkTextVar
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngChunkTextVar$PngTxtInfo
+org/xbib/graphics/imageio/plugins/png/RasterShortSingleBandProvider.java
+ org.xbib.graphics.imageio.plugins.png.RasterShortSingleBandProvider
+org/xbib/graphics/imageio/plugins/png/pngj/pixels/CompressorStreamDeflater.java
+ org.xbib.graphics.imageio.plugins.png.pngj.pixels.CompressorStreamDeflater
+org/xbib/graphics/imageio/plugins/png/pngj/pixels/CompressorStream.java
+ org.xbib.graphics.imageio.plugins.png.pngj.pixels.CompressorStream
+org/xbib/graphics/imageio/plugins/png/pngj/FilterType.java
+ org.xbib.graphics.imageio.plugins.png.pngj.FilterType
+org/xbib/graphics/imageio/plugins/png/pngj/IImageLine.java
+ org.xbib.graphics.imageio.plugins.png.pngj.IImageLine
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/PngChunkHIST.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngChunkHIST
+org/xbib/graphics/imageio/plugins/png/pngj/DeflatedChunkReader.java
+ org.xbib.graphics.imageio.plugins.png.pngj.DeflatedChunkReader
+org/xbib/graphics/imageio/plugins/png/pngj/pixels/PixelsWriter.java
+ org.xbib.graphics.imageio.plugins.png.pngj.pixels.PixelsWriter
+ org.xbib.graphics.imageio.plugins.png.pngj.pixels.PixelsWriter$1
+org/xbib/graphics/imageio/plugins/png/pngj/pixels/FiltersPerformance.java
+ org.xbib.graphics.imageio.plugins.png.pngj.pixels.FiltersPerformance
+ org.xbib.graphics.imageio.plugins.png.pngj.pixels.FiltersPerformance$1
+org/xbib/graphics/imageio/plugins/png/PNGWriter.java
+ org.xbib.graphics.imageio.plugins.png.PNGWriter
+org/xbib/graphics/imageio/plugins/png/pngj/PngHelperInternal.java
+ org.xbib.graphics.imageio.plugins.png.pngj.PngHelperInternal
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/PngChunkSRGB.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngChunkSRGB
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/PngChunkGAMA.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngChunkGAMA
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/PngChunkIHDR.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngChunkIHDR
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/PngChunkOFFS.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngChunkOFFS
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/ChunkRaw.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.ChunkRaw
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/PngChunkBKGD.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngChunkBKGD
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/ChunkHelper.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.ChunkHelper
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.ChunkHelper$1
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/PngChunkPHYS.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngChunkPHYS
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/PngChunkSBIT.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngChunkSBIT
+org/xbib/graphics/imageio/plugins/png/pngj/ChunkSeqReader.java
+ org.xbib.graphics.imageio.plugins.png.pngj.ChunkSeqReader
+ org.xbib.graphics.imageio.plugins.png.pngj.ChunkSeqReader$1
+ org.xbib.graphics.imageio.plugins.png.pngj.ChunkSeqReader$2
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/PngChunkFCTL.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngChunkFCTL
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/PngChunkCHRM.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngChunkCHRM
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/PngChunkFDAT.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngChunkFDAT
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/PngChunkSPLT.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngChunkSPLT
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/PngChunkACTL.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngChunkACTL
+org/xbib/graphics/imageio/plugins/png/pngj/PngReader.java
+ org.xbib.graphics.imageio.plugins.png.pngj.PngReader
+org/xbib/graphics/imageio/plugins/png/pngj/PngWriter.java
+ org.xbib.graphics.imageio.plugins.png.pngj.PngWriter
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/PngChunkTRNS.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngChunkTRNS
+org/xbib/graphics/imageio/plugins/png/pngj/IdatSet.java
+ org.xbib.graphics.imageio.plugins.png.pngj.IdatSet
+ org.xbib.graphics.imageio.plugins.png.pngj.IdatSet$1
+org/xbib/graphics/imageio/plugins/png/pngj/chunks/PngChunkTIME.java
+ org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngChunkTIME

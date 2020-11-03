@@ -1,5 +1,0 @@
-This is a Java 8 version of the project
-
-https://github.com/gredler/jdk9-png-writer-backport
-
-by Daniel Gredler

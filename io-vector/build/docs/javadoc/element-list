@@ -1,0 +1,8 @@
+module:org.xbib.graphics.io.vector
+org.xbib.graphics.io.vector
+org.xbib.graphics.io.vector.commands
+org.xbib.graphics.io.vector.eps
+org.xbib.graphics.io.vector.filters
+org.xbib.graphics.io.vector.pdf
+org.xbib.graphics.io.vector.svg
+org.xbib.graphics.io.vector.util

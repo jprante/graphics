@@ -1,0 +1,128 @@
+org/xbib/graphics/io/vector/commands/SetTransformCommand.java
+ org.xbib.graphics.io.vector.commands.SetTransformCommand
+org/xbib/graphics/io/vector/commands/SetStrokeCommand.java
+ org.xbib.graphics.io.vector.commands.SetStrokeCommand
+org/xbib/graphics/io/vector/filters/StateChangeGroupingFilter.java
+ org.xbib.graphics.io.vector.filters.StateChangeGroupingFilter
+org/xbib/graphics/io/vector/commands/TransformCommand.java
+ org.xbib.graphics.io.vector.commands.TransformCommand
+org/xbib/graphics/io/vector/PageSize.java
+ org.xbib.graphics.io.vector.PageSize
+org/xbib/graphics/io/vector/util/AlphaToMaskOp.java
+ org.xbib.graphics.io.vector.util.AlphaToMaskOp
+org/xbib/graphics/io/vector/commands/SetFontCommand.java
+ org.xbib.graphics.io.vector.commands.SetFontCommand
+org/xbib/graphics/io/vector/commands/ShearCommand.java
+ org.xbib.graphics.io.vector.commands.ShearCommand
+org/xbib/graphics/io/vector/commands/SetColorCommand.java
+ org.xbib.graphics.io.vector.commands.SetColorCommand
+org/xbib/graphics/io/vector/commands/SetPaintCommand.java
+ org.xbib.graphics.io.vector.commands.SetPaintCommand
+org/xbib/graphics/io/vector/util/FlateEncodeStream.java
+ org.xbib.graphics.io.vector.util.FlateEncodeStream
+org/xbib/graphics/io/vector/filters/AbsoluteToRelativeTransformsFilter.java
+ org.xbib.graphics.io.vector.filters.AbsoluteToRelativeTransformsFilter
+org/xbib/graphics/io/vector/commands/RotateCommand.java
+ org.xbib.graphics.io.vector.commands.RotateCommand
+org/xbib/graphics/io/vector/pdf/GeneratedPayload.java
+ org.xbib.graphics.io.vector.pdf.GeneratedPayload
+org/xbib/graphics/io/vector/commands/AffineTransformCommand.java
+ org.xbib.graphics.io.vector.commands.AffineTransformCommand
+org/xbib/graphics/io/vector/ProcessorResult.java
+ org.xbib.graphics.io.vector.ProcessorResult
+org/xbib/graphics/io/vector/util/GraphicsUtils.java
+ org.xbib.graphics.io.vector.util.GraphicsUtils
+ org.xbib.graphics.io.vector.util.GraphicsUtils$FontExpressivenessComparator
+org/xbib/graphics/io/vector/util/VectorHints.java
+ org.xbib.graphics.io.vector.util.VectorHints
+ org.xbib.graphics.io.vector.util.VectorHints$Key
+ org.xbib.graphics.io.vector.util.VectorHints$Value
+org/xbib/graphics/io/vector/Command.java
+ org.xbib.graphics.io.vector.Command
+org/xbib/graphics/io/vector/commands/StateCommand.java
+ org.xbib.graphics.io.vector.commands.StateCommand
+org/xbib/graphics/io/vector/GraphicsState.java
+ org.xbib.graphics.io.vector.GraphicsState
+org/xbib/graphics/io/vector/util/ImageDataStream.java
+ org.xbib.graphics.io.vector.util.ImageDataStream
+ org.xbib.graphics.io.vector.util.ImageDataStream$Interleaving
+org/xbib/graphics/io/vector/util/Base64EncodeStream.java
+ org.xbib.graphics.io.vector.util.Base64EncodeStream
+org/xbib/graphics/io/vector/commands/ScaleCommand.java
+ org.xbib.graphics.io.vector.commands.ScaleCommand
+org/xbib/graphics/io/vector/commands/FillShapeCommand.java
+ org.xbib.graphics.io.vector.commands.FillShapeCommand
+org/xbib/graphics/io/vector/commands/SetCompositeCommand.java
+ org.xbib.graphics.io.vector.commands.SetCompositeCommand
+org/xbib/graphics/io/vector/commands/CreateCommand.java
+ org.xbib.graphics.io.vector.commands.CreateCommand
+module-info.java
+ module-info
+org/xbib/graphics/io/vector/pdf/Resources.java
+ org.xbib.graphics.io.vector.pdf.Resources
+org/xbib/graphics/io/vector/filters/Filter.java
+ org.xbib.graphics.io.vector.filters.Filter
+org/xbib/graphics/io/vector/filters/GroupingFilter.java
+ org.xbib.graphics.io.vector.filters.GroupingFilter
+org/xbib/graphics/io/vector/Processor.java
+ org.xbib.graphics.io.vector.Processor
+org/xbib/graphics/io/vector/commands/SetBackgroundCommand.java
+ org.xbib.graphics.io.vector.commands.SetBackgroundCommand
+org/xbib/graphics/io/vector/pdf/PDFObject.java
+ org.xbib.graphics.io.vector.pdf.PDFObject
+org/xbib/graphics/io/vector/util/ASCII85EncodeStream.java
+ org.xbib.graphics.io.vector.util.ASCII85EncodeStream
+org/xbib/graphics/io/vector/util/LineWrapOutputStream.java
+ org.xbib.graphics.io.vector.util.LineWrapOutputStream
+org/xbib/graphics/io/vector/commands/SetHintCommand.java
+ org.xbib.graphics.io.vector.commands.SetHintCommand
+org/xbib/graphics/io/vector/commands/TranslateCommand.java
+ org.xbib.graphics.io.vector.commands.TranslateCommand
+org/xbib/graphics/io/vector/commands/Group.java
+ org.xbib.graphics.io.vector.commands.Group
+org/xbib/graphics/io/vector/VectorGraphicsFormat.java
+ org.xbib.graphics.io.vector.VectorGraphicsFormat
+org/xbib/graphics/io/vector/commands/DrawShapeCommand.java
+ org.xbib.graphics.io.vector.commands.DrawShapeCommand
+org/xbib/graphics/io/vector/filters/FillPaintedShapeAsImageFilter.java
+ org.xbib.graphics.io.vector.filters.FillPaintedShapeAsImageFilter
+org/xbib/graphics/io/vector/commands/SetXORModeCommand.java
+ org.xbib.graphics.io.vector.commands.SetXORModeCommand
+org/xbib/graphics/io/vector/commands/DrawImageCommand.java
+ org.xbib.graphics.io.vector.commands.DrawImageCommand
+org/xbib/graphics/io/vector/filters/OptimizeFilter.java
+ org.xbib.graphics.io.vector.filters.OptimizeFilter
+org/xbib/graphics/io/vector/commands/SetClipCommand.java
+ org.xbib.graphics.io.vector.commands.SetClipCommand
+org/xbib/graphics/io/vector/pdf/Payload.java
+ org.xbib.graphics.io.vector.pdf.Payload
+org/xbib/graphics/io/vector/commands/DrawStringCommand.java
+ org.xbib.graphics.io.vector.commands.DrawStringCommand
+org/xbib/graphics/io/vector/util/FormattingWriter.java
+ org.xbib.graphics.io.vector.util.FormattingWriter
+org/xbib/graphics/io/vector/pdf/SizePayload.java
+ org.xbib.graphics.io.vector.pdf.SizePayload
+org/xbib/graphics/io/vector/eps/EPSProcessorResult.java
+ org.xbib.graphics.io.vector.eps.EPSProcessorResult
+org/xbib/graphics/io/vector/commands/DisposeCommand.java
+ org.xbib.graphics.io.vector.commands.DisposeCommand
+org/xbib/graphics/io/vector/VectorGraphics2D.java
+ org.xbib.graphics.io.vector.VectorGraphics2D
+org/xbib/graphics/io/vector/svg/SVGGraphics2D.java
+ org.xbib.graphics.io.vector.svg.SVGGraphics2D
+org/xbib/graphics/io/vector/pdf/PDFGraphics2D.java
+ org.xbib.graphics.io.vector.pdf.PDFGraphics2D
+org/xbib/graphics/io/vector/pdf/PDFProcessor.java
+ org.xbib.graphics.io.vector.pdf.PDFProcessor
+org/xbib/graphics/io/vector/pdf/PDFProcessorResult.java
+ org.xbib.graphics.io.vector.pdf.PDFProcessorResult
+org/xbib/graphics/io/vector/util/DataUtils.java
+ org.xbib.graphics.io.vector.util.DataUtils
+org/xbib/graphics/io/vector/svg/SVGProcessorResult.java
+ org.xbib.graphics.io.vector.svg.SVGProcessorResult
+org/xbib/graphics/io/vector/eps/EPSGraphics2D.java
+ org.xbib.graphics.io.vector.eps.EPSGraphics2D
+org/xbib/graphics/io/vector/eps/EPSProcessor.java
+ org.xbib.graphics.io.vector.eps.EPSProcessor
+org/xbib/graphics/io/vector/svg/SVGProcessor.java
+ org.xbib.graphics.io.vector.svg.SVGProcessor

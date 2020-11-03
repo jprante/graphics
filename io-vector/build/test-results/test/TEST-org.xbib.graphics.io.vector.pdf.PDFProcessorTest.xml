@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.xbib.graphics.io.vector.pdf.PDFProcessorTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2020-10-29T21:36:15" hostname="JorgPrantesMBP.fritz.box" time="0.312">
+  <properties/>
+  <testcase name="envelopeForEmptyDocument()" classname="org.xbib.graphics.io.vector.pdf.PDFProcessorTest" time="0.312"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

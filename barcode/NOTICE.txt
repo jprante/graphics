@@ -1,0 +1,7 @@
+This work is based on Okapi Barcode Library
+
+https://github.com/woo-j/OkapiBarcode
+
+(Apache License 2.0)
+
+as of 2016

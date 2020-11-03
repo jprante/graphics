@@ -1,8 +1,0 @@
-ext {
-    user = 'xbib'
-    projectName = 'graphics'
-    projectDescription = 'More graphics classes for Java'
-    scmUrl = 'https://github.com/xbib/graphics'
-    scmConnection = 'scm:git:git://github.com/xbib/graphics.git'
-    scmDeveloperConnection = 'scm:git:git://github.com/xbib/graphics.git'
-}
