@@ -51,9 +51,6 @@ public class Code39Test {
 
     private GraphicsRenderer createRenderer(BufferedImage bufferedImage, double scalingFactor) {
         Graphics2D g2d = bufferedImage.createGraphics();
-        g2d.setPaint(Color.WHITE);
-        g2d.setBackground(Color.BLACK);
-        g2d.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
         return new GraphicsRenderer(g2d, scalingFactor, Color.WHITE, Color.BLACK, false, false);
     }
 }

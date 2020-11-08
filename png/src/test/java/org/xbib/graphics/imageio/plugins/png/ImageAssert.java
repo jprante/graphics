@@ -22,7 +22,6 @@ public class ImageAssert {
         // structure back
         // assertEquals(original.getSampleModel(), image.getSampleModel());
         // assertEquals(original.getColorModel(), image.getColorModel());
-
         for (int x = 0; x < original.getWidth(); x++) {
             for (int y = 0; y < original.getHeight(); y++) {
                 int rgbOriginal = original.getRGB(x, y);
@@ -54,11 +53,8 @@ public class ImageAssert {
                     }
                 });
 
+                @SuppressWarnings("serial")
                 Panel p = new Panel() {
-
-                    /** <code>serialVersionUID</code> field */
-                    private static final long serialVersionUID = 1L;
-
                     {
                         setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
                     }

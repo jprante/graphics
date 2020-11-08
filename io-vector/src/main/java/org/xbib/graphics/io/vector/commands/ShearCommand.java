@@ -4,7 +4,9 @@ import java.awt.geom.AffineTransform;
 import java.util.Locale;
 
 public class ShearCommand extends AffineTransformCommand {
+
     private final double shearX;
+
     private final double shearY;
 
     public ShearCommand(double shearX, double shearY) {
@@ -22,10 +24,15 @@ public class ShearCommand extends AffineTransformCommand {
     }
 
     @Override
+    public String getKey() {
+        return "shear";
+    }
+
+    @Override
     public String toString() {
         return String.format((Locale) null,
-                "%s[shearX=%f, shearY=%f, value=%s]", getClass().getName(),
-                getShearX(), getShearY(), getValue());
+                "%s[shearX=%f, shearY=%f, value=%s]",
+                getKey(), getShearX(), getShearY(), getValue());
     }
 }
 

@@ -2,7 +2,6 @@ package org.xbib.graphics.imageio.plugins.png.pngj.chunks;
 
 import java.io.ByteArrayInputStream;
 import java.io.OutputStream;
-import java.util.logging.Logger;
 import java.util.zip.CRC32;
 import org.xbib.graphics.imageio.plugins.png.pngj.PngHelperInternal;
 import org.xbib.graphics.imageio.plugins.png.pngj.PngjBadCrcException;
@@ -16,7 +15,6 @@ import org.xbib.graphics.imageio.plugins.png.pngj.PngjOutputException;
  * See http://www.libpng.org/pub/png/spec/1.2/PNG-Structure.html
  */
 public class ChunkRaw {
-    private static final Logger LOGGER = Logger.getLogger(ChunkRaw.class.getName());
     /**
      * The length counts only the data field, not itself, the chunk type code,
      * or the CRC. Zero is a valid length. Although encoders and decoders should
@@ -124,8 +122,6 @@ public class ChunkRaw {
                     crcComputed);
 			if (throwExcep) {
 				throw new PngjBadCrcException(msg);
-			} else {
-				LOGGER.warning(msg);
 			}
         }
     }

@@ -7,11 +7,17 @@ import java.io.InputStream;
 public class BufferedStreamFeeder implements Closeable {
 
     private InputStream stream;
+
     private byte[] buf;
+
     private int pendinglen; // bytes read+stored in buf, not yet still sent to IBytesConsumer
+
     private int offset;
+
     private boolean eof = false; // EOF on inputStream
+
     private boolean closeStream = true;
+
     private long bytesRead = 0;
 
     private static final int DEFAULTSIZE = 16384;
@@ -63,7 +69,6 @@ public class BufferedStreamFeeder implements Closeable {
             if (consumed > 0) {
                 offset += consumed;
                 pendinglen -= consumed;
-                assert pendinglen >= 0;
             }
         } else {
             // nothing to fed ? premature ending ?
@@ -118,18 +123,14 @@ public class BufferedStreamFeeder implements Closeable {
 			}
             remain -= n;
         }
-        assert remain == 0;
         return nbytes;
     }
 
     /**
      * If there are not pending bytes to be consumed, tries to fill the buffer
      * reading bytes from the stream.
-     * <p>
      * If EOF is reached, sets eof=TRUE and calls close()
-     * <p>
      * Find in <tt>pendinglen</tt> the amounts of bytes read.
-     * <p>
      * If IOException, throws a PngjInputException
      */
     protected void refillBufferIfAppropiate() {

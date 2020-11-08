@@ -3,7 +3,6 @@ package org.xbib.graphics.imageio.plugins.png.pngj;
 import java.io.Closeable;
 import java.io.File;
 import java.io.InputStream;
-import java.util.logging.Logger;
 import java.util.zip.Adler32;
 import java.util.zip.CRC32;
 import org.xbib.graphics.imageio.plugins.png.pngj.chunks.ChunkLoadBehaviour;
@@ -15,41 +14,35 @@ import org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngMetadata;
 
 /**
  * Reads a PNG image (pixels and/or metadata) from a file or stream.
- * <p>
  * Each row is read as an {@link ImageLineInt} object (one int per sample), but
  * this can be changed by setting a different ImageLineFactory
- * <p>
  * Internally, this wraps a {@link ChunkSeqReaderPng} with a
  * {@link BufferedStreamFeeder}
- * <p>
- * The reading sequence is as follows: <br>
+ * The reading sequence is as follows:
  * 1. At construction time, the header and IHDR chunk are read (basic image
- * info) <br>
+ * info)
  * 2. Afterwards you can set some additional global options. Eg.
- * {@link #setCrcCheckDisabled()}.<br>
+ * {@link #setCrcCheckDisabled()}.
  * 3. Optional: If you call getMetadata() or getChunksLisk() before start
  * reading the rows, all the chunks before IDAT are then loaded and available
- * <br>
  * 4a. The rows are read in order by calling {@link #readRow()}. You can also
  * call {@link #readRow(int)} to skip rows -but you can't go backwards, at least
  * not with this implementation. This method returns a {@link IImageLine} object
  * which can be casted to the concrete class. This class returns by default a
- * {@link ImageLineInt}, but this can be changed.<br>
+ * {@link ImageLineInt}, but this can be changed.
  * 4b. Alternatively, you can read all rows, or a subset, in a single call:
  * {@link #readRows()}, {@link #readRows(int, int, int)} ,etc. In general this
  * consumes more memory, but for interlaced images this is equally efficient,
- * and more so if reading a small subset of rows.<br>
+ * and more so if reading a small subset of rows.
  * 5. Reading of the last row automatically loads the trailing chunks, and ends
- * the reader.<br>
+ * the reader.
  * 6. end() also loads the trailing chunks, if not done, and finishes cleanly
  * the reading and closes the stream.
- * <p>
  * See also {@link PngReaderInt} (esentially the same as this, and slightly
  * preferred) and {@link PngReaderByte} (uses byte instead of int to store the
  * samples).
  */
 public class PngReader implements Closeable {
-    private static final Logger LOGGER = Logger.getLogger(PngReader.class.getName());
 
     // some performance/defensive limits
     /**
@@ -551,17 +544,17 @@ public class PngReader implements Closeable {
     /**
      * Releases resources, and closes stream if corresponds. Idempotent, secure,
      * no exceptions.
-     * <p>
      * This can be also called for abort. It is recommended to call this in case
-     * of exceptions
+     * of exceptions.
      */
+    @Override
     public void close() {
         try {
 			if (chunkseq != null) {
 				chunkseq.close();
 			}
         } catch (Exception e) {
-            LOGGER.warning("error closing chunk sequence:" + e.getMessage());
+            // ignore
         }
 		if (streamFeeder != null) {
 			streamFeeder.close();

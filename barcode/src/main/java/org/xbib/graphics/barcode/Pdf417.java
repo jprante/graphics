@@ -442,7 +442,7 @@ public class Pdf417 extends Symbol {
             579, 623, 766, 146, 10, 739, 246, 127, 71, 244, 211, 477, 920, 876, 427, 820,
             718, 435
     };
-    private int[] codeWords = new int[2700];
+    private final int[] codeWords = new int[2700];
     private int codeWordCount;
     private Mode symbolMode = Mode.NORMAL;
     private int[] inputData;
@@ -651,7 +651,7 @@ public class Pdf417 extends Symbol {
      */
     public void setPreferredEccLevel(int eccLevel) {
         if (eccLevel < 0 || eccLevel > 8) {
-            throw new IllegalArgumentException("ECC level must be between 0 and 8.");
+            throw new IllegalArgumentException("ECC level must be between 0 and 8, but is " + eccLevel);
         }
         preferredEccLevel = eccLevel;
     }
@@ -664,10 +664,10 @@ public class Pdf417 extends Symbol {
      */
     public void setVariant(int variant) {
         if (symbolMode != Mode.MICRO) {
-            throw new IllegalArgumentException("Can only set variant when using MICRO mode.");
+            throw new IllegalArgumentException("Can only set variant when using MICRO mode");
         }
         if (variant < 1 || variant > 34) {
-            throw new IllegalArgumentException("Variant must be between 1 and 34.");
+            throw new IllegalArgumentException("Variant must be between 1 and 34");
         }
         this.columns = MICRO_VARIANTS[variant - 1];
         this.rows = MICRO_VARIANTS[variant - 1 + 34];

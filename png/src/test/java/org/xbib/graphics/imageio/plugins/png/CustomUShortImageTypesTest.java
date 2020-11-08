@@ -1,6 +1,8 @@
 package org.xbib.graphics.imageio.plugins.png;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runners.Parameterized;
 import org.xbib.graphics.imageio.plugins.png.pngj.FilterType;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -14,6 +16,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageTypeSpecifier;
 
+@ExtendWith(ParameterizedExtension.class)
 public class CustomUShortImageTypesTest {
 
     private final int nbits;
@@ -25,18 +28,18 @@ public class CustomUShortImageTypesTest {
     }
 
     //@Parameters(name = "bits{0}/size{1}")
+    @Parameterized.Parameters
     public static Collection<Object[]> parameters() {
-        List<Object[]> result = new ArrayList<Object[]>();
+        List<Object[]> result = new ArrayList<>();
         for (int nbits : new int[]{1, 2, 4, 8, 16}) {
             for (int size = 1; size <= 32; size++) {
                 result.add(new Object[]{nbits, size});
             }
         }
-
         return result;
     }
 
-    @Test
+    @TestTemplate
     public void testCustomUShortImage() throws Exception {
         BufferedImage bi = ImageTypeSpecifier.createGrayscale(nbits, DataBuffer.TYPE_USHORT, false)
                 .createBufferedImage(size, size);
@@ -46,11 +49,9 @@ public class CustomUShortImageTypesTest {
         graphics.setColor(Color.WHITE);
         graphics.fillRect(16, 0, 16, 32);
         graphics.dispose();
-
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         float quality = 5f / 9 - 1;
         new PNGWriter().writePNG(bi, bos, -quality, FilterType.FILTER_NONE);
-
         BufferedImage read = ImageIO.read(new ByteArrayInputStream(bos.toByteArray()));
         ImageAssert.assertImagesEqual(bi, read);
     }

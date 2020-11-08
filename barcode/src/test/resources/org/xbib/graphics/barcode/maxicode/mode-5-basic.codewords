@@ -1,14 +1,14 @@
-5		mode 5
-1		A
-2		B
-3		C
-33		start padding
+5
+1
+2
+3
 33
 33
 33
 33
 33
-26		start primary message error correction
+33
+26
 33
 12
 53
@@ -17,8 +17,7 @@
 21
 37
 45
-59		end primary message error correction
-33		start secondary message
+59
 33
 33
 33
@@ -85,8 +84,9 @@
 33
 33
 33
-33		end secondary message
-5		start secondary message error correction
+33
+33
+5
 5
 39
 39
@@ -141,4 +141,4 @@
 44
 44
 34
-34		end secondary message error correction
+34

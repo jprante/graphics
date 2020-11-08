@@ -4,7 +4,9 @@ import java.awt.geom.AffineTransform;
 import java.util.Locale;
 
 public class ScaleCommand extends AffineTransformCommand {
+
     private final double scaleX;
+
     private final double scaleY;
 
     public ScaleCommand(double scaleX, double scaleY) {
@@ -22,10 +24,14 @@ public class ScaleCommand extends AffineTransformCommand {
     }
 
     @Override
+    public String getKey() {
+        return "scale";
+    }
+
+    @Override
     public String toString() {
         return String.format((Locale) null,
-                "%s[scaleX=%f, scaleY=%f, value=%s]", getClass().getName(),
-                getScaleX(), getScaleY(), getValue());
+                "%s[scaleX=%f, scaleY=%f, value=%s]",
+                getKey(), getScaleX(), getScaleY(), getValue());
     }
 }
-

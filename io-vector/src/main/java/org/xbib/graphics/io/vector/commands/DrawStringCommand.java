@@ -3,9 +3,10 @@ package org.xbib.graphics.io.vector.commands;
 import org.xbib.graphics.io.vector.Command;
 import java.util.Locale;
 
-
 public class DrawStringCommand extends Command<String> {
+
     private final double x;
+
     private final double y;
 
     public DrawStringCommand(String string, double x, double y) {
@@ -23,9 +24,13 @@ public class DrawStringCommand extends Command<String> {
     }
 
     @Override
+    public String getKey() {
+        return "drawString";
+    }
+
+    @Override
     public String toString() {
         return String.format((Locale) null, "%s[value=%s, x=%f, y=%f]",
-                getClass().getName(), getValue(), getX(), getY());
+                getKey(), getValue(), getX(), getY());
     }
 }
-

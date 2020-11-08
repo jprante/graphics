@@ -9,7 +9,7 @@ import org.xbib.graphics.imageio.plugins.png.pngj.chunks.PngMetadata;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,8 +22,8 @@ public class PNGWriterTest {
         PNGWriter writer = new PNGWriter();
         OutputStream out = null;
         try {
-            // read test image
-            BufferedImage read = ImageIO.read(new File("sample.jpeg"));
+            InputStream inputStream = getClass().getResourceAsStream("sample.jpeg");
+            BufferedImage read = ImageIO.read(inputStream);
             File pngOut = new File("build/test.png");
             out = new FileOutputStream(pngOut);
             writer.writePNG(read, out, 1, FilterType.FILTER_NONE);
@@ -46,7 +46,8 @@ public class PNGWriterTest {
         final String software = "ImageIO-Ext";
         final String author = "Me";
         try {
-            BufferedImage read = ImageIO.read(new File("sample.jpeg"));
+            InputStream inputStream = getClass().getResourceAsStream("sample.jpeg");
+            BufferedImage read = ImageIO.read(inputStream);
             pngOut = new File("build/test.png");
             out = new FileOutputStream(pngOut);
             Map<String, String> textMetadata = new HashMap<String, String>();

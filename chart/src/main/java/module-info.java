@@ -14,5 +14,8 @@ module org.xbib.graphics.chart {
     exports org.xbib.graphics.chart.theme;
     exports org.xbib.graphics.chart.xy;
     requires org.xbib.graphics.io.vector;
+    requires org.xbib.graphics.io.vector.eps;
+    requires org.xbib.graphics.io.vector.pdf;
+    requires org.xbib.graphics.io.vector.svg;
     requires transitive java.desktop;
 }

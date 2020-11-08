@@ -239,8 +239,7 @@ public class ControlCharacters {
 
     }
 
-    private static class MetricsControlCharacterFactory implements
-            ControlCharacterFactory {
+    public static class MetricsControlCharacterFactory implements ControlCharacterFactory {
 
         private final static Pattern PATTERN = Pattern
                 .compile("(?<!\\\\)(\\\\\\\\)*\\{(_|\\^)(:(-?\\d+(\\.\\d*)?)\\|(-?\\d+(\\.\\d*)?))?}");

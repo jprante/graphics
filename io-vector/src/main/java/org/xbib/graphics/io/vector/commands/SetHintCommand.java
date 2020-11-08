@@ -3,6 +3,7 @@ package org.xbib.graphics.io.vector.commands;
 import java.util.Locale;
 
 public class SetHintCommand extends StateCommand<Object> {
+
     private final Object key;
 
     public SetHintCommand(Object hintKey, Object hintValue) {
@@ -10,15 +11,18 @@ public class SetHintCommand extends StateCommand<Object> {
         key = hintKey;
     }
 
-    public Object getKey() {
+    public Object getHintKey() {
         return key;
+    }
+
+    @Override
+    public String getKey() {
+        return "setHint";
     }
 
     @Override
     public String toString() {
         return String.format((Locale) null,
-                "%s[key=%s, value=%s]", getClass().getName(),
-                getKey(), getValue());
+                "%s[key=%s, value=%s]", getKey(), getHintKey(), getValue());
     }
 }
-

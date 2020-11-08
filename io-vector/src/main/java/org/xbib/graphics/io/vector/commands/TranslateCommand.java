@@ -4,7 +4,9 @@ import java.awt.geom.AffineTransform;
 import java.util.Locale;
 
 public class TranslateCommand extends AffineTransformCommand {
+
     private final double deltaX;
+
     private final double deltaY;
 
     public TranslateCommand(double x, double y) {
@@ -22,10 +24,14 @@ public class TranslateCommand extends AffineTransformCommand {
     }
 
     @Override
+    public String getKey() {
+        return "translate";
+    }
+
+    @Override
     public String toString() {
         return String.format((Locale) null,
-                "%s[deltaX=%f, deltaY=%f, value=%s]", getClass().getName(),
-                getDeltaX(), getDeltaY(), getValue());
+                "%s[deltaX=%f, deltaY=%f, value=%s]",
+                getKey(), getDeltaX(), getDeltaY(), getValue());
     }
 }
-

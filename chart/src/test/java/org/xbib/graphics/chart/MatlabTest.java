@@ -62,6 +62,6 @@ public class MatlabTest {
         chart.addSeries("price", xData, y2Data);
 
         chart.write(Files.newOutputStream(Paths.get("build/matlab.svg")),
-                VectorGraphicsFormat.SVG );
+                VectorGraphicsFormat.SVG);
     }
 }

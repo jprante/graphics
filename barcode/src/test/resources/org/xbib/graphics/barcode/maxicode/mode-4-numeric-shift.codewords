@@ -1,14 +1,14 @@
-4		mode 4
-31		start numeric shift [NS]
-7		numeric compression codeword 1
-22		numeric compression codeword 2
-60		numeric compression codeword 3
-52		numeric compression codeword 4
-21		numeric compression codeword 5
-1		A
-1		A
-1		A
-40		start primary message error correction
+4
+31
+7
+22
+60
+52
+21
+1
+1
+1
+40
 60
 12
 24
@@ -17,16 +17,15 @@
 21
 40
 5
-55		end primary message error correction
-1		A
-1		A
-31		start numeric shift [NS]
-58		numeric compression codeword 1
-55		numeric compression codeword 2
-38		numeric compression codeword 3
-34		numeric compression codeword 4
-49		numeric compression codeword 5
-33		start padding
+55
+1
+1
+31
+58
+55
+38
+34
+49
 33
 33
 33
@@ -102,7 +101,8 @@
 33
 33
 33
-47		start secondary message error correction
+33
+47
 46
 50
 54
@@ -141,4 +141,4 @@
 21
 26
 43
-47		end secondary message error correction
+47

@@ -474,21 +474,16 @@ public class MaxiCode extends Symbol {
      * @return the primary message codewords
      */
     private int[] getPrimaryCodewords() {
-
-        assert mode == 2 || mode == 3;
-
         if (primaryData.length() != 15) {
             errorMsg.append("Invalid Primary String");
             return null;
         }
-
         for (int i = 9; i < 15; i++) { /* check that country code and service are numeric */
             if ((primaryData.charAt(i) < '0') || (primaryData.charAt(i) > '9')) {
                 errorMsg.append("Invalid Primary String");
                 return null;
             }
         }
-
         String postcode;
         if (mode == 2) {
             postcode = primaryData.substring(0, 9);
@@ -500,10 +495,8 @@ public class MaxiCode extends Symbol {
             // if (mode == 3)
             postcode = primaryData.substring(0, 6);
         }
-
         int country = Integer.parseInt(primaryData.substring(9, 12));
         int service = Integer.parseInt(primaryData.substring(12, 15));
-
         if (mode == 2) {
             return getMode2PrimaryCodewords(postcode, country, service);
         } else { // mode == 3

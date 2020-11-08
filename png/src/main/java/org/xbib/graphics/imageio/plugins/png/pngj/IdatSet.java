@@ -1,19 +1,16 @@
 package org.xbib.graphics.imageio.plugins.png.pngj;
 
 import java.util.Arrays;
-import java.util.logging.Logger;
 import java.util.zip.Checksum;
 import java.util.zip.Inflater;
 
 /**
  * This object process the concatenation of IDAT chunks.
- * <p>
  * It extends {@link DeflatedChunksSet}, adding the intelligence to unfilter
  * rows, and to understand row lenghts in terms of ImageInfo and (eventually)
  * Deinterlacer
  */
 public class IdatSet extends DeflatedChunksSet {
-    private static final Logger LOGGER = Logger.getLogger(IdatSet.class.getName());
 
     protected byte[] rowUnfiltered;
     protected byte[] rowUnfilteredPrev;
@@ -36,11 +33,6 @@ public class IdatSet extends DeflatedChunksSet {
 
     /**
      * Special constructor with preallocated buffer.
-     * <p>
-     * <p>
-     * Same as {@link #IdatSet(String, ImageInfo, Deinterlacer)}, but you can
-     * pass a Inflater (will be reset internally), and a buffer (will be used
-     * only if size is enough)
      */
     public IdatSet(String id, boolean callbackMode, ImageInfo iminfo, Deinterlacer deinterlacer, Inflater inf,
                    byte[] buffer) {
@@ -49,7 +41,6 @@ public class IdatSet extends DeflatedChunksSet {
         this.imgInfo = iminfo;
         this.deinterlacer = deinterlacer;
         this.rowinfo = new RowInfo(iminfo, deinterlacer);
-        LOGGER.fine("Creating IDAT set ");
     }
 
     /**

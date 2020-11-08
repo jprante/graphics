@@ -53,7 +53,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 /**
@@ -62,17 +61,16 @@ import javax.imageio.ImageIO;
  * Tests that verify successful behavior will contain the following sets of files:
  *
  * <pre>
- *   /src/test/resources/uk/org/okapibarcode/backend/[symbol-name]/[test-name].properties (bar code initialization attributes)
- *   /src/test/resources/uk/org/okapibarcode/backend/[symbol-name]/[test-name].codewords  (expected intermediate coding of the bar code)
- *   /src/test/resources/uk/org/okapibarcode/backend/[symbol-name]/[test-name].png        (expected final rendering of the bar code)
+ *   backend/[symbol-name]/[test-name].properties (bar code initialization attributes)
+ *   /backend/[symbol-name]/[test-name].codewords  (expected intermediate coding of the bar code)
+ *   backend/[symbol-name]/[test-name].png        (expected final rendering of the bar code)
  * </pre>
  *
- * <p>
  * Tests that verify error conditions will contain the following sets of files:
  *
  * <pre>
- *   /src/test/resources/uk/org/okapibarcode/backend/[symbol-name]/[test-name].properties (bar code initialization attributes)
- *   /src/test/resources/uk/org/okapibarcode/backend/[symbol-name]/[test-name].error      (expected error message)
+ *   backend/[symbol-name]/[test-name].properties (bar code initialization attributes)
+ *   backend/[symbol-name]/[test-name].error      (expected error message)
  * </pre>
  *
  * If a properties file is found with no matching expectation files, we assume that it was recently added to the test suite and
@@ -109,8 +107,8 @@ public class SymbolTest {
      * @throws IOException if there is an error reading a file
      */
     @Parameterized.Parameters
-    public static List< Object[] > data() throws IOException {
-        String path = "/org/xbib/graphics/barcode/fonts/OkapiDejaVuSans.ttf";
+    public static List<Object[]> data() throws IOException {
+        String path = "/org/xbib/graphics/barcode/fonts/DejaVuSans.ttf";
         try {
             InputStream is = SymbolTest.class.getResourceAsStream(path);
             DEJA_VU_SANS = Font.createFont(Font.TRUETYPE_FONT, is);
@@ -139,6 +137,7 @@ public class SymbolTest {
         }
         return data;
     }
+
     /**
      * Creates a new test.
      *
@@ -174,13 +173,11 @@ public class SymbolTest {
         } catch (InvocationTargetException e) {
             symbol.errorMsg.append(e.getCause().getMessage());
         }
+        //generateExpectationFiles(symbol);
         if (codewordsFile.exists()) {
             verifySuccess(symbol);
         } else if (errorFile.exists()) {
             verifyError(symbol);
-        }
-        if (!pngFile.exists()) {
-            generateExpectationFiles(symbol);
         }
     }
 
@@ -224,7 +221,7 @@ public class SymbolTest {
             if (expected != null && actual != null) {
                 assertEqualImage(pngFile.getName(), expected, actual);
             }
-            // if possible, ensure an independent third party (ZXing) can read the generated barcode and agrees on what it represents
+            //*/ if possible, ensure an independent third party (ZXing) can read the generated barcode and agrees on what it represents
             Reader zxingReader = findReader(symbol);
             if (zxingReader != null && expected != null) {
                 LuminanceSource source = new BufferedImageLuminanceSource(expected);
@@ -316,7 +313,7 @@ public class SymbolTest {
      */
     private void verifyError(Symbol symbol) throws IOException {
         String expectedError = Files.readAllLines(errorFile.toPath(), StandardCharsets.UTF_8).get(0);
-        assertTrue(symbol.errorMsg.toString().startsWith(expectedError));
+        assertTrue(symbol.errorMsg.toString().contains(expectedError));
     }
 
     /**
@@ -355,7 +352,7 @@ public class SymbolTest {
      * @throws IOException if there is any I/O error
      */
     private void generateCodewordsExpectationFile(Symbol symbol) throws IOException {
-        if (!codewordsFile.exists()) {
+        //if (!codewordsFile.exists()) {
             PrintWriter writer = new PrintWriter(codewordsFile);
             try {
                 int[] codewords = symbol.getCodewords();
@@ -368,7 +365,7 @@ public class SymbolTest {
                 }
             }
             writer.close();
-        }
+        //}
     }
 
     /**
@@ -411,9 +408,7 @@ public class SymbolTest {
         if (width > 0 && height > 0) {
             BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
             Graphics2D g2d = img.createGraphics();
-            g2d.setPaint(Color.WHITE);
-            g2d.fillRect(0, 0, width, height);
-            GraphicsRenderer renderer = new GraphicsRenderer(g2d, scalingFactor, Color.WHITE, Color.BLACK, true, true);
+            GraphicsRenderer renderer = new GraphicsRenderer(g2d, scalingFactor, Color.WHITE, Color.BLACK, true, false);
             renderer.render(symbol);
             g2d.dispose();
             return img;

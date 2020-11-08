@@ -111,16 +111,16 @@ public class TestBrowser extends JFrame {
         ImageDisplayPanel imageDisplayPanel;
         switch (imageComparisonPanel.getImageFormat()) {
             case EPS:
-                imageDisplayPanel = new ImageDisplayPanel(null, test.getEPS());
-                imageComparisonPanel.setRightComponent(imageDisplayPanel);
+                //imageDisplayPanel = new ImageDisplayPanel(null, test.getEPS());
+                //imageComparisonPanel.setRightComponent(imageDisplayPanel);
                 break;
             case PDF:
-                imageDisplayPanel = new ImageDisplayPanel(null, test.getPDF());
-                imageComparisonPanel.setRightComponent(imageDisplayPanel);
+                //imageDisplayPanel = new ImageDisplayPanel(null, test.getPDF());
+                //imageComparisonPanel.setRightComponent(imageDisplayPanel);
                 break;
             case SVG:
-                imageDisplayPanel = new ImageDisplayPanel(null, test.getSVG());
-                imageComparisonPanel.setRightComponent(imageDisplayPanel);
+                //imageDisplayPanel = new ImageDisplayPanel(null, test.getSVG());
+                //imageComparisonPanel.setRightComponent(imageDisplayPanel);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown image format: " + imageComparisonPanel.getImageFormat());

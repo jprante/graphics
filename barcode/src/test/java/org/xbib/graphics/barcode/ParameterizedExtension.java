@@ -48,18 +48,15 @@ public class ParameterizedExtension implements TestTemplateInvocationContextProv
 		boolean hasParameterFields = !fields.isEmpty();
 		boolean hasCorrectParameterFields = areParametersFormedCorrectly(fields);
 		boolean hasArgsConstructor = hasArgsConstructor(context);
-
 		if (hasArgsConstructor) {
 			return !hasParameterFields;
-		}
-		else {
+		} else {
 			return !hasParameterFields || hasCorrectParameterFields;
 		}
 	}
 
 	@Override
 	public Stream<TestTemplateInvocationContext> provideTestTemplateInvocationContexts(ExtensionContext context) {
-		// grabbing the parent ensures the PARAMETERS are stored in the same store across multiple TestTemplates.
 		return context.getParent().flatMap(ParameterizedExtension::parameters).map(
 			o -> testTemplateContextsFromParameters(o, context)).orElse(Stream.empty());
 	}
@@ -68,35 +65,28 @@ public class ParameterizedExtension implements TestTemplateInvocationContextProv
 		List<Integer> parameterValues = parameterIndexes(fields);
 		List<Integer> duplicateIndexes = duplicatedIndexes(parameterValues);
 		boolean hasAllIndexes = indexRangeComplete(parameterValues);
-
 		return hasAllIndexes && duplicateIndexes.isEmpty();
 	}
 
 	private static List<Integer> parameterIndexes(List<Field> fields) {
-		// @formatter:off
 		return fields.stream()
 				.map(f -> f.getAnnotation(Parameterized.Parameter.class))
 				.map(Parameterized.Parameter::value)
 				.collect(toList());
-		// @formatter:on
 	}
 
 	private static List<Integer> duplicatedIndexes(List<Integer> parameterValues) {
-		// @formatter:off
 		return parameterValues.stream().collect(groupingBy(identity())).entrySet().stream()
 				.filter(e -> e.getValue().size() > 1)
 				.map(Map.Entry::getKey)
 				.collect(toList());
-		// @formatter:on
 	}
 
 	private static Boolean indexRangeComplete(List<Integer> parameterValues) {
-		// @formatter:off
 		return parameterValues.stream()
 				.max(Integer::compareTo)
 				.map(i -> parameterValues.containsAll(IntStream.range(0, i).boxed().collect(toList())))
 				.orElse(false);
-		// @formatter:on
 	}
 
 	private static Optional<Collection<Object[]>> parameters(ExtensionContext context) {
@@ -106,11 +96,9 @@ public class ParameterizedExtension implements TestTemplateInvocationContextProv
 	}
 
 	private static Optional<Collection<Object[]>> callParameters(ExtensionContext context) {
-		// @formatter:off
 		return findParametersMethod(context)
 				.map(m -> ReflectionUtils.invokeMethod(m, null))
 				.map(ParameterizedExtension::convertParametersMethodReturnType);
-		// @formatter:on
 	}
 
 	private static boolean hasParametersMethod(ExtensionContext context) {
@@ -118,11 +106,9 @@ public class ParameterizedExtension implements TestTemplateInvocationContextProv
 	}
 
 	private static Optional<Method> findParametersMethod(ExtensionContext extensionContext) {
-		// @formatter:off
 		return extensionContext.getTestClass()
 				.flatMap(ParameterizedExtension::ensureSingleParametersMethod)
 				.filter(ReflectionUtils::isPublic);
-		// @formatter:on
 	}
 
 	private static Optional<Method> ensureSingleParametersMethod(Class<?> testClass) {
@@ -135,14 +121,11 @@ public class ParameterizedExtension implements TestTemplateInvocationContextProv
 		List<Field> fields = parametersFields(context);
 		boolean hasParameterFields = !fields.isEmpty();
 		boolean hasCorrectParameterFields = areParametersFormedCorrectly(fields);
-
 		if (!hasParameterFields) {
 			return o.stream().map(ParameterizedExtension::parameterResolver);
-		}
-		else if (hasCorrectParameterFields) {
+		} else if (hasCorrectParameterFields) {
 			return o.stream().map(ParameterizedExtension::contextFactory);
 		}
-
 		return Stream.empty();
 	}
 
@@ -181,11 +164,9 @@ public class ParameterizedExtension implements TestTemplateInvocationContextProv
 		@Override
 		public void postProcessTestInstance(Object testInstance, ExtensionContext context) throws Exception {
 			List<Field> parameters = parametersFields(context);
-
 			if (!parameters.isEmpty() && parameters.size() != this.parameters.length) {
 				throw unMatchedAmountOfParametersException();
 			}
-
 			for (Field param : parameters) {
 				Parameterized.Parameter annotation = param.getAnnotation(Parameterized.Parameter.class);
 				int paramIndex = annotation.value();
@@ -205,29 +186,21 @@ public class ParameterizedExtension implements TestTemplateInvocationContextProv
 	}
 
 	private static boolean hasArgsConstructor(ExtensionContext context) {
-		// @formatter:off
 		return context.getTestClass()
 				.map(ReflectionUtils::getDeclaredConstructor)
 				.filter(c -> c.getParameterCount() > 0)
 				.isPresent();
-		// @formatter:on
 	}
 
 	private static List<Field> parametersFields(ExtensionContext context) {
-		// @formatter:off
 		Stream<Field> fieldStream = context.getTestClass()
-				.map(Class::getDeclaredFields)
-				.map(Stream::of)
-				.orElse(Stream.empty());
-		// @formatter:on
-
+				.map(Class::getDeclaredFields).stream().flatMap(Stream::of);
 		return fieldStream.filter(f -> f.isAnnotationPresent(Parameterized.Parameter.class)).filter(
 			ReflectionUtils::isPublic).collect(toList());
 	}
 
 	private static ParameterResolutionException unMatchedAmountOfParametersException() {
-		return new ParameterResolutionException(
-			"The amount of parametersFields in the constructor doesn't match those in the provided parametersFields");
+		return new ParameterResolutionException("The amount of parametersFields in the constructor doesn't match those in the provided parametersFields");
 	}
 
 	private static Collection<Object[]> convertParametersMethodReturnType(Object obj) {
@@ -240,6 +213,7 @@ public class ParameterizedExtension implements TestTemplateInvocationContextProv
 	}
 
 	private static class ParameterWrapper {
+
 		private final Optional<Collection<Object[]>> value;
 
 		public ParameterWrapper(Optional<Collection<Object[]>> value) {

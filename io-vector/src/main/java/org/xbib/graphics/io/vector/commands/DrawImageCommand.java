@@ -5,15 +5,23 @@ import java.awt.Image;
 import java.util.Locale;
 
 public class DrawImageCommand extends Command<Image> {
+
     private final int imageWidth;
+
     private final int imageHeight;
+
     private final double x;
+
     private final double y;
+
     private final double width;
+
     private final double height;
 
-    public DrawImageCommand(Image image, int imageWidth, int imageHeight,
-                            double x, double y, double width, double height) {
+    public DrawImageCommand(Image image,
+                            int imageWidth, int imageHeight,
+                            double x, double y,
+                            double width, double height) {
         super(image);
         this.imageWidth = imageWidth;
         this.imageHeight = imageHeight;
@@ -48,10 +56,15 @@ public class DrawImageCommand extends Command<Image> {
     }
 
     @Override
+    public String getKey() {
+        return "drawImage";
+    }
+
+    @Override
     public String toString() {
         return String.format((Locale) null,
                 "%s[value=%s, imageWidth=%d, imageHeight=%d, x=%f, y=%f, width=%f, height=%f]",
-                getClass().getName(), getValue(),
+                getKey(), getValue(),
                 getImageWidth(), getImageHeight(),
                 getX(), getY(), getWidth(), getHeight());
     }

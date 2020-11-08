@@ -6,8 +6,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.xbib.graphics.imageio.plugins.png.pngj.ChunkReader.ChunkReaderMode;
 import org.xbib.graphics.imageio.plugins.png.pngj.chunks.ChunkHelper;
 
@@ -19,7 +17,6 @@ import org.xbib.graphics.imageio.plugins.png.pngj.chunks.ChunkHelper;
  * idat deflate
  */
 public abstract class ChunkSeqReader implements IBytesConsumer, Closeable {
-    private static final Logger LOGGER = Logger.getLogger(ChunkSeqReader.class.getName());
 
     private final byte[] expectedSignature;
     private final int signatureLength;
@@ -62,18 +59,9 @@ public abstract class ChunkSeqReader implements IBytesConsumer, Closeable {
     /**
      * Consumes (in general, partially) a number of bytes. A single call never
      * involves more than one chunk.
-     * <p>
      * When the signature is read, it calls checkSignature()
-     * <p>
      * When the start of a chunk is detected, it calls
      * {@link #startNewChunk(int, String, long)}
-     * <p>
-     * When data from a chunk is being read, it delegates to
-     * {@link ChunkReader#feedBytes(byte[], int, int)}
-     * <p>
-     * The caller might want to call this method more than once in succesion
-     * <p>
-     * This should rarely be overriden
      *
      * @param buffer
      * @param offset Offset in buffer
@@ -155,7 +143,6 @@ public abstract class ChunkSeqReader implements IBytesConsumer, Closeable {
             len -= n;
             off += n;
         }
-        assert len == 0;
         return 0;
     }
 
@@ -179,9 +166,6 @@ public abstract class ChunkSeqReader implements IBytesConsumer, Closeable {
      * {@link #createChunkReaderForNewChunk(String, int, long, boolean)}
      */
     protected void startNewChunk(int len, String id, long offset) {
-		if (LOGGER.isLoggable(Level.FINE)) {
-			LOGGER.fine("New chunk: " + id + " " + len + " off:" + offset);
-		}
         // check id an length
 		if (id.length() != 4 || !ChunkHelper.CHUNK_ID_PAT.matcher(id).matches()) {
 			throw new PngjInputException("Bad chunk id: " + id);
@@ -272,8 +256,6 @@ public abstract class ChunkSeqReader implements IBytesConsumer, Closeable {
                 String msg = "Bad first chunk: " + chunkR.getChunkRaw().id + " expected: " + firstChunkId();
 				if (errorBehaviour.c < ErrorBehaviour.SUPER_LENIENT.c) {
 					throw new PngjInputException(msg);
-				} else {
-					LOGGER.warning(msg);
 				}
             }
         }
@@ -444,21 +426,17 @@ public abstract class ChunkSeqReader implements IBytesConsumer, Closeable {
     /**
      * Reads all content from an input stream. Helper method, only for callback
      * mode
-     * <p>
-     * Caller should call isDone() to assert all expected chunks have been read
-     * <p>
+     * Caller should call isDone() to assure all expected chunks have been read
      * Warning: this does not close this object, unless ended
      *
-     * @param is
+     * @param is input stream
      * @param closeStream Closes the input stream when done (or if error)
      */
     public void feedFromInputStream(InputStream is, boolean closeStream) {
         BufferedStreamFeeder sf = new BufferedStreamFeeder(is);
-        sf.setCloseStream(closeStream);
-        try {
+        try (sf) {
+            sf.setCloseStream(closeStream);
             sf.feedAll(this);
-        } finally {
-            sf.close();
         }
     }
 

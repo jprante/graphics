@@ -21,7 +21,6 @@ import org.xbib.graphics.io.vector.commands.SetXORModeCommand;
 import org.xbib.graphics.io.vector.commands.ShearCommand;
 import org.xbib.graphics.io.vector.commands.TransformCommand;
 import org.xbib.graphics.io.vector.commands.TranslateCommand;
-import org.xbib.graphics.io.vector.util.GraphicsUtils;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
@@ -32,6 +31,7 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.Paint;
 import java.awt.Polygon;
@@ -40,6 +40,7 @@ import java.awt.RenderingHints;
 import java.awt.RenderingHints.Key;
 import java.awt.Shape;
 import java.awt.Stroke;
+import java.awt.Transparency;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.font.TextLayout;
@@ -49,22 +50,28 @@ import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
+import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
+import java.awt.image.ColorModel;
 import java.awt.image.ImageObserver;
+import java.awt.image.PixelGrabber;
 import java.awt.image.RenderedImage;
+import java.awt.image.WritableRaster;
 import java.awt.image.renderable.RenderableImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.AttributedCharacterIterator;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import javax.swing.ImageIcon;
 
 /**
  * Base for classes that want to implement vector export.
@@ -134,28 +141,6 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
         processor.process(getCommands(), pageSize).write(out);
     }
 
-    private static Shape intersectShapes(Shape s1, Shape s2) {
-        if (s1 instanceof Rectangle2D && s2 instanceof Rectangle2D) {
-            Rectangle2D r1 = (Rectangle2D) s1;
-            Rectangle2D r2 = (Rectangle2D) s2;
-            double x1 = Math.max(r1.getMinX(), r2.getMinX());
-            double y1 = Math.max(r1.getMinY(), r2.getMinY());
-            double x2 = Math.min(r1.getMaxX(), r2.getMaxX());
-            double y2 = Math.min(r1.getMaxY(), r2.getMaxY());
-            Rectangle2D intersection = new Rectangle2D.Double();
-            if ((x2 < x1) || (y2 < y1)) {
-                intersection.setFrameFromDiagonal(0, 0, 0, 0);
-            } else {
-                intersection.setFrameFromDiagonal(x1, y1, x2, y2);
-            }
-            return intersection;
-        } else {
-            Area intersection = new Area(s1);
-            intersection.intersect(new Area(s2));
-            return intersection;
-        }
-    }
-
     @Override
     public Object clone() throws CloneNotSupportedException {
         VectorGraphics2D clone = (VectorGraphics2D) super.clone();
@@ -186,7 +171,7 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
         if ((clipNew == null || debugValidateGraphics.getClip() == null) && clipNew != debugValidateGraphics.getClip()) {
             throw new IllegalStateException("clip() validation failed: clip(" + clipOld + ", " + s + ") => " + clipNew + " != " + debugValidateGraphics.getClip());
         }
-        if (clipNew != null && !GraphicsUtils.equals(clipNew, debugValidateGraphics.getClip())) {
+        if (clipNew != null && !equals(clipNew, debugValidateGraphics.getClip())) {
             throw new IllegalStateException("clip() validation failed: clip(" + clipOld + ", " + s + ") => " + clipNew + " != " + debugValidateGraphics.getClip());
         }
     }
@@ -213,31 +198,6 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
                 bimg.getWidth(), bimg.getHeight(), null, null);
     }
 
-    /**
-     * Returns a transformed version of an image.
-     *
-     * @param image Image to be transformed
-     * @param xform Affine transform to be applied
-     * @return Image with transformed content
-     */
-    private BufferedImage getTransformedImage(Image image,
-                                              AffineTransform xform) {
-        Integer interpolationType =
-                (Integer) getRenderingHint(RenderingHints.KEY_INTERPOLATION);
-        if (RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR
-                .equals(interpolationType)) {
-            interpolationType = AffineTransformOp.TYPE_NEAREST_NEIGHBOR;
-        } else if (RenderingHints.VALUE_INTERPOLATION_BILINEAR
-                .equals(interpolationType)) {
-            interpolationType = AffineTransformOp.TYPE_BILINEAR;
-        } else {
-            interpolationType = AffineTransformOp.TYPE_BICUBIC;
-        }
-        AffineTransformOp op = new AffineTransformOp(xform, interpolationType);
-        BufferedImage bufferedImage = GraphicsUtils.toBufferedImage(image);
-        return op.filter(bufferedImage, null);
-    }
-
     @Override
     public void drawImage(BufferedImage img, BufferedImageOp op, int x, int y) {
         if (op != null) {
@@ -253,7 +213,7 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
 
     @Override
     public void drawRenderedImage(RenderedImage img, AffineTransform xform) {
-        BufferedImage bimg = GraphicsUtils.toBufferedImage(img);
+        BufferedImage bimg = toBufferedImage(img);
         drawImage(bimg, xform, null);
     }
 
@@ -508,7 +468,7 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
 
     @Override
     public void translate(int x, int y) {
-        translate((double) x, (double) y);
+        translate(x, (double) y);
     }
 
     @Override
@@ -562,10 +522,10 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
         if (sx == 1.0 && sy == 1.0) {
             return;
         }
-        AffineTransform txNew = getTransform();
-        txNew.scale(sx, sy);
+        AffineTransform affineTransform = getTransform();
+        affineTransform.scale(sx, sy);
         emit(new ScaleCommand(sx, sy));
-        state.setTransform(txNew);
+        state.setTransform(affineTransform);
         debugValidateGraphics.scale(sx, sy);
         if (!getTransform().equals(debugValidateGraphics.getTransform())) {
             throw new IllegalStateException("scale() validation failed");
@@ -587,8 +547,6 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
 
     @Override
     public void copyArea(int x, int y, int width, int height, int dx, int dy) {
-        // TODO Implement
-        //throw new UnsupportedOperationException("copyArea() isn't supported by VectorGraphics2D.");
     }
 
     @Override
@@ -596,7 +554,7 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
         if (isDisposed()) {
             return null;
         }
-        VectorGraphics2D clone = null;
+        VectorGraphics2D clone;
         try {
             clone = (VectorGraphics2D) this.clone();
         } catch (CloneNotSupportedException e) {
@@ -618,16 +576,14 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
     }
 
     @Override
-    public void drawArc(int x, int y, int width, int height, int startAngle,
-                        int arcAngle) {
+    public void drawArc(int x, int y, int width, int height, int startAngle, int arcAngle) {
         draw(new Arc2D.Double(x, y, width, height,
                 startAngle, arcAngle, Arc2D.OPEN));
     }
 
     @Override
     public boolean drawImage(Image img, int x, int y, ImageObserver observer) {
-        return drawImage(img, x, y, img.getWidth(observer),
-                img.getHeight(observer), null, observer);
+        return drawImage(img, x, y, img.getWidth(observer), img.getHeight(observer), null, observer);
     }
 
     @Override
@@ -649,23 +605,17 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
         if (isDisposed() || img == null) {
             return true;
         }
-
         int imageWidth = img.getWidth(observer);
         int imageHeight = img.getHeight(observer);
         Rectangle bounds = new Rectangle(x, y, width, height);
-
         if (bgcolor != null) {
-            // Fill rectangle with bgcolor
             Color bgcolorOld = getColor();
             setColor(bgcolor);
             fill(bounds);
             setColor(bgcolorOld);
         }
-
         emit(new DrawImageCommand(img, imageWidth, imageHeight, x, y, width, height));
-
         debugValidateGraphics.drawImage(img, x, y, width, height, bgcolor, observer);
-
         return true;
     }
 
@@ -683,7 +633,6 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
         if (img == null) {
             return true;
         }
-
         int sx = Math.min(sx1, sx2);
         int sy = Math.min(sy1, sy2);
         int sw = Math.abs(sx2 - sx1);
@@ -692,9 +641,7 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
         int dy = Math.min(dy1, dy2);
         int dw = Math.abs(dx2 - dx1);
         int dh = Math.abs(dy2 - dy1);
-
-        // Draw image on rectangle
-        BufferedImage bufferedImg = GraphicsUtils.toBufferedImage(img);
+        BufferedImage bufferedImg = toBufferedImage(img);
         Image cropped = bufferedImg.getSubimage(sx, sy, sw, sh);
         return drawImage(cropped, dx, dy, dw, dh, bgcolor, observer);
     }
@@ -797,7 +744,7 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
                 throw new IllegalStateException("setClip() validation failed: clip=null, validation=" +
                         debugValidateGraphics.getClip());
             }
-        } else if (!GraphicsUtils.equals(getClip(), debugValidateGraphics.getClip())) {
+        } else if (!equals(getClip(), debugValidateGraphics.getClip())) {
             throw new IllegalStateException("setClip() validation failed: clip=" + getClip() + ", validation=" +
                     debugValidateGraphics.getClip());
         }
@@ -868,10 +815,6 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
         debugValidateGraphics.setPaintMode();
     }
 
-    public Color getXORMode() {
-        return state.getXorMode();
-    }
-
     @Override
     public void setXORMode(Color c1) {
         if (isDisposed() || c1 == null) {
@@ -882,8 +825,8 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
         debugValidateGraphics.setXORMode(c1);
     }
 
-    private void emit(Command<?> command) {
-        commands.add(command);
+    public Color getXORMode() {
+        return state.getXorMode();
     }
 
     public Iterable<Command<?>> getCommands() {
@@ -892,5 +835,172 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
 
     protected boolean isDisposed() {
         return disposed;
+    }
+
+    private void emit(Command<?> command) {
+        commands.add(command);
+    }
+
+    /**
+     * Returns a transformed version of an image.
+     *
+     * @param image Image to be transformed
+     * @param xform Affine transform to be applied
+     * @return Image with transformed content
+     */
+    private BufferedImage getTransformedImage(Image image, AffineTransform xform) {
+        Integer interpolationType =
+                (Integer) getRenderingHint(RenderingHints.KEY_INTERPOLATION);
+        if (RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR
+                .equals(interpolationType)) {
+            interpolationType = AffineTransformOp.TYPE_NEAREST_NEIGHBOR;
+        } else if (RenderingHints.VALUE_INTERPOLATION_BILINEAR
+                .equals(interpolationType)) {
+            interpolationType = AffineTransformOp.TYPE_BILINEAR;
+        } else {
+            interpolationType = AffineTransformOp.TYPE_BICUBIC;
+        }
+        AffineTransformOp op = new AffineTransformOp(xform, interpolationType);
+        BufferedImage bufferedImage = toBufferedImage(image);
+        return op.filter(bufferedImage, null);
+    }
+
+    private static boolean equals(Shape shapeA, Shape shapeB) {
+        PathIterator pathAIterator = shapeA.getPathIterator(null);
+        PathIterator pathBIterator = shapeB.getPathIterator(null);
+        if (pathAIterator.getWindingRule() != pathBIterator.getWindingRule()) {
+            return false;
+        }
+        double[] pathASegment = new double[6];
+        double[] pathBSegment = new double[6];
+        while (!pathAIterator.isDone()) {
+            int pathASegmentType = pathAIterator.currentSegment(pathASegment);
+            int pathBSegmentType = pathBIterator.currentSegment(pathBSegment);
+            if (pathASegmentType != pathBSegmentType) {
+                return false;
+            }
+            for (int segmentIndex = 0; segmentIndex < pathASegment.length; segmentIndex++) {
+                if (pathASegment[segmentIndex] != pathBSegment[segmentIndex]) {
+                    return false;
+                }
+            }
+            pathAIterator.next();
+            pathBIterator.next();
+        }
+        return pathBIterator.isDone();
+    }
+
+    /**
+     * Converts an arbitrary image to a {@code BufferedImage}.
+     *
+     * @param image Image that should be converted.
+     * @return a buffered image containing the image pixels, or the original
+     * instance if the image already was of type {@code BufferedImage}.
+     */
+    static BufferedImage toBufferedImage(RenderedImage image) {
+        if (image instanceof BufferedImage) {
+            return (BufferedImage) image;
+        }
+        ColorModel cm = image.getColorModel();
+        WritableRaster raster = cm.createCompatibleWritableRaster(image.getWidth(), image.getHeight());
+        boolean isRasterPremultiplied = cm.isAlphaPremultiplied();
+        Hashtable<String, Object> properties = null;
+        if (image.getPropertyNames() != null) {
+            properties = new Hashtable<>();
+            for (String key : image.getPropertyNames()) {
+                properties.put(key, image.getProperty(key));
+            }
+        }
+        BufferedImage bimage = new BufferedImage(cm, raster, isRasterPremultiplied, properties);
+        image.copyData(raster);
+        return bimage;
+    }
+
+    /**
+     * This method returns a buffered image with the contents of an image.
+     * Taken from http://www.exampledepot.com/egs/java.awt.image/Image2Buf.html
+     *
+     * @param image Image to be converted
+     * @return a buffered image with the contents of the specified image
+     */
+    static BufferedImage toBufferedImage(Image image) {
+        if (image instanceof BufferedImage) {
+            return (BufferedImage) image;
+        }
+        image = new ImageIcon(image).getImage();
+        boolean hasAlpha = hasAlpha(image);
+        BufferedImage bimage;
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        try {
+            int transparency = Transparency.OPAQUE;
+            if (hasAlpha) {
+                transparency = Transparency.TRANSLUCENT;
+            }
+            GraphicsDevice gs = ge.getDefaultScreenDevice();
+            GraphicsConfiguration gc = gs.getDefaultConfiguration();
+            bimage = gc.createCompatibleImage(image.getWidth(null), image.getHeight(null), transparency);
+        } catch (HeadlessException e) {
+            bimage = null;
+        }
+        if (bimage == null) {
+            int type = BufferedImage.TYPE_INT_RGB;
+            if (hasAlpha) {
+                type = BufferedImage.TYPE_INT_ARGB;
+            }
+            bimage = new BufferedImage(image.getWidth(null), image.getHeight(null), type);
+        }
+        Graphics g = bimage.createGraphics();
+        g.drawImage(image, 0, 0, null);
+        g.dispose();
+        return bimage;
+    }
+
+
+    /**
+     * This method returns {@code true} if the specified image has the
+     * possibility to store transparent pixels.
+     * Inspired by http://www.exampledepot.com/egs/java.awt.image/HasAlpha.html
+     *
+     * @param image Image that should be checked for alpha channel.
+     * @return {@code true} if the specified image can have transparent pixels,
+     * {@code false} otherwise
+     */
+    static boolean hasAlpha(Image image) {
+        ColorModel cm;
+        if (image instanceof BufferedImage) {
+            BufferedImage bimage = (BufferedImage) image;
+            cm = bimage.getColorModel();
+        } else {
+            PixelGrabber pg = new PixelGrabber(image, 0, 0, 1, 1, false);
+            try {
+                pg.grabPixels();
+            } catch (InterruptedException e) {
+                return false;
+            }
+            cm = pg.getColorModel();
+        }
+        return cm.hasAlpha();
+    }
+
+    private static Shape intersectShapes(Shape s1, Shape s2) {
+        if (s1 instanceof Rectangle2D && s2 instanceof Rectangle2D) {
+            Rectangle2D r1 = (Rectangle2D) s1;
+            Rectangle2D r2 = (Rectangle2D) s2;
+            double x1 = Math.max(r1.getMinX(), r2.getMinX());
+            double y1 = Math.max(r1.getMinY(), r2.getMinY());
+            double x2 = Math.min(r1.getMaxX(), r2.getMaxX());
+            double y2 = Math.min(r1.getMaxY(), r2.getMaxY());
+            Rectangle2D intersection = new Rectangle2D.Double();
+            if ((x2 < x1) || (y2 < y1)) {
+                intersection.setFrameFromDiagonal(0, 0, 0, 0);
+            } else {
+                intersection.setFrameFromDiagonal(x1, y1, x2, y2);
+            }
+            return intersection;
+        } else {
+            Area intersection = new Area(s1);
+            intersection.intersect(new Area(s2));
+            return intersection;
+        }
     }
 }

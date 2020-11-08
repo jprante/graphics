@@ -1,6 +1,8 @@
 package org.xbib.graphics.imageio.plugins.png;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runners.Parameterized;
 import org.xbib.graphics.imageio.plugins.png.pngj.FilterType;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -16,10 +18,10 @@ import java.awt.image.WritableRaster;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import javax.imageio.ImageIO;
 
+@ExtendWith(ParameterizedExtension.class)
 public class CustomByteIndexImageTypesTest {
 
     private final int ncolors;
@@ -32,21 +34,21 @@ public class CustomByteIndexImageTypesTest {
     }
 
     //@Parameters(name = "colors{0}/size{1}")
-    public static Collection<Object[]> parameters() {
-        List<Object[]> result = new ArrayList<Object[]>();
+    @Parameterized.Parameters
+    public static List<Object[]> parameters() {
+        List<Object[]> result = new ArrayList<>();
         for (int ncolors : new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
                 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103,
                 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193,
                 197, 199, 211, 223, 227, 229, 233, 239, 241, 255, 256}) {
             for (int size = 1; size <= 8; size++) {
-                result.add(new Object[]{ncolors, size});
+                result.add(new Object[] { ncolors, size} );
             }
         }
-
         return result;
     }
 
-    @Test
+    @TestTemplate
     public void testCustomIndexedImage() throws Exception {
         byte[] colors = new byte[ncolors];
         for (int i = 0; i < ncolors; i++) {
@@ -62,7 +64,6 @@ public class CustomByteIndexImageTypesTest {
                 nbits = (int) Math.pow(2, nextPower);
             }
         }
-
         IndexColorModel icm = new IndexColorModel(nbits, ncolors, colors, colors, colors);
         SampleModel sm = new MultiPixelPackedSampleModel(DataBuffer.TYPE_BYTE, size, size, nbits);
         int pixelsPerByte = 8 / nbits;
@@ -77,11 +78,9 @@ public class CustomByteIndexImageTypesTest {
         graphics.setColor(Color.WHITE);
         graphics.fillRect(16, 0, 16, 32);
         graphics.dispose();
-
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         float quality = 5f / 9 - 1;
         new PNGWriter().writePNG(bi, bos, -quality, FilterType.FILTER_NONE);
-
         BufferedImage read = ImageIO.read(new ByteArrayInputStream(bos.toByteArray()));
         ImageAssert.assertImagesEqual(bi, read);
     }

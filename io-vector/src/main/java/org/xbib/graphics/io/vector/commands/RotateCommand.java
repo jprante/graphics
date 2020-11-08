@@ -4,8 +4,11 @@ import java.awt.geom.AffineTransform;
 import java.util.Locale;
 
 public class RotateCommand extends AffineTransformCommand {
+
     private final double theta;
+
     private final double centerX;
+
     private final double centerY;
 
     public RotateCommand(double theta, double centerX, double centerY) {
@@ -28,10 +31,15 @@ public class RotateCommand extends AffineTransformCommand {
     }
 
     @Override
+    public String getKey() {
+        return "rotate";
+    }
+
+    @Override
     public String toString() {
         return String.format((Locale) null,
                 "%s[theta=%f, centerX=%f, centerY=%f, value=%s]",
-                getClass().getName(), getTheta(), getCenterX(), getCenterY(),
+                getKey(), getTheta(), getCenterX(), getCenterY(),
                 getValue());
     }
 }

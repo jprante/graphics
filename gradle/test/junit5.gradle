@@ -12,6 +12,8 @@ dependencies {
 test {
     useJUnitPlatform()
     failFast = false
+    systemProperty 'java.awt.headless', 'true'
+    //-Dawt.toolkit=sun.awt.HToolkit
     testLogging {
         events 'STARTED', 'PASSED', 'FAILED', 'SKIPPED'
         showStandardStreams = true

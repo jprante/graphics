@@ -4,7 +4,6 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.OutputStream;
 import java.util.List;
-import java.util.logging.Logger;
 import org.xbib.graphics.imageio.plugins.png.pngj.chunks.ChunkCopyBehaviour;
 import org.xbib.graphics.imageio.plugins.png.pngj.chunks.ChunkPredicate;
 import org.xbib.graphics.imageio.plugins.png.pngj.chunks.ChunksList;
@@ -58,8 +57,6 @@ public class PngWriter implements Closeable {
     private ChunksList copyFromList = null;
 
     protected StringBuilder debuginfo = new StringBuilder();
-
-    private static final Logger LOGGER = Logger.getLogger(PngWriter.class.getName());
 
     /**
      * Opens a file for writing.
@@ -196,10 +193,9 @@ public class PngWriter implements Closeable {
 
     /**
      * Queues an ancillary chunk for writing.
-     * <p>
      * If a "equivalent" chunk is already queued (see
      * {@link ChunkHelper#equivalent(PngChunk, PngChunk)), this overwrites it.
-     * <p> The chunk will be written as late as possible, unless the priority is
+     * The chunk will be written as late as possible, unless the priority is
      * set.
      *
      * @param chunk
@@ -253,9 +249,6 @@ public class PngWriter implements Closeable {
      * @see #copyChunksFrom(ChunksList, int) for more info
      */
     public void copyChunksFrom(ChunksList chunks, ChunkPredicate predicate) {
-		if (copyFromList != null && chunks != null) {
-			LOGGER.warning("copyChunksFrom should only be called once");
-		}
 		if (predicate == null) {
 			throw new PngjOutputException("copyChunksFrom requires a predicate");
 		}
@@ -318,7 +311,7 @@ public class PngWriter implements Closeable {
 			try {
 				os.close();
 			} catch (Exception e) {
-				LOGGER.warning("Error closing writer " + e.toString());
+			    // ignore
 			}
 		}
     }

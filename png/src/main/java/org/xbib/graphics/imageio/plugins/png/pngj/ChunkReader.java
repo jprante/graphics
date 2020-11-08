@@ -1,6 +1,5 @@
 package org.xbib.graphics.imageio.plugins.png.pngj;
 
-import java.util.logging.Logger;
 import org.xbib.graphics.imageio.plugins.png.pngj.chunks.ChunkRaw;
 
 /**
@@ -19,7 +18,6 @@ import org.xbib.graphics.imageio.plugins.png.pngj.chunks.ChunkRaw;
  * (usually is) long lived.
  */
 public abstract class ChunkReader implements IBytesConsumer {
-    private static final Logger LOGGER = Logger.getLogger(ChunkReader.class.getName());
 
     /**
      * see {@link ChunkReaderMode}
@@ -130,8 +128,6 @@ public abstract class ChunkReader implements IBytesConsumer {
                 }
             } else if (mode == ChunkReaderMode.PROCESS) {
                 processData(read, buf, off, bytesForData);
-            } else {
-                // mode == ChunkReaderMode.SKIP; nothing to do
             }
             read += bytesForData;
             off += bytesForData;
@@ -155,7 +151,6 @@ public abstract class ChunkReader implements IBytesConsumer {
                         }
                         chunkRaw.checkCrc(errorBehav == ErrorBehaviour.STRICT);
                     }
-                    LOGGER.fine("Chunk done");
                     chunkDone();
                 }
             }
@@ -164,7 +159,7 @@ public abstract class ChunkReader implements IBytesConsumer {
     }
 
     /**
-     * Chunks has been read
+     * Chunks has been read.
      *
      * @return true if we have read all chunk, including trailing CRC
      */
@@ -177,7 +172,6 @@ public abstract class ChunkReader implements IBytesConsumer {
      * starting reading.
      *
      * @param crcCheck
-     * @see also #setErrorBehav(ErrorBehaviour)
      */
     public void setCrcCheck(boolean crcCheck) {
 		if (read != 0 && crcCheck && !this.crcCheck) {
