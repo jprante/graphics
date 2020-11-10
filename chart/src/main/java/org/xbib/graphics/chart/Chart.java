@@ -15,6 +15,7 @@ import org.xbib.graphics.io.vector.pdf.PDFGraphics2D;
 import org.xbib.graphics.io.vector.svg.SVGGraphics2D;
 
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
@@ -371,13 +372,13 @@ public abstract class Chart<ST extends Styler, S extends Series> {
         VectorGraphics2D g = null;
         switch (vectorGraphicsFormat) {
             case EPS:
-                g = new EPSGraphics2D(0.0, 0.0, getWidth(), getHeight());
+                g = new EPSGraphics2D(new Rectangle(0, 0, getWidth(), getHeight()));
                 break;
             case PDF:
-                g = new PDFGraphics2D(0.0, 0.0, getWidth(), getHeight());
+                g = new PDFGraphics2D(new Rectangle(0, 0, getWidth(), getHeight()));
                 break;
             case SVG:
-                g = new SVGGraphics2D(0.0, 0.0, getWidth(), getHeight());
+                g = new SVGGraphics2D(new Rectangle(0, 0, getWidth(), getHeight()));
                 break;
 
             default:

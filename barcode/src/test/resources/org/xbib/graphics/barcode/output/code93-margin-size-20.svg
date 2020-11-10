@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg xmlns:xlink="http://www.w3.org/1999/xlink" height="31.749996295833764mm" version="1.1" viewBox="0.0 0.0 158.0 90.0" width="55.73888238601927mm" x="0mm" y="0mm" xmlns="http://www.w3.org/2000/svg">
-  <rect height="1200" style="fill:rgb(255,255,255);stroke:none;" width="1920" x="0" y="0"/>
+  <rect height="90" style="fill:rgb(255,255,255);stroke:none;" width="158" x="0" y="0"/>
   <path d="M20.0,20.0 L21.0,20.0 L21.0,60.0 L20.0,60.0 Z" style="fill:rgb(0,0,0);stroke:none;"/>
   <path d="M22.0,20.0 L23.0,20.0 L23.0,60.0 L22.0,60.0 Z" style="fill:rgb(0,0,0);stroke:none;"/>
   <path d="M24.0,20.0 L28.0,20.0 L28.0,60.0 L24.0,60.0 Z" style="fill:rgb(0,0,0);stroke:none;"/>
@@ -42,5 +42,5 @@
   <path d="M130.0,20.0 L131.0,20.0 L131.0,60.0 L130.0,60.0 Z" style="fill:rgb(0,0,0);stroke:none;"/>
   <path d="M132.0,20.0 L136.0,20.0 L136.0,60.0 L132.0,60.0 Z" style="fill:rgb(0,0,0);stroke:none;"/>
   <path d="M137.0,20.0 L138.0,20.0 L138.0,60.0 L137.0,60.0 Z" style="fill:rgb(0,0,0);stroke:none;"/>
-  <text style="fill:rgb(0,0,0);stroke:none;font-family:&quot;Helvetica&quot;;font-size:8px;" x="56" y="68">123456789Od</text>
+  <text style="fill:rgb(0,0,0);stroke:none;font-family:&quot;DejaVu Sans&quot;;font-size:8px;" x="50.408203125" y="68">123456789Od</text>
 </svg>

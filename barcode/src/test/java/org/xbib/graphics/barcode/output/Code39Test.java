@@ -6,6 +6,7 @@ import org.xbib.graphics.barcode.HumanReadableLocation;
 import org.xbib.graphics.barcode.render.GraphicsRenderer;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -51,6 +52,7 @@ public class Code39Test {
 
     private GraphicsRenderer createRenderer(BufferedImage bufferedImage, double scalingFactor) {
         Graphics2D g2d = bufferedImage.createGraphics();
-        return new GraphicsRenderer(g2d, scalingFactor, Color.WHITE, Color.BLACK, false, false);
+        Rectangle rectangle = new Rectangle(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
+        return new GraphicsRenderer(g2d, rectangle, scalingFactor, Color.WHITE, Color.BLACK, false, false);
     }
 }

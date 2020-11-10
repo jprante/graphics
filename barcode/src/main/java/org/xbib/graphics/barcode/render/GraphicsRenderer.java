@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.font.TextAttribute;
 import java.awt.geom.Ellipse2D;
@@ -26,6 +27,8 @@ public class GraphicsRenderer {
      * The graphics to render to.
      */
     private final Graphics2D g2d;
+
+    private final Rectangle rectangle;
 
     /**
      * The scaling factor.
@@ -56,12 +59,14 @@ public class GraphicsRenderer {
      * @param antialias if true give anti alias hint
      */
     public GraphicsRenderer(Graphics2D g2d,
+                            Rectangle rectangle,
                             double scalingFactor,
                             Color background,
                             Color foreground,
                             boolean antialias,
                             boolean transparentBackground) {
         this.g2d = g2d;
+        this.rectangle = rectangle;
         this.scalingFactor = scalingFactor;
         this.background = background;
         this.foreground = foreground;
@@ -83,7 +88,7 @@ public class GraphicsRenderer {
         g2d.setBackground(background);
         if (!transparentBackground) {
             g2d.setColor(background);
-            g2d.fill(g2d.getDeviceConfiguration().getBounds());
+            g2d.fill(rectangle);
             g2d.setColor(foreground);
         }
         for (Rectangle2D.Double rect : symbol.getRectangles()) {

@@ -5,8 +5,6 @@ import org.xbib.graphics.imageio.plugins.png.pngj.PngjException;
 
 /**
  * iCCP chunk.
- * <p>
- * See {@link http://www.w3.org/TR/PNG/#11iCCP}
  */
 public class PngChunkICCP extends PngChunkSingle {
     public final static String ID = ChunkHelper.iCCP;

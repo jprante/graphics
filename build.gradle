@@ -19,8 +19,8 @@ ext {
     scmDeveloperConnection = 'scm:git:ssh://git@github.com:' + user + '/' + name + '.git'
     issueManagementSystem = 'Github'
     issueManagementUrl = ext.scmUrl + '/issues'
-    licenseName = 'The Apache License, Version 2.0'
-    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    licenseName = 'The GNU General Public License, Version 3'
+    licenseUrl = 'https://www.gnu.org/licenses/gpl-3.0.txt'
 }
 
 subprojects {

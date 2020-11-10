@@ -6,7 +6,7 @@ import java.awt.image.Raster;
 /**
  * A helper class that supports the scanline provider in navigating the structure of a Java image.
  */
-final class ScanlineCursor {
+public final class ScanlineCursor {
 
     final int scanlineStride;
 

@@ -30,6 +30,7 @@ import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
@@ -407,8 +408,10 @@ public class SymbolTest {
         int height = (int) (symbol.getHeight() * scalingFactor);
         if (width > 0 && height > 0) {
             BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+            Rectangle rectangle = new Rectangle(0, 0, img.getWidth(), img.getHeight());
             Graphics2D g2d = img.createGraphics();
-            GraphicsRenderer renderer = new GraphicsRenderer(g2d, scalingFactor, Color.WHITE, Color.BLACK, true, false);
+            GraphicsRenderer renderer = new GraphicsRenderer(g2d, rectangle,
+                    scalingFactor, Color.WHITE, Color.BLACK, true, false);
             renderer.render(symbol);
             g2d.dispose();
             return img;

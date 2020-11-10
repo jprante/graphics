@@ -6,12 +6,6 @@ import org.xbib.graphics.imageio.plugins.png.pngj.chunks.ChunkRaw;
  * Parses a PNG chunk, consuming bytes in one of three modes:
  * {@link ChunkReaderMode#BUFFER}, {@link ChunkReaderMode#PROCESS},
  * {@link ChunkReaderMode#SKIP}.
- * <p>
- * It calls {@link #chunkDone()} when done. Also calls
- * {@link #processData(byte[], int, int)} if <code>PROCESS</code> mode. Apart
- * from thas, it's totally agnostic (it doesn't know about IDAT chunks, or PNG
- * general structure)
- * <p>
  * The object wraps a <tt>ChunkRaw</tt> instance (content allocated and filled
  * only if BUFFER mode). It should be short lived (one instance created for each
  * chunk, and discarded after reading), but the wrapped <tt>chunkRaw</tt> can be

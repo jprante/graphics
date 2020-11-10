@@ -36,24 +36,22 @@ public class PngWriter implements Closeable {
      * Current chunk grounp, (0-6) already written or currently writing (this is
      * advanced when just starting to write the new group, not when finalizing
      * the previous)
-     * <p>
      * see {@link ChunksList}
      */
     protected int currentChunkGroup = -1;
 
-    private final int passes = 1; // Some writes might require two passes (NOT USED STILL)
-    private int currentpass = 0; // numbered from 1
+    private int currentpass = 0;
 
     private boolean shouldCloseStream = true;
 
-    private int idatMaxSize = 0; // 0=use default (PngIDatChunkOutputStream 64k)
-    // private PngIDatChunkOutputStream datStream;
+    private int idatMaxSize = 0;
 
     protected PixelsWriter pixelsWriter;
 
     private final OutputStream os;
 
     private ChunkPredicate copyFromPredicate = null;
+
     private ChunksList copyFromList = null;
 
     protected StringBuilder debuginfo = new StringBuilder();
@@ -64,8 +62,8 @@ public class PngWriter implements Closeable {
      * Sets shouldCloseStream=true. For more info see
      * {@link #PngWriter(OutputStream, ImageInfo)}
      *
-     * @param file
-     * @param imgInfo
+     * @param file file
+     * @param imgInfo image info
      * @param allowoverwrite If false and file exists, an {@link PngjOutputException} is
      *                       thrown
      */
@@ -118,12 +116,11 @@ public class PngWriter implements Closeable {
 		if (currentChunkGroup >= ChunksList.CHUNK_GROUP_4_IDAT) {
 			return;
 		}
-        int nw = 0;
         currentChunkGroup = ChunksList.CHUNK_GROUP_1_AFTERIDHR;
         queueChunksFromOther();
-        nw = chunksList.writeChunks(os, currentChunkGroup);
+        int nw0 = chunksList.writeChunks(os, currentChunkGroup);
         currentChunkGroup = ChunksList.CHUNK_GROUP_2_PLTE;
-        nw = chunksList.writeChunks(os, currentChunkGroup);
+        int nw = chunksList.writeChunks(os, currentChunkGroup);
 		if (nw > 0 && imgInfo.greyscale) {
 			throw new PngjOutputException("cannot write palette for this format");
 		}
@@ -193,12 +190,9 @@ public class PngWriter implements Closeable {
 
     /**
      * Queues an ancillary chunk for writing.
-     * If a "equivalent" chunk is already queued (see
-     * {@link ChunkHelper#equivalent(PngChunk, PngChunk)), this overwrites it.
      * The chunk will be written as late as possible, unless the priority is
      * set.
-     *
-     * @param chunk
+     * @param chunk the chunk
      */
     public void queueChunk(PngChunk chunk) {
         for (PngChunk other : chunksList.getQueuedEquivalent(chunk)) {
@@ -344,8 +338,7 @@ public class PngWriter implements Closeable {
      * This is kept for backwards compatibility, now the PixelsWriter object
      * should be used for setting compression/filtering options
      *
-     * @param compLevel between 0 (no compression, max speed) and 9 (max compression)
-     * @see PixelsWriter#setCompressionFactor(double)
+     * @param complevel between 0 (no compression, max speed) and 9 (max compression)
      */
     public void setCompLevel(int complevel) {
         pixelsWriter.setDeflaterCompLevel(complevel);
@@ -416,6 +409,8 @@ public class PngWriter implements Closeable {
 		if (rowNum == 0) {
 			currentpass++;
 		}
+        // Some writes might require two passes (NOT USED STILL)
+        int passes = 1;
         if (rownumber == 0 && currentpass == passes) {
             initIdat();
             currentChunkGroup = ChunksList.CHUNK_GROUP_4_IDAT; // we just begin writing IDAT
@@ -440,14 +435,11 @@ public class PngWriter implements Closeable {
      * This should be overriden if custom filtering strategies are desired.
      * Remember to release this with close()
      *
-     * @param imginfo Might be different than that of this object (eg: APNG with
-     *                subimages)
-     * @param os      Output stream
+     * @param imginfo Might be different than that of this object (eg: APNG with subimages)
      * @return new PixelsWriter. Don't forget to call close() when discarding it
      */
     protected PixelsWriter createPixelsWriter(ImageInfo imginfo) {
-        PixelsWriterDefault pw = new PixelsWriterDefault(imginfo);
-        return pw;
+        return new PixelsWriterDefault(imginfo);
     }
 
     public final PixelsWriter getPixelsWriter() {
