@@ -7,12 +7,15 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.util.Matrix;
 import org.jfree.chart.ChartFactory;
-//import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.labels.StandardCategoryToolTipGenerator;
-import org.jfree.chart.plot.*;
+import org.jfree.chart.plot.MultiplePiePlot;
+import org.jfree.chart.plot.PiePlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.SpiderWebPlot;
+import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.title.LegendTitle;
 import org.jfree.chart.title.TextTitle;
@@ -28,10 +31,7 @@ import org.jfree.data.time.SimpleTimePeriod;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-//import org.jfree.ui.RectangleEdge;
-//import org.jfree.util.TableOrder;
 import org.junit.jupiter.api.Test;
-import org.xbib.graphics.io.pdfbox.PdfBoxGraphics2D;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -46,29 +46,24 @@ public class MultiPageTest {
     @Test
     public void testMultiPageJFreeChart() throws IOException {
         File parentDir = new File("build/test/multipage");
-        // noinspection ResultOfMethodCallIgnored
         parentDir.mkdirs();
         File targetPDF = new File(parentDir, "multipage.pdf");
         PDDocument document = new PDDocument();
         for (int i = 0; i < 6; i++) {
             PDPage page = new PDPage(PDRectangle.A4);
             document.addPage(page);
-
             PDPageContentStream contentStream = new PDPageContentStream(document, page);
             PdfBoxGraphics2D pdfBoxGraphics2D = new PdfBoxGraphics2D(document, 800, 400);
             drawOnGraphics(pdfBoxGraphics2D, i);
             pdfBoxGraphics2D.dispose();
-
             PDFormXObject appearanceStream = pdfBoxGraphics2D.getXFormObject();
             Matrix matrix = new Matrix();
             matrix.translate(0, 30);
             matrix.scale(0.7f, 1f);
-
             contentStream.saveGraphicsState();
             contentStream.transform(matrix);
             contentStream.drawForm(appearanceStream);
             contentStream.restoreGraphicsState();
-
             contentStream.close();
         }
         document.save(targetPDF);

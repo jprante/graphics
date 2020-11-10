@@ -68,9 +68,9 @@ import java.util.Map;
  */
 public class PdfBoxGraphics2D extends Graphics2D {
 
-    private final PDFormXObject xFormObject;
-
     private final Graphics2D calcGfx;
+
+    private final PDFormXObject xFormObject;
 
     private final PDPageContentStream contentStream;
 
@@ -106,11 +106,9 @@ public class PdfBoxGraphics2D extends Graphics2D {
 
     private Color backgroundColor;
 
-    private final CopyInfo copyInfo;
-
-    private final PDRectangle bbox;
-
     private int saveCounter = 0;
+
+    private final CopyInfo copyInfo;
 
     private final List<CopyInfo> copyList = new ArrayList<>();
 
@@ -163,8 +161,9 @@ public class PdfBoxGraphics2D extends Graphics2D {
         @Override
         public void applyPaint(Paint paint, Shape shapeToDraw) throws IOException {
             PDShading pdShading = PdfBoxGraphics2D.this.applyPaint(paint, shapeToDraw);
-            if (pdShading != null)
+            if (pdShading != null) {
                 applyShadingAsColor(pdShading);
+            }
         }
 
         @Override
@@ -174,7 +173,7 @@ public class PdfBoxGraphics2D extends Graphics2D {
 
         @Override
         public PDRectangle getGraphicsBBox() {
-            return bbox;
+            return xFormObject.getBBox();
         }
 
         @Override
@@ -202,7 +201,8 @@ public class PdfBoxGraphics2D extends Graphics2D {
      * @throws IOException if something goes wrong with writing into the content stream of
      *                     the {@link PDDocument}.
      */
-    public PdfBoxGraphics2D(PDDocument document, int pixelWidth, int pixelHeight) throws IOException {
+    public PdfBoxGraphics2D(PDDocument document, int pixelWidth, int pixelHeight)
+            throws IOException {
         this(document, new PDRectangle(pixelWidth, pixelHeight));
     }
 
@@ -235,15 +235,20 @@ public class PdfBoxGraphics2D extends Graphics2D {
         this(document, bbox, null);
     }
 
-    PdfBoxGraphics2D(PDDocument document, PDRectangle bbox, PdfBoxGraphics2D parentGfx)
+    public PdfBoxGraphics2D(PDDocument document,
+                            PDRectangle bbox,
+                            PdfBoxGraphics2D parentGfx)
+            throws IOException {
+        this(document, createXObject(document, bbox), parentGfx);
+    }
+
+    public PdfBoxGraphics2D(PDDocument document,
+                            PDFormXObject xFormObject,
+                            PdfBoxGraphics2D parentGfx)
             throws IOException {
         this.document = document;
-        this.bbox = bbox;
-        PDAppearanceStream appearance = new PDAppearanceStream(document);
-        xFormObject = appearance;
-        xFormObject.setResources(new PDResources());
-        xFormObject.setBBox(bbox);
-        contentStream = new PDPageContentStream(document, appearance,
+        this.xFormObject = xFormObject;
+        this.contentStream = new PDPageContentStream(document, xFormObject,
                 xFormObject.getStream().createOutputStream(COSName.FLATE_DECODE));
         contentStreamSaveState();
         if (parentGfx != null) {
@@ -253,7 +258,7 @@ public class PdfBoxGraphics2D extends Graphics2D {
             this.paintApplier = parentGfx.paintApplier;
         }
         baseTransform = new AffineTransform();
-        baseTransform.translate(0, bbox.getHeight());
+        baseTransform.translate(0, xFormObject.getBBox().getHeight());
         baseTransform.scale(1, -1);
         calcImage = new BufferedImage(100, 100, BufferedImage.TYPE_4BYTE_ABGR);
         calcGfx = calcImage.createGraphics();
@@ -261,35 +266,58 @@ public class PdfBoxGraphics2D extends Graphics2D {
         copyInfo = null;
     }
 
-    private PdfBoxGraphics2D(PdfBoxGraphics2D gfx) throws IOException {
+    public PdfBoxGraphics2D(PDDocument document,
+                            PDFormXObject xFormObject,
+                            PDPageContentStream contentStream,
+                            PdfBoxGraphics2D parentGfx)
+            throws IOException {
+        this.document = document;
+        this.xFormObject = xFormObject;
+        this.contentStream = contentStream;
+        contentStreamSaveState();
+        if (parentGfx != null) {
+            this.colorMapper = parentGfx.colorMapper;
+            this.fontTextDrawer = parentGfx.fontTextDrawer;
+            this.imageEncoder = parentGfx.imageEncoder;
+            this.paintApplier = parentGfx.paintApplier;
+        }
+        baseTransform = new AffineTransform();
+        baseTransform.translate(0, xFormObject.getBBox().getHeight());
+        baseTransform.scale(1, -1);
+        calcImage = new BufferedImage(100, 100, BufferedImage.TYPE_4BYTE_ABGR);
+        calcGfx = calcImage.createGraphics();
+        font = calcGfx.getFont();
+        copyInfo = null;
+    }
+
+    private PdfBoxGraphics2D(PdfBoxGraphics2D pdfBoxGraphics2D) throws IOException {
         CopyInfo info = new CopyInfo();
         info.creatingContextInfo = null;
         info.copy = this;
-        info.sourceGfx = gfx;
-        gfx.copyList.add(info);
+        info.sourceGfx = pdfBoxGraphics2D;
+        pdfBoxGraphics2D.copyList.add(info);
         this.copyInfo = info;
         this.hasPathOnStream = false;
-        this.document = gfx.document;
-        this.bbox = gfx.bbox;
-        this.xFormObject = gfx.xFormObject;
-        this.contentStream = gfx.contentStream;
-        this.baseTransform = gfx.baseTransform;
-        this.transform = (AffineTransform) gfx.transform.clone();
-        this.calcGfx = gfx.calcGfx;
-        this.calcImage = gfx.calcImage;
-        this.font = gfx.font;
-        this.stroke = gfx.stroke;
-        this.paint = gfx.paint;
-        this.clipShape = gfx.clipShape;
-        this.backgroundColor = gfx.backgroundColor;
-        this.colorMapper = gfx.colorMapper;
-        this.fontTextDrawer = gfx.fontTextDrawer;
-        this.imageEncoder = gfx.imageEncoder;
-        this.paintApplier = gfx.paintApplier;
-        this.drawControl = gfx.drawControl;
-        this.composite = gfx.composite;
-        this.renderingHints = new HashMap<>(gfx.renderingHints);
-        this.xorColor = gfx.xorColor;
+        this.document = pdfBoxGraphics2D.document;
+        this.xFormObject = pdfBoxGraphics2D.xFormObject;
+        this.contentStream = pdfBoxGraphics2D.contentStream;
+        this.baseTransform = pdfBoxGraphics2D.baseTransform;
+        this.transform = (AffineTransform) pdfBoxGraphics2D.transform.clone();
+        this.calcGfx = pdfBoxGraphics2D.calcGfx;
+        this.calcImage = pdfBoxGraphics2D.calcImage;
+        this.font = pdfBoxGraphics2D.font;
+        this.stroke = pdfBoxGraphics2D.stroke;
+        this.paint = pdfBoxGraphics2D.paint;
+        this.clipShape = pdfBoxGraphics2D.clipShape;
+        this.backgroundColor = pdfBoxGraphics2D.backgroundColor;
+        this.colorMapper = pdfBoxGraphics2D.colorMapper;
+        this.fontTextDrawer = pdfBoxGraphics2D.fontTextDrawer;
+        this.imageEncoder = pdfBoxGraphics2D.imageEncoder;
+        this.paintApplier = pdfBoxGraphics2D.paintApplier;
+        this.drawControl = pdfBoxGraphics2D.drawControl;
+        this.composite = pdfBoxGraphics2D.composite;
+        this.renderingHints = new HashMap<>(pdfBoxGraphics2D.renderingHints);
+        this.xorColor = pdfBoxGraphics2D.xorColor;
         this.saveCounter = 0;
         contentStreamSaveState();
     }
@@ -1043,7 +1071,7 @@ public class PdfBoxGraphics2D extends Graphics2D {
         PDTilingPattern pattern = new PDTilingPattern();
         pattern.setPaintType(PDTilingPattern.PAINT_COLORED);
         pattern.setTilingType(PDTilingPattern.TILING_CONSTANT_SPACING_FASTER_TILING);
-        PDRectangle anchorRect = bbox;
+        PDRectangle anchorRect = xFormObject.getBBox();
         pattern.setBBox(anchorRect);
         pattern.setXStep(anchorRect.getWidth());
         pattern.setYStep(anchorRect.getHeight());
@@ -1135,9 +1163,17 @@ public class PdfBoxGraphics2D extends Graphics2D {
     }
 
     private void checkNoCopyActive() {
-        if (copyList.size() > 0)
+        if (copyList.size() > 0) {
             throw new IllegalStateException("Don't use the main context as long as a copy is active! Child context is missing a .dispose() call\n"
-                            + gatherDebugCopyInfo(this));
+                    + gatherDebugCopyInfo(this));
+        }
+    }
+
+    private static PDFormXObject createXObject(PDDocument document, PDRectangle bbox) {
+        PDFormXObject xFormObject = new PDAppearanceStream(document);
+        xFormObject.setResources(new PDResources());
+        xFormObject.setBBox(bbox);
+        return xFormObject;
     }
 
     private static String gatherDebugCopyInfo(PdfBoxGraphics2D gfx) {

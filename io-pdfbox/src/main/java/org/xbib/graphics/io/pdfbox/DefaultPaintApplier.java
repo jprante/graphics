@@ -77,7 +77,7 @@ public class DefaultPaintApplier implements PaintApplier {
         state.nestedTransform = null;
         PDShading shading = applyPaint(paint, state);
         if (state.pdExtendedGraphicsState != null) {
-            contentStream.setGraphicsStateParameters(extGStateCache.makeUnqiue(state.pdExtendedGraphicsState));
+            contentStream.setGraphicsStateParameters(extGStateCache.makeUnique(state.pdExtendedGraphicsState));
         }
         return shading;
     }
@@ -113,19 +113,19 @@ public class DefaultPaintApplier implements PaintApplier {
         if (paint instanceof Color) {
             applyAsStrokingColor((Color) paint, state);
         } else if (simpleName.equals("LinearGradientPaint")) {
-            return shadingCache.makeUnqiue(buildLinearGradientShading(paint, state));
+            return shadingCache.makeUnique(buildLinearGradientShading(paint, state));
         } else if (simpleName.equals("RadialGradientPaint")) {
-            return shadingCache.makeUnqiue(buildRadialGradientShading(paint, state));
+            return shadingCache.makeUnique(buildRadialGradientShading(paint, state));
         } else if (simpleName.equals("PatternPaint")) {
             applyPatternPaint(paint, state);
         } else if (simpleName.equals("TilingPaint")) {
             logger.log(Level.WARNING, "no tiling paint available");
         } else if (paint instanceof GradientPaint) {
-            return shadingCache.makeUnqiue(buildGradientShading((GradientPaint) paint, state));
+            return shadingCache.makeUnique(buildGradientShading((GradientPaint) paint, state));
         } else if (paint instanceof TexturePaint) {
             applyTexturePaint((TexturePaint) paint, state);
         } else if (paint instanceof ShadingPaint) {
-            return shadingCache.makeUnqiue(importPDFBoxShadingPaint((ShadingPaint<?>) paint, state));
+            return shadingCache.makeUnique(importPDFBoxShadingPaint((ShadingPaint<?>) paint, state));
         } else {
             logger.log(Level.WARNING, "Don't know paint " + paint.getClass().getName());
         }
@@ -148,12 +148,10 @@ public class DefaultPaintApplier implements PaintApplier {
         PDTilingPattern pattern = new PDTilingPattern();
         pattern.setPaintType(PDTilingPattern.PAINT_COLORED);
         pattern.setTilingType(PDTilingPattern.TILING_CONSTANT_SPACING_FASTER_TILING);
-
         pattern.setBBox(new PDRectangle((float) anchorRect.getX(), (float) anchorRect.getY(),
                 (float) anchorRect.getWidth(), (float) anchorRect.getHeight()));
         pattern.setXStep((float) anchorRect.getWidth());
         pattern.setYStep((float) anchorRect.getHeight());
-
         AffineTransform patternTransform = new AffineTransform();
         if (paintPatternTransform != null) {
             paintPatternTransform = new AffineTransform(paintPatternTransform);
@@ -766,7 +764,7 @@ public class DefaultPaintApplier implements PaintApplier {
 
         protected abstract int getKey(TObject obj);
 
-        TObject makeUnqiue(TObject state) {
+        TObject makeUnique(TObject state) {
             int key = getKey(state);
             List<TObject> pdExtendedGraphicsStates = states.computeIfAbsent(key, k -> new ArrayList<>());
             for (TObject s : pdExtendedGraphicsStates) {

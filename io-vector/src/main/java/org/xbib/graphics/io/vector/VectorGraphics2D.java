@@ -81,6 +81,7 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
     private final Processor processor;
 
     private final PageSize pageSize;
+
     /**
      * List of operations that were performed on this graphics object and its
      * derived objects.
@@ -171,7 +172,7 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
         if ((clipNew == null || debugValidateGraphics.getClip() == null) && clipNew != debugValidateGraphics.getClip()) {
             throw new IllegalStateException("clip() validation failed: clip(" + clipOld + ", " + s + ") => " + clipNew + " != " + debugValidateGraphics.getClip());
         }
-        if (clipNew != null && !equals(clipNew, debugValidateGraphics.getClip())) {
+        if (clipNew != null && notEquals(clipNew, debugValidateGraphics.getClip())) {
             throw new IllegalStateException("clip() validation failed: clip(" + clipOld + ", " + s + ") => " + clipNew + " != " + debugValidateGraphics.getClip());
         }
     }
@@ -238,7 +239,6 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
             emit(new DrawStringCommand(str, x, y));
             debugValidateGraphics.drawString(str, x, y);
         }
-
     }
 
     @Override
@@ -744,7 +744,7 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
                 throw new IllegalStateException("setClip() validation failed: clip=null, validation=" +
                         debugValidateGraphics.getClip());
             }
-        } else if (!equals(getClip(), debugValidateGraphics.getClip())) {
+        } else if (notEquals(getClip(), debugValidateGraphics.getClip())) {
             throw new IllegalStateException("setClip() validation failed: clip=" + getClip() + ", validation=" +
                     debugValidateGraphics.getClip());
         }
@@ -865,11 +865,11 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
         return op.filter(bufferedImage, null);
     }
 
-    private static boolean equals(Shape shapeA, Shape shapeB) {
+    private static boolean notEquals(Shape shapeA, Shape shapeB) {
         PathIterator pathAIterator = shapeA.getPathIterator(null);
         PathIterator pathBIterator = shapeB.getPathIterator(null);
         if (pathAIterator.getWindingRule() != pathBIterator.getWindingRule()) {
-            return false;
+            return true;
         }
         double[] pathASegment = new double[6];
         double[] pathBSegment = new double[6];
@@ -877,17 +877,17 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
             int pathASegmentType = pathAIterator.currentSegment(pathASegment);
             int pathBSegmentType = pathBIterator.currentSegment(pathBSegment);
             if (pathASegmentType != pathBSegmentType) {
-                return false;
+                return true;
             }
             for (int segmentIndex = 0; segmentIndex < pathASegment.length; segmentIndex++) {
                 if (pathASegment[segmentIndex] != pathBSegment[segmentIndex]) {
-                    return false;
+                    return true;
                 }
             }
             pathAIterator.next();
             pathBIterator.next();
         }
-        return pathBIterator.isDone();
+        return !pathBIterator.isDone();
     }
 
     /**
