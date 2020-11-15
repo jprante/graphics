@@ -1,4 +1,4 @@
-package org.xbib.graphics.io.pdfbox;
+package org.xbib.graphics.io.pdfbox.font;
 
 import org.apache.fontbox.ttf.TrueTypeCollection;
 import org.apache.pdfbox.io.IOUtils;
@@ -7,6 +7,7 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.util.Matrix;
+import org.xbib.graphics.io.pdfbox.PdfBoxGraphics2D;
 
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -33,9 +34,9 @@ import java.util.logging.Logger;
  * Just ensure that you call close after you closed the PDDocument to free any
  * temporary files.
  */
-public class DefaultFontTextDrawer implements FontTextDrawer, Closeable {
+public class DefaultFontDrawer implements FontDrawer, Closeable {
 
-    private static final Logger logger = Logger.getLogger(DefaultFontTextDrawer.class.getName());
+    private static final Logger logger = Logger.getLogger(DefaultFontDrawer.class.getName());
 
     @Override
     public void close() {
@@ -141,54 +142,44 @@ public class DefaultFontTextDrawer implements FontTextDrawer, Closeable {
      * the case if this class has been derived. The default implementation
      * just checks for this.
      */
-    @SuppressWarnings("WeakerAccess")
     protected boolean hasDynamicFontMapping() {
-        return getClass() != DefaultFontTextDrawer.class;
+        return getClass() != DefaultFontDrawer.class;
     }
 
     @Override
-    public boolean canDrawText(AttributedCharacterIterator iterator, FontTextDrawerEnv env)
+    public boolean canDrawText(AttributedCharacterIterator iterator, FontDrawerEnvironment env)
             throws IOException, FontFormatException {
-        /*
-         * When no font is registered we can not display the text using a font...
-         */
-        if (fontMap.size() == 0 && fontFiles.size() == 0 && !hasDynamicFontMapping())
+        if (fontMap.size() == 0 && fontFiles.size() == 0 && !hasDynamicFontMapping()) {
             return false;
-
+        }
         boolean run = true;
         StringBuilder sb = new StringBuilder();
         while (run) {
-
             Font attributeFont = (Font) iterator.getAttribute(TextAttribute.FONT);
-            if (attributeFont == null)
+            if (attributeFont == null) {
                 attributeFont = env.getFont();
-            if (mapFont(attributeFont, env) == null)
+            }
+            if (mapFont(attributeFont, env) == null) {
                 return false;
-
-            /*
-             * We can not do a Background on the text currently.
-             */
-            if (iterator.getAttribute(TextAttribute.BACKGROUND) != null)
+            }
+            if (iterator.getAttribute(TextAttribute.BACKGROUND) != null) {
                 return false;
-
-            boolean isStrikeThrough = TextAttribute.STRIKETHROUGH_ON
-                    .equals(iterator.getAttribute(TextAttribute.STRIKETHROUGH));
-            boolean isUnderline = TextAttribute.UNDERLINE_ON
-                    .equals(iterator.getAttribute(TextAttribute.UNDERLINE));
-            boolean isLigatures = TextAttribute.LIGATURES_ON
-                    .equals(iterator.getAttribute(TextAttribute.LIGATURES));
-            if (isStrikeThrough || isUnderline || isLigatures)
+            }
+            boolean isStrikeThrough =
+                    TextAttribute.STRIKETHROUGH_ON.equals(iterator.getAttribute(TextAttribute.STRIKETHROUGH));
+            boolean isUnderline =
+                    TextAttribute.UNDERLINE_ON.equals(iterator.getAttribute(TextAttribute.UNDERLINE));
+            boolean isLigatures =
+                    TextAttribute.LIGATURES_ON.equals(iterator.getAttribute(TextAttribute.LIGATURES));
+            if (isStrikeThrough || isUnderline || isLigatures) {
                 return false;
-
+            }
             run = iterateRun(iterator, sb);
             String s = sb.toString();
             int l = s.length();
             for (int i = 0; i < l; ) {
                 int codePoint = s.codePointAt(i);
                 switch (Character.getDirectionality(codePoint)) {
-                    /*
-                     * We can handle normal LTR.
-                     */
                     case Character.DIRECTIONALITY_LEFT_TO_RIGHT:
                     case Character.DIRECTIONALITY_EUROPEAN_NUMBER:
                     case Character.DIRECTIONALITY_EUROPEAN_NUMBER_SEPARATOR:
@@ -207,20 +198,13 @@ public class DefaultFontTextDrawer implements FontTextDrawer, Closeable {
                     case Character.DIRECTIONALITY_RIGHT_TO_LEFT_EMBEDDING:
                     case Character.DIRECTIONALITY_RIGHT_TO_LEFT_OVERRIDE:
                     case Character.DIRECTIONALITY_POP_DIRECTIONAL_FORMAT:
-                        /*
-                         * We can not handle this
-                         */
                         return false;
                     default:
-                        /*
-                         * Default: We can not handle this
-                         */
                         return false;
                 }
-
-                if (!attributeFont.canDisplay(codePoint))
+                if (!attributeFont.canDisplay(codePoint)) {
                     return false;
-
+                }
                 i += Character.charCount(codePoint);
             }
         }
@@ -228,7 +212,7 @@ public class DefaultFontTextDrawer implements FontTextDrawer, Closeable {
     }
 
     @Override
-    public void drawText(AttributedCharacterIterator iterator, FontTextDrawerEnv env)
+    public void drawText(AttributedCharacterIterator iterator, FontDrawerEnvironment env)
             throws IOException, FontFormatException {
         PDPageContentStream contentStream = env.getContentStream();
 
@@ -241,52 +225,37 @@ public class DefaultFontTextDrawer implements FontTextDrawer, Closeable {
         StringBuilder sb = new StringBuilder();
         boolean run = true;
         while (run) {
-
             Font attributeFont = (Font) iterator.getAttribute(TextAttribute.FONT);
-            if (attributeFont == null)
+            if (attributeFont == null) {
                 attributeFont = env.getFont();
-
+            }
             Number fontSize = ((Number) iterator.getAttribute(TextAttribute.SIZE));
-            if (fontSize != null)
+            if (fontSize != null) {
                 attributeFont = attributeFont.deriveFont(fontSize.floatValue());
+            }
             PDFont font = applyFont(attributeFont, env);
-
             Paint paint = (Paint) iterator.getAttribute(TextAttribute.FOREGROUND);
-            if (paint == null)
+            if (paint == null) {
                 paint = env.getPaint();
-
-            boolean isStrikeThrough = TextAttribute.STRIKETHROUGH_ON
-                    .equals(iterator.getAttribute(TextAttribute.STRIKETHROUGH));
-            boolean isUnderline = TextAttribute.UNDERLINE_ON
-                    .equals(iterator.getAttribute(TextAttribute.UNDERLINE));
-            boolean isLigatures = TextAttribute.LIGATURES_ON
-                    .equals(iterator.getAttribute(TextAttribute.LIGATURES));
-
+            }
+            boolean isStrikeThrough =
+                    TextAttribute.STRIKETHROUGH_ON.equals(iterator.getAttribute(TextAttribute.STRIKETHROUGH));
+            boolean isUnderline =
+                    TextAttribute.UNDERLINE_ON.equals(iterator.getAttribute(TextAttribute.UNDERLINE));
+            boolean isLigatures =
+                    TextAttribute.LIGATURES_ON.equals(iterator.getAttribute(TextAttribute.LIGATURES));
             run = iterateRun(iterator, sb);
             String text = sb.toString();
-
-            /*
-             * Apply the paint
-             */
             env.applyPaint(paint, null);
-
-            /*
-             * If we force the text write we may encounter situations where the font can not
-             * display the characters. PDFBox will throw an exception in this case. We will
-             * just silently ignore the text and not display it instead.
-             */
             try {
                 showTextOnStream(env, contentStream, attributeFont, font, isStrikeThrough,
                         isUnderline, isLigatures, text);
             } catch (IllegalArgumentException e) {
                 if (font instanceof PDType1Font && !font.isEmbedded()) {
-                    /*
-                     * We tried to use a builtin default font, but it does not have the needed
-                     * characters. So we use a embedded font as fallback.
-                     */
                     try {
-                        if (fallbackFontUnknownEncodings == null)
+                        if (fallbackFontUnknownEncodings == null) {
                             fallbackFontUnknownEncodings = findFallbackFont(env);
+                        }
                         if (fallbackFontUnknownEncodings != null) {
                             env.getContentStream().setFont(fallbackFontUnknownEncodings,
                                     attributeFont.getSize2D());
@@ -299,48 +268,35 @@ public class DefaultFontTextDrawer implements FontTextDrawer, Closeable {
                         e = e1;
                     }
                 }
-
-                if (e != null)
+                if (e != null) {
                     logger.log(Level.WARNING, "PDFBoxGraphics: Can not map text " + text + " with font "
                             + attributeFont.getFontName() + ": " + e.getMessage());
+                }
             }
         }
         contentStream.endText();
     }
 
     @Override
-    public FontMetrics getFontMetrics(final Font f, FontTextDrawerEnv env)
+    public FontMetrics getFontMetrics(Font f, FontDrawerEnvironment env)
             throws IOException, FontFormatException {
-        final FontMetrics defaultMetrics = env.getCalculationGraphics().getFontMetrics(f);
+        final FontMetrics fontMetrics = env.getCalculationGraphics().getFontMetrics(f);
         final PDFont pdFont = mapFont(f, env);
-        /*
-         * By default we delegate to the buffered image based calculation. This is wrong
-         * as soon as we use the native PDF Box font, as those have sometimes different widths.
-         *
-         * But it is correct and fine as long as we use vector shapes.
-         */
         if (pdFont == null) {
-            return defaultMetrics;
+            return fontMetrics;
         }
-        return new DefaultFontMetrics(f, defaultMetrics, pdFont);
+        return new DefaultFontMetrics(f, fontMetrics, pdFont);
     }
 
     private PDFont fallbackFontUnknownEncodings;
 
-    private PDFont findFallbackFont(FontTextDrawerEnv env) throws IOException {
-        /*
-         * We search for the right font in the folders... We try to use
-         * LucidaSansRegular and if not found Arial, because this fonts often exists. We
-         * use the Java default font as fallback.
-         *
-         * Normally this method is only used and called if a default font misses some
-         * special characters, e.g. Hebrew or Arabic characters.
-         */
+    private PDFont findFallbackFont(FontDrawerEnvironment env) {
         String javaHome = System.getProperty("java.home", ".");
         String javaFontDir = javaHome + "/lib/fonts";
         String windir = System.getenv("WINDIR");
-        if (windir == null)
+        if (windir == null) {
             windir = javaFontDir;
+        }
         File[] paths = new File[]{new File(new File(windir), "fonts"),
                 new File(System.getProperty("user.dir", ".")),
                 // Mac Fonts
@@ -357,24 +313,26 @@ public class DefaultFontTextDrawer implements FontTextDrawer, Closeable {
                 if (arialFile.exists()) {
                     // We try to use the first font we can find and use.
                     PDType0Font pdType0Font = tryToLoadFont(env, arialFile);
-                    if (pdType0Font != null)
+                    if (pdType0Font != null) {
                         return pdType0Font;
+                    }
                 }
             }
         }
         return null;
     }
 
-    private PDType0Font tryToLoadFont(FontTextDrawerEnv env, File foundFontFile) {
+    private PDType0Font tryToLoadFont(FontDrawerEnvironment env, File foundFontFile) {
         try {
             return PDType0Font.load(env.getDocument(), foundFontFile);
         } catch (IOException e) {
+            logger.log(Level.WARNING, e.getMessage(), e);
             // The font may be have a embed restriction.
             return null;
         }
     }
 
-    private void showTextOnStream(FontTextDrawerEnv env,
+    private void showTextOnStream(FontDrawerEnvironment env,
                                   PDPageContentStream contentStream,
                                   Font attributeFont,
                                   PDFont font,
@@ -385,11 +343,11 @@ public class DefaultFontTextDrawer implements FontTextDrawer, Closeable {
         contentStream.showText(text);
     }
 
-    private PDFont applyFont(Font font, FontTextDrawerEnv env)
+    private PDFont applyFont(Font font, FontDrawerEnvironment env)
             throws IOException, FontFormatException {
         PDFont fontToUse = mapFont(font, env);
         if (fontToUse == null) {
-            fontToUse = DefaultFontTextDrawerFonts.chooseMatchingHelvetica(font);
+            fontToUse = CoreFontDrawer.chooseMatchingHelvetica(font);
         }
         env.getContentStream().setFont(fontToUse, font.getSize2D());
         return fontToUse;
@@ -404,13 +362,9 @@ public class DefaultFontTextDrawer implements FontTextDrawer, Closeable {
      * @throws IOException         when the font can not be loaded
      * @throws FontFormatException when the font file can not be loaded
      */
-    @SuppressWarnings("WeakerAccess")
-    protected PDFont mapFont(final Font font, final FontTextDrawerEnv env)
+    protected PDFont mapFont(Font font, FontDrawerEnvironment env)
             throws IOException, FontFormatException {
-        /*
-         * If we have any font registering's, we must perform them now
-         */
-        for (final FontEntry fontEntry : fontFiles) {
+        for (FontEntry fontEntry : fontFiles) {
             if (fontEntry.overrideName == null) {
                 Font javaFont = Font.createFont(Font.TRUETYPE_FONT, fontEntry.file);
                 fontEntry.overrideName = javaFont.getFontName();
@@ -447,13 +401,12 @@ public class DefaultFontTextDrawer implements FontTextDrawer, Closeable {
     }
 
     /**
-     * Find a PDFont for the given font object, which does not need to be embedded.
-     *
-     * @param font font for which to find a suitable default font
-     * @return null if no default font is found or a default font which does not
+     * Find a PDFont for the given font object.
+     * @param font font for which to find a suitable core font
+     * @return null if no core font is found or a core font which does not
      * need to be embedded.
      */
-    protected static PDFont mapDefaultFonts(Font font) {
+    protected static PDFont mapToCoreFonts(Font font) {
         if (fontNameEqualsAnyOf(font, Font.SANS_SERIF, Font.DIALOG, Font.DIALOG_INPUT, "Arial", "Helvetica")) {
             return chooseMatchingHelvetica(font);
         }

@@ -1,9 +1,10 @@
-package org.xbib.graphics.io.pdfbox;
+package org.xbib.graphics.io.pdfbox.font;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.xbib.graphics.io.pdfbox.PdfBoxGraphics2D;
 
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -16,9 +17,9 @@ import java.io.IOException;
 import java.text.AttributedCharacterIterator;
 
 /**
- * Draw text using Fonts
+ * Draw text using fonts.
  */
-public interface FontTextDrawer {
+public interface FontDrawer {
 
     /**
      * @param iterator Has the text and all its properties
@@ -28,7 +29,7 @@ public interface FontTextDrawer {
      * @throws IOException         when a font can not be loaded or a paint can't be applied.
      * @throws FontFormatException when the font file can not be loaded
      */
-    boolean canDrawText(AttributedCharacterIterator iterator, FontTextDrawerEnv env)
+    boolean canDrawText(AttributedCharacterIterator iterator, FontDrawerEnvironment env)
             throws IOException, FontFormatException;
 
     /**
@@ -37,16 +38,16 @@ public interface FontTextDrawer {
      * @throws IOException         when a font can not be loaded or a paint can't be applied.
      * @throws FontFormatException when the font file can not be loaded
      */
-    void drawText(AttributedCharacterIterator iterator, FontTextDrawerEnv env)
+    void drawText(AttributedCharacterIterator iterator, FontDrawerEnvironment env)
             throws IOException, FontFormatException;
 
-    FontMetrics getFontMetrics(Font f, FontTextDrawerEnv env)
+    FontMetrics getFontMetrics(Font f, FontDrawerEnvironment env)
             throws IOException, FontFormatException;
 
     /**
-     * Enviroment for font based drawing of text
+     * Environment for font based drawing of text
      */
-    interface FontTextDrawerEnv {
+    interface FontDrawerEnvironment {
         /**
          * @return the document we are writing to
          */

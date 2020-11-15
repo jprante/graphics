@@ -3,6 +3,7 @@ package org.xbib.graphics.io.pdfbox;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import org.junit.jupiter.api.Test;
+import org.xbib.graphics.io.pdfbox.color.CMYKColor;
 
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;

@@ -1,4 +1,4 @@
-package org.xbib.graphics.io.pdfbox;
+package org.xbib.graphics.io.pdfbox.font;
 
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import java.awt.Font;
@@ -151,9 +151,6 @@ public class DefaultFontMetrics extends FontMetrics {
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (IllegalArgumentException e) {
-            /*
-             * We let unknown chars be handled with
-             */
             return defaultMetrics.stringWidth(str);
         }
     }

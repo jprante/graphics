@@ -1,9 +1,10 @@
-package org.xbib.graphics.io.pdfbox;
+package org.xbib.graphics.io.pdfbox.color;
 
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.graphics.color.PDColor;
 import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceCMYK;
 import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceRGB;
+import org.xbib.graphics.io.pdfbox.paint.DefaultPaintApplier;
 
 import java.awt.Color;
 

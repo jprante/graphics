@@ -1,4 +1,4 @@
-package org.xbib.graphics.io.pdfbox;
+package org.xbib.graphics.io.pdfbox.image;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;

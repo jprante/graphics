@@ -1,10 +1,11 @@
-package org.xbib.graphics.io.pdfbox;
+package org.xbib.graphics.io.pdfbox.color;
 
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.graphics.color.PDColor;
 import org.apache.pdfbox.pdmodel.graphics.color.PDICCBased;
+import org.xbib.graphics.io.pdfbox.color.DefaultColorMapper;
 
 import java.awt.Color;
 import java.awt.color.ICC_ColorSpace;

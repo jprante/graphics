@@ -1,4 +1,4 @@
-package org.xbib.graphics.io.pdfbox;
+package org.xbib.graphics.io.pdfbox.image;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -42,11 +42,11 @@ public class LosslessImageEncoder implements ImageEncoder {
             int height = image.getHeight(null);
             bi = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
             Graphics graphics = bi.getGraphics();
-            if (!graphics.drawImage(image, 0, 0, null, null))
-                throw new IllegalStateException("Not fully loaded images are not supported.");
+            if (!graphics.drawImage(image, 0, 0, null, null)) {
+                throw new IllegalStateException("Not fully loaded images are not supported");
+            }
             graphics.dispose();
         }
-
         try {
             if (doc == null || doc.get() != document) {
                 imageMap = new HashMap<>();
@@ -76,7 +76,6 @@ public class LosslessImageEncoder implements ImageEncoder {
                 }
                 imageMap.put(new ImageSoftReference(image), new SoftReference<>(imageXObject));
             }
-
             return imageXObject;
         } catch (IOException e) {
             throw new RuntimeException("Could not encode Image", e);
@@ -91,6 +90,9 @@ public class LosslessImageEncoder implements ImageEncoder {
         @Override
         public boolean equals(Object obj) {
             if (obj == null) {
+                return false;
+            }
+            if (!(obj instanceof ImageSoftReference)) {
                 return false;
             }
             return ((ImageSoftReference) obj).get() == get();
@@ -114,6 +116,9 @@ public class LosslessImageEncoder implements ImageEncoder {
         @Override
         public boolean equals(Object obj) {
             if (obj == null) {
+                return false;
+            }
+            if (!(obj instanceof ProfileSoftReference)) {
                 return false;
             }
             return ((ProfileSoftReference) obj).get() == get();

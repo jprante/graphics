@@ -29,7 +29,8 @@ public class DanglingCaseTest {
         child2.setColor(Color.GREEN);
         child2.drawOval(0, 0, 5, 5);
         child.create();
-        pdfBoxGraphics2D.disposeDanglingChildGraphics();
+        child.dispose();
+        child2.dispose();
         pdfBoxGraphics2D.dispose();
         PDFormXObject appearanceStream = pdfBoxGraphics2D.getXFormObject();
         Matrix matrix = new Matrix();
@@ -52,17 +53,6 @@ public class DanglingCaseTest {
             PdfBoxGraphics2D pdfBoxGraphics2D = new PdfBoxGraphics2D(document, 400, 400);
             pdfBoxGraphics2D.create();
             pdfBoxGraphics2D.dispose();
-        });
-    }
-
-    @Test
-    public void testDanglingDisposeException2() {
-        Assertions.assertThrows(IllegalStateException.class, () -> {
-            PDDocument document = new PDDocument();
-            PDPage page = new PDPage(PDRectangle.A4);
-            document.addPage(page);
-            PdfBoxGraphics2D pdfBoxGraphics2D = new PdfBoxGraphics2D(document, 400, 400);
-            pdfBoxGraphics2D.create().disposeDanglingChildGraphics();
         });
     }
 }

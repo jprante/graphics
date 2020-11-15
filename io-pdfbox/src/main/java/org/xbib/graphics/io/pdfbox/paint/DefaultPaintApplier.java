@@ -1,4 +1,4 @@
-package org.xbib.graphics.io.pdfbox;
+package org.xbib.graphics.io.pdfbox.paint;
 
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
@@ -26,6 +26,9 @@ import org.apache.pdfbox.pdmodel.graphics.shading.ShadingPaint;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceStream;
 import org.apache.pdfbox.util.Matrix;
+import org.xbib.graphics.io.pdfbox.image.ImageEncoder;
+import org.xbib.graphics.io.pdfbox.PdfBoxGraphics2D;
+import org.xbib.graphics.io.pdfbox.color.ColorMapper;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -63,7 +66,7 @@ public class DefaultPaintApplier implements PaintApplier {
 
     @Override
     public PDShading applyPaint(Paint paint, PDPageContentStream contentStream, AffineTransform tf,
-                                PaintApplierEnv env) throws IOException {
+                                PaintApplierEnvironment env) throws IOException {
         PaintApplierState state = new PaintApplierState();
         state.document = env.getDocument();
         state.resources = env.getResources();
@@ -72,8 +75,8 @@ public class DefaultPaintApplier implements PaintApplier {
         state.imageEncoder = env.getImageEncoder();
         state.composite = env.getComposite();
         state.pdExtendedGraphicsState = null;
-        state.env = env;
-        state.tf = tf;
+        state.paintApplierEnvironment = env;
+        state.affineTransform = tf;
         state.nestedTransform = null;
         PDShading shading = applyPaint(paint, state);
         if (state.pdExtendedGraphicsState != null) {
@@ -155,10 +158,10 @@ public class DefaultPaintApplier implements PaintApplier {
         AffineTransform patternTransform = new AffineTransform();
         if (paintPatternTransform != null) {
             paintPatternTransform = new AffineTransform(paintPatternTransform);
-            paintPatternTransform.preConcatenate(state.tf);
+            paintPatternTransform.preConcatenate(state.affineTransform);
             patternTransform.concatenate(paintPatternTransform);
         } else {
-            patternTransform.concatenate(state.tf);
+            patternTransform.concatenate(state.affineTransform);
         }
         patternTransform.scale(1f, -1f);
         pattern.setMatrix(patternTransform);
@@ -167,7 +170,7 @@ public class DefaultPaintApplier implements PaintApplier {
         appearance.setBBox(pattern.getBBox());
         Object graphicsNode = getPropertyValue(paint, "getGraphicsNode");
         PdfBoxGraphics2D pdfBoxGraphics2D =
-                new PdfBoxGraphics2D(state.document, pattern.getBBox(), state.env.getGraphics2D());
+                new PdfBoxGraphics2D(state.document, pattern.getBBox(), state.paintApplierEnvironment.getGraphics2D());
         try {
             Method paintMethod = graphicsNode.getClass().getMethod("paint", Graphics2D.class);
             paintMethod.invoke(graphicsNode, pdfBoxGraphics2D);
@@ -294,7 +297,7 @@ public class DefaultPaintApplier implements PaintApplier {
         Point2D startPoint = clonePoint(getPropertyValue(paint, "getStartPoint"));
         Point2D endPoint = clonePoint(getPropertyValue(paint, "getEndPoint"));
         AffineTransform gradientTransform = getPropertyValue(paint, "getTransform");
-        state.tf.concatenate(gradientTransform);
+        state.affineTransform.concatenate(gradientTransform);
 
         // noinspection unused
         MultipleGradientPaint.CycleMethod cycleMethod = getCycleMethod(paint);
@@ -321,19 +324,13 @@ public class DefaultPaintApplier implements PaintApplier {
         // will display it another.
         float calculatedX = (float) Math.min(startPoint.getX(), endPoint.getX());
         float calculatedY = (float) Math.max(1.0f, Math.max(startPoint.getY(), endPoint.getY()));
-        float calculatedWidth = Math
-                .max(1.0f, Math.abs((float) (endPoint.getX() - startPoint.getX())));
-        float negativeHeight =
-                -1.0f * Math.max(1.0f, Math.abs((float) (endPoint.getY() - startPoint.getY())));
-
+        float calculatedWidth = Math.max(1.0f, Math.abs((float) (endPoint.getX() - startPoint.getX())));
+        float negativeHeight = -1.0f * Math.max(1.0f, Math.abs((float) (endPoint.getY() - startPoint.getY())));
         state.contentStream.addRect(calculatedX, calculatedY, calculatedWidth, negativeHeight);
-
-        state.env.getGraphics2D().markPathIsOnStream();
-        state.env.getGraphics2D().internalClip(false);
-
+        state.paintApplierEnvironment.getGraphics2D().markPathIsOnStream();
+        state.paintApplierEnvironment.getGraphics2D().internalClip(false);
         // Warp the 1x1 box containing the gradient to fill a larger rectangular space
-        state.contentStream.transform(new Matrix(state.tf));
-
+        state.contentStream.transform(new Matrix(state.affineTransform));
         return shading;
     }
 
@@ -357,15 +354,15 @@ public class DefaultPaintApplier implements PaintApplier {
         Point2D startPoint = clonePoint(getPropertyValue(paint, "getStartPoint"));
         Point2D endPoint = clonePoint(getPropertyValue(paint, "getEndPoint"));
         AffineTransform gradientTransform = getPropertyValue(paint, "getTransform");
-        state.tf.concatenate(gradientTransform);
+        state.affineTransform.concatenate(gradientTransform);
 
         // noinspection unused
         MultipleGradientPaint.CycleMethod cycleMethod = getCycleMethod(paint);
         // noinspection unused
         MultipleGradientPaint.ColorSpaceType colorSpaceType = getColorSpaceType(paint);
 
-        state.tf.transform(startPoint, startPoint);
-        state.tf.transform(endPoint, endPoint);
+        state.affineTransform.transform(startPoint, startPoint);
+        state.affineTransform.transform(endPoint, endPoint);
 
         setupShadingCoords(shading, startPoint, endPoint);
 
@@ -483,12 +480,12 @@ public class DefaultPaintApplier implements PaintApplier {
         Point2D centerPoint = clonePoint(getPropertyValue(paint, "getCenterPoint"));
         Point2D focusPoint = clonePoint(getPropertyValue(paint, "getFocusPoint"));
         AffineTransform gradientTransform = getPropertyValue(paint, "getTransform");
-        state.tf.concatenate(gradientTransform);
-        state.tf.transform(centerPoint, centerPoint);
-        state.tf.transform(focusPoint, focusPoint);
+        state.affineTransform.concatenate(gradientTransform);
+        state.affineTransform.transform(centerPoint, centerPoint);
+        state.affineTransform.transform(focusPoint, focusPoint);
 
         float radius = getPropertyValue(paint, "getRadius");
-        radius = (float) Math.abs(radius * state.tf.getScaleX());
+        radius = (float) Math.abs(radius * state.affineTransform.getScaleX());
 
         COSArray coords = new COSArray();
 
@@ -523,8 +520,8 @@ public class DefaultPaintApplier implements PaintApplier {
         Point2D startPoint = gradientPaint.getPoint1();
         Point2D endPoint = gradientPaint.getPoint2();
 
-        state.tf.transform(startPoint, startPoint);
-        state.tf.transform(endPoint, endPoint);
+        state.affineTransform.transform(startPoint, startPoint);
+        state.affineTransform.transform(endPoint, endPoint);
 
         setupShadingCoords(shading, startPoint, endPoint);
 
@@ -670,7 +667,7 @@ public class DefaultPaintApplier implements PaintApplier {
      * @return the value read from the object
      */
     @SuppressWarnings("unchecked")
-    protected static <T> T getPropertyValue(Object obj, String propertyGetter) {
+    public static <T> T getPropertyValue(Object obj, String propertyGetter) {
         if (obj == null) {
             return null;
         }
@@ -696,8 +693,8 @@ public class DefaultPaintApplier implements PaintApplier {
         protected PDExtendedGraphicsState pdExtendedGraphicsState;
         protected Composite composite;
         private COSDictionary dictExtendedState;
-        private PaintApplierEnv env;
-        public AffineTransform tf;
+        private PaintApplierEnvironment paintApplierEnvironment;
+        private AffineTransform affineTransform;
         protected AffineTransform nestedTransform;
 
         private void ensureExtendedState() {

@@ -17,6 +17,8 @@ import org.apache.pdfbox.rendering.PDFRenderer;
 import org.apache.pdfbox.rendering.PageDrawer;
 import org.apache.pdfbox.rendering.PageDrawerParameters;
 import org.junit.jupiter.api.Test;
+import org.xbib.graphics.io.pdfbox.color.CMYKColor;
+import org.xbib.graphics.io.pdfbox.draw.DefaultDrawControl;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -123,12 +125,12 @@ public class PdfRerenderTest {
                     boolean insideOwnDraw = false;
 
                     @Override
-                    public void afterShapeFill(Shape shape, DrawControlEnv env) {
+                    public void afterShapeFill(Shape shape, DrawControlEnvironment env) {
                         afterShapeDraw(shape, env);
                     }
 
                     @Override
-                    public void afterShapeDraw(Shape shape, DrawControlEnv env) {
+                    public void afterShapeDraw(Shape shape, DrawControlEnvironment env) {
                         if (insideOwnDraw)
                             return;
                         insideOwnDraw = true;

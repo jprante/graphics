@@ -1,8 +1,18 @@
 package org.xbib.graphics.io.pdfbox;
 
-import org.xbib.graphics.io.pdfbox.DrawControl.DrawControlEnv;
-import org.xbib.graphics.io.pdfbox.FontTextDrawer.FontTextDrawerEnv;
-import org.xbib.graphics.io.pdfbox.PaintApplier.PaintApplierEnv;
+import org.xbib.graphics.io.pdfbox.draw.DefaultDrawControl;
+import org.xbib.graphics.io.pdfbox.draw.DrawControl;
+import org.xbib.graphics.io.pdfbox.draw.DrawControl.DrawControlEnvironment;
+import org.xbib.graphics.io.pdfbox.color.ColorMapper;
+import org.xbib.graphics.io.pdfbox.color.DefaultColorMapper;
+import org.xbib.graphics.io.pdfbox.font.DefaultFontDrawer;
+import org.xbib.graphics.io.pdfbox.font.FontDrawer;
+import org.xbib.graphics.io.pdfbox.font.FontDrawer.FontDrawerEnvironment;
+import org.xbib.graphics.io.pdfbox.image.ImageEncoder;
+import org.xbib.graphics.io.pdfbox.image.LosslessImageEncoder;
+import org.xbib.graphics.io.pdfbox.paint.DefaultPaintApplier;
+import org.xbib.graphics.io.pdfbox.paint.PaintApplier;
+import org.xbib.graphics.io.pdfbox.paint.PaintApplier.PaintApplierEnvironment;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -74,23 +84,29 @@ public class PdfBoxGraphics2D extends Graphics2D {
 
     private final PDPageContentStream contentStream;
 
-    private BufferedImage calcImage;
+    private final BufferedImage calcImage;
 
-    private PDDocument document;
+    private final PDDocument document;
 
     private final AffineTransform baseTransform;
 
-    private AffineTransform transform = new AffineTransform();
+    private final CopyInfo copyInfo;
 
-    private ImageEncoder imageEncoder = new LosslessImageEncoder();
+    private final List<CopyInfo> copyList;
 
-    private ColorMapper colorMapper = new DefaultColorMapper();
+    private final DefaultPaintApplierEnvironment paintEnv;
 
-    private PaintApplier paintApplier = new DefaultPaintApplier();
+    private AffineTransform transform;
 
-    private FontTextDrawer fontTextDrawer = new DefaultFontTextDrawer();
+    private ImageEncoder imageEncoder;
 
-    private DrawControl drawControl = DefaultDrawControl.INSTANCE;
+    private ColorMapper colorMapper;
+
+    private PaintApplier paintApplier;
+
+    private FontDrawer fontDrawer;
+
+    private DrawControl drawControl;
 
     private Paint paint;
 
@@ -106,13 +122,9 @@ public class PdfBoxGraphics2D extends Graphics2D {
 
     private Color backgroundColor;
 
-    private int saveCounter = 0;
+    private int saveCounter;
 
-    private final CopyInfo copyInfo;
-
-    private final List<CopyInfo> copyList = new ArrayList<>();
-
-    private final PaintApplierEnvImpl paintEnv = new PaintApplierEnvImpl();
+    private boolean disposed;
 
     /**
      * Do we currently have an active path on the content stream, which has not been
@@ -121,11 +133,11 @@ public class PdfBoxGraphics2D extends Graphics2D {
      * clip and we have some clipping. If at the end we try to clip with an empty
      * path, then Acrobat Reader does not like that and draws nothing.
      */
-    private boolean hasPathOnStream = false;
+    private boolean hasPathOnStream;
 
-    private Map<Key, Object> renderingHints = new HashMap<>();
+    private Map<Key, Object> renderingHints;
 
-    private final DrawControlEnv drawControlEnv = new DrawControlEnv() {
+    private final DrawControlEnvironment drawControlEnvironment = new DrawControlEnvironment() {
         @Override
         public Paint getPaint() {
             return paint;
@@ -137,7 +149,7 @@ public class PdfBoxGraphics2D extends Graphics2D {
         }
     };
 
-    private final FontTextDrawerEnv fontDrawerEnv = new FontTextDrawerEnv() {
+    private final FontDrawerEnvironment fontDrawerEnv = new FontDrawerEnvironment() {
         @Override
         public PDDocument getDocument() {
             return document;
@@ -246,24 +258,8 @@ public class PdfBoxGraphics2D extends Graphics2D {
                             PDFormXObject xFormObject,
                             PdfBoxGraphics2D parentGfx)
             throws IOException {
-        this.document = document;
-        this.xFormObject = xFormObject;
-        this.contentStream = new PDPageContentStream(document, xFormObject,
-                xFormObject.getStream().createOutputStream(COSName.FLATE_DECODE));
-        contentStreamSaveState();
-        if (parentGfx != null) {
-            this.colorMapper = parentGfx.colorMapper;
-            this.fontTextDrawer = parentGfx.fontTextDrawer;
-            this.imageEncoder = parentGfx.imageEncoder;
-            this.paintApplier = parentGfx.paintApplier;
-        }
-        baseTransform = new AffineTransform();
-        baseTransform.translate(0, xFormObject.getBBox().getHeight());
-        baseTransform.scale(1, -1);
-        calcImage = new BufferedImage(100, 100, BufferedImage.TYPE_4BYTE_ABGR);
-        calcGfx = calcImage.createGraphics();
-        font = calcGfx.getFont();
-        copyInfo = null;
+        this(document, xFormObject, new PDPageContentStream(document, xFormObject,
+                xFormObject.getStream().createOutputStream(COSName.FLATE_DECODE)), parentGfx);
     }
 
     public PdfBoxGraphics2D(PDDocument document,
@@ -277,7 +273,7 @@ public class PdfBoxGraphics2D extends Graphics2D {
         contentStreamSaveState();
         if (parentGfx != null) {
             this.colorMapper = parentGfx.colorMapper;
-            this.fontTextDrawer = parentGfx.fontTextDrawer;
+            this.fontDrawer = parentGfx.fontDrawer;
             this.imageEncoder = parentGfx.imageEncoder;
             this.paintApplier = parentGfx.paintApplier;
         }
@@ -288,6 +284,15 @@ public class PdfBoxGraphics2D extends Graphics2D {
         calcGfx = calcImage.createGraphics();
         font = calcGfx.getFont();
         copyInfo = null;
+        transform = new AffineTransform();
+        imageEncoder = new LosslessImageEncoder();
+        colorMapper = new DefaultColorMapper();
+        paintApplier = new DefaultPaintApplier();
+        fontDrawer = new DefaultFontDrawer();
+        drawControl = DefaultDrawControl.INSTANCE;
+        copyList = new ArrayList<>();
+        paintEnv = new DefaultPaintApplierEnvironment();
+        renderingHints = new HashMap<>();
     }
 
     private PdfBoxGraphics2D(PdfBoxGraphics2D pdfBoxGraphics2D) throws IOException {
@@ -311,7 +316,7 @@ public class PdfBoxGraphics2D extends Graphics2D {
         this.clipShape = pdfBoxGraphics2D.clipShape;
         this.backgroundColor = pdfBoxGraphics2D.backgroundColor;
         this.colorMapper = pdfBoxGraphics2D.colorMapper;
-        this.fontTextDrawer = pdfBoxGraphics2D.fontTextDrawer;
+        this.fontDrawer = pdfBoxGraphics2D.fontDrawer;
         this.imageEncoder = pdfBoxGraphics2D.imageEncoder;
         this.paintApplier = pdfBoxGraphics2D.paintApplier;
         this.drawControl = pdfBoxGraphics2D.drawControl;
@@ -319,6 +324,11 @@ public class PdfBoxGraphics2D extends Graphics2D {
         this.renderingHints = new HashMap<>(pdfBoxGraphics2D.renderingHints);
         this.xorColor = pdfBoxGraphics2D.xorColor;
         this.saveCounter = 0;
+        this.copyList = new ArrayList<>();
+        this.disposed = false;
+        this.paintEnv = pdfBoxGraphics2D.paintEnv;
+        this.hasPathOnStream = pdfBoxGraphics2D.hasPathOnStream;
+        this.renderingHints = pdfBoxGraphics2D.renderingHints;
         contentStreamSaveState();
     }
 
@@ -346,10 +356,9 @@ public class PdfBoxGraphics2D extends Graphics2D {
         if (this.saveCounter != 0) {
             throw new IllegalStateException("SaveCounter should be 0, but is " + this.saveCounter);
         }
-        document = null;
         calcGfx.dispose();
         calcImage.flush();
-        calcImage = null;
+        disposed = true;
     }
 
     @Override
@@ -360,7 +369,7 @@ public class PdfBoxGraphics2D extends Graphics2D {
         }
         try {
             contentStreamSaveState();
-            Shape shapeToDraw = drawControl.transformShapeBeforeDraw(s, drawControlEnv);
+            Shape shapeToDraw = drawControl.transformShapeBeforeDraw(s, drawControlEnvironment);
             if (shapeToDraw != null) {
                 walkShape(shapeToDraw);
                 PDShading pdShading = applyPaint(shapeToDraw);
@@ -391,7 +400,7 @@ public class PdfBoxGraphics2D extends Graphics2D {
                 contentStream.stroke();
                 hasPathOnStream = false;
             }
-            drawControl.afterShapeDraw(s, drawControlEnv);
+            drawControl.afterShapeDraw(s, drawControlEnvironment);
             contentStreamRestoreState();
         } catch (IOException e) {
             throw new PdfBoxGraphics2dException(e);
@@ -538,7 +547,7 @@ public class PdfBoxGraphics2D extends Graphics2D {
         }
         try {
             contentStreamSaveState();
-            if (fontTextDrawer.canDrawText((AttributedCharacterIterator) iterator.clone(), fontDrawerEnv)) {
+            if (fontDrawer.canDrawText((AttributedCharacterIterator) iterator.clone(), fontDrawerEnv)) {
                 drawStringUsingText(iterator, x, y);
             } else {
                 drawStringUsingShapes(iterator, x, y);
@@ -566,7 +575,7 @@ public class PdfBoxGraphics2D extends Graphics2D {
         }
         try {
             contentStreamSaveState();
-            Shape shapeToFill = drawControl.transformShapeBeforeFill(s, drawControlEnv);
+            Shape shapeToFill = drawControl.transformShapeBeforeFill(s, drawControlEnvironment);
             if (shapeToFill != null) {
                 boolean useEvenOdd = walkShape(shapeToFill);
                 PDShading shading = applyPaint(shapeToFill);
@@ -584,7 +593,7 @@ public class PdfBoxGraphics2D extends Graphics2D {
                 }
                 hasPathOnStream = false;
             }
-            drawControl.afterShapeFill(s, drawControlEnv);
+            drawControl.afterShapeFill(s, drawControlEnvironment);
             contentStreamRestoreState();
         } catch (IOException e) {
             throw new PdfBoxGraphics2dException(e);
@@ -717,7 +726,7 @@ public class PdfBoxGraphics2D extends Graphics2D {
     @Override
     public FontMetrics getFontMetrics(Font f) {
         try {
-            return fontTextDrawer.getFontMetrics(f, fontDrawerEnv);
+            return fontDrawer.getFontMetrics(f, fontDrawerEnv);
         } catch (IOException | FontFormatException e) {
             throw new RuntimeException(e);
         }
@@ -934,30 +943,10 @@ public class PdfBoxGraphics2D extends Graphics2D {
      * @return the PDAppearanceStream which resulted in this graphics
      */
     public PDFormXObject getXFormObject() {
-        if (document != null) {
-            throw new IllegalStateException("You can only get the XformObject after you disposed the Graphics2D!");
-        }
-        if (copyInfo != null) {
-            throw new IllegalStateException("You can not get the Xform stream from the copy");
+        if (!disposed) {
+            throw new IllegalStateException("You can only get the XFormObject after you disposed the Graphics2D object");
         }
         return xFormObject;
-    }
-
-    /**
-     * Sometimes the users of {@link #create()} don't correctly {@link #dispose()}
-     * the child graphics they create. And you may not always be able to fix this
-     * uses, as it may be in some 3rdparty library. In this case this method can
-     * help you. It will cleanup all dangling child graphics. The child graphics can
-     * not be used after that. This method is a workaround for a buggy old code. You
-     * should only use it if you have to.
-     * Note: You can only call this method on the "main" graphics, not on a child
-     * created with {@link #create()}
-     */
-    public void disposeDanglingChildGraphics() {
-        if (copyInfo != null)
-            throw new IllegalStateException(
-                    "Don't call disposeDanglingChildGraphics() on a child!");
-        disposeCopies(copyList);
     }
 
     /**
@@ -1011,10 +1000,10 @@ public class PdfBoxGraphics2D extends Graphics2D {
      * also must perform the text layout. If it can not map the text or font
      * correctly, the font drawing falls back to vectoring the text.
      *
-     * @param fontTextDrawer The text drawer, which can draw text using fonts
+     * @param fontDrawer The text drawer, which can draw text using fonts
      */
-    public void setFontTextDrawer(FontTextDrawer fontTextDrawer) {
-        this.fontTextDrawer = fontTextDrawer;
+    public void setFontTextDrawer(FontDrawer fontDrawer) {
+        this.fontDrawer = fontDrawer;
     }
 
     /**
@@ -1022,7 +1011,7 @@ public class PdfBoxGraphics2D extends Graphics2D {
      * applyer to the content stream or by walkShape() - is on the content stream.
      * We can then safely clip() if there is a path on the content stream.
      */
-    void markPathIsOnStream() {
+    public void markPathIsOnStream() {
         hasPathOnStream = true;
     }
 
@@ -1050,7 +1039,7 @@ public class PdfBoxGraphics2D extends Graphics2D {
         tf.concatenate(transform);
         tf.translate(x, y);
         contentStream.transform(new Matrix(tf));
-        fontTextDrawer.drawText(iterator, fontDrawerEnv);
+        fontDrawer.drawText(iterator, fontDrawerEnv);
         contentStreamRestoreState();
     }
 
@@ -1151,7 +1140,7 @@ public class PdfBoxGraphics2D extends Graphics2D {
      *
      * @param useEvenOdd true when we should use the evenOdd rule.
      */
-    void internalClip(boolean useEvenOdd) throws IOException {
+    public void internalClip(boolean useEvenOdd) throws IOException {
         if (hasPathOnStream) {
             if (useEvenOdd) {
                 contentStream.clipEvenOdd();
@@ -1226,7 +1215,7 @@ public class PdfBoxGraphics2D extends Graphics2D {
         }
     }
 
-    private class PaintApplierEnvImpl implements PaintApplierEnv {
+    private class DefaultPaintApplierEnvironment implements PaintApplierEnvironment {
 
         private Shape shapeToDraw;
 

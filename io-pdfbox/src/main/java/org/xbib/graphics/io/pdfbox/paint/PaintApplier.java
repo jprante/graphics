@@ -1,9 +1,12 @@
-package org.xbib.graphics.io.pdfbox;
+package org.xbib.graphics.io.pdfbox.paint;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.graphics.shading.PDShading;
+import org.xbib.graphics.io.pdfbox.image.ImageEncoder;
+import org.xbib.graphics.io.pdfbox.PdfBoxGraphics2D;
+import org.xbib.graphics.io.pdfbox.color.ColorMapper;
 
 import java.awt.Color;
 import java.awt.Composite;
@@ -14,7 +17,7 @@ import java.awt.geom.AffineTransform;
 import java.io.IOException;
 
 /**
- * Apply the given paint on the Content Stream.
+ * Apply the given paint on the content stream.
  */
 public interface PaintApplier {
     /**
@@ -30,13 +33,13 @@ public interface PaintApplier {
      * @throws IOException if its not possible to write the paint into the contentStream
      */
     PDShading applyPaint(Paint paint, PDPageContentStream contentStream,
-                         AffineTransform currentTransform, PaintApplierEnv env) throws IOException;
+                         AffineTransform currentTransform, PaintApplierEnvironment env) throws IOException;
 
     /**
      * The different mappers used by the paint applier. This interface is
      * implemented internally by {@link PdfBoxGraphics2D}
      */
-    interface PaintApplierEnv {
+    interface PaintApplierEnvironment {
         /**
          * @return the color mapper
          */

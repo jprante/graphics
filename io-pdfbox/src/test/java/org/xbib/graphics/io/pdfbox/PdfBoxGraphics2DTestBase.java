@@ -9,6 +9,9 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.util.Matrix;
+import org.xbib.graphics.io.pdfbox.font.CoreFontDrawer;
+import org.xbib.graphics.io.pdfbox.font.DefaultFontDrawer;
+import org.xbib.graphics.io.pdfbox.font.ForcedFontDrawer;
 
 import java.awt.FontFormatException;
 import java.awt.Graphics2D;
@@ -25,7 +28,7 @@ class PdfBoxGraphics2DTestBase {
     void exportGraphic(String dir, String name, GraphicsExporter exporter) {
         try {
             PDDocument document = new PDDocument();
-            PDFont pdArial = PDType1Font.HELVETICA;
+            PDFont helvetica = PDType1Font.HELVETICA;
             File parentDir = new File("build/test/" + dir);
             parentDir.mkdirs();
             BufferedImage image = new BufferedImage(400, 400, BufferedImage.TYPE_4BYTE_ABGR);
@@ -38,7 +41,6 @@ class PdfBoxGraphics2DTestBase {
                 document.addPage(page);
                 PDPageContentStream contentStream = new PDPageContentStream(document, page);
                 PdfBoxGraphics2D pdfBoxGraphics2D = new PdfBoxGraphics2D(document, 400, 400);
-                DefaultFontTextDrawer fontTextDrawer = null;
                 contentStream.beginText();
                 contentStream.setStrokingColor(0f, 0f, 0f);
                 contentStream.setNonStrokingColor(0f, 0f, 0f);
@@ -46,20 +48,21 @@ class PdfBoxGraphics2DTestBase {
                 contentStream.setTextMatrix(Matrix.getTranslateInstance(10, 800));
                 contentStream.showText("Mode " + m);
                 contentStream.endText();
+                DefaultFontDrawer fontTextDrawer = null;
                 switch (m) {
                     case FontTextIfPossible:
-                        fontTextDrawer = new DefaultFontTextDrawer();
-                        registerFots(fontTextDrawer);
+                        fontTextDrawer = new DefaultFontDrawer();
+                        registerFonts(fontTextDrawer);
                         break;
                     case DefaultFontText: {
-                        fontTextDrawer = new DefaultFontTextDrawerFonts();
-                        registerFots(fontTextDrawer);
+                        fontTextDrawer = new CoreFontDrawer();
+                        registerFonts(fontTextDrawer);
                         break;
                     }
                     case ForceFontText:
-                        fontTextDrawer = new DefaultFontTextDrawerForce();
-                        registerFots(fontTextDrawer);
-                        fontTextDrawer.registerFont("Arial", pdArial);
+                        fontTextDrawer = new ForcedFontDrawer();
+                        registerFonts(fontTextDrawer);
+                        fontTextDrawer.registerFont("Arial", helvetica);
                         break;
                     case DefaultVectorized:
                     default:
@@ -88,7 +91,7 @@ class PdfBoxGraphics2DTestBase {
         }
     }
 
-    private void registerFots(DefaultFontTextDrawer fontTextDrawer) {
+    private void registerFonts(DefaultFontDrawer fontTextDrawer) {
         fontTextDrawer.registerFont(new File("src/test/resources/org/xbib/graphics/io/pdfbox/DejaVuSerifCondensed.ttf"));
         fontTextDrawer.registerFont(new File("src/test/resources/org/xbib/graphics/io/pdfbox/antonio/Antonio-Regular.ttf"));
     }

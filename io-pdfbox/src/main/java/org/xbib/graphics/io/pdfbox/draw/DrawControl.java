@@ -1,5 +1,6 @@
-package org.xbib.graphics.io.pdfbox;
+package org.xbib.graphics.io.pdfbox.draw;
 
+import org.xbib.graphics.io.pdfbox.PdfBoxGraphics2D;
 import java.awt.Paint;
 import java.awt.Shape;
 
@@ -18,7 +19,7 @@ public interface DrawControl {
      * @param env   Environment
      * @return the shape to be filled. If you return null, nothing will be filled
      */
-    Shape transformShapeBeforeFill(Shape shape, DrawControlEnv env);
+    Shape transformShapeBeforeFill(Shape shape, DrawControlEnvironment env);
 
     /**
      * You may optional change the shape that is going to be drawn. You can also do
@@ -28,36 +29,36 @@ public interface DrawControl {
      * @param env   Environment
      * @return the shape to be filled. If you return null, nothing will be drawn
      */
-    Shape transformShapeBeforeDraw(Shape shape, DrawControlEnv env);
+    Shape transformShapeBeforeDraw(Shape shape, DrawControlEnvironment env);
 
     /**
      * Called after shape was filled. This method is always called, even if
-     * {@link #transformShapeBeforeFill(Shape, DrawControlEnv)} returns
+     * {@link #transformShapeBeforeFill(Shape, DrawControlEnvironment)} returns
      * null.
      *
      * @param shape the shape that was filled. This is the original shape, not the one
      *              transformed by
-     *              {@link #transformShapeBeforeFill(Shape, DrawControlEnv)}.
+     *              {@link #transformShapeBeforeFill(Shape, DrawControlEnvironment)}.
      * @param env   Environment
      */
-    void afterShapeFill(Shape shape, DrawControlEnv env);
+    void afterShapeFill(Shape shape, DrawControlEnvironment env);
 
     /**
      * Called after shape was drawn. This method is always called, even if
-     * {@link #transformShapeBeforeDraw(Shape, DrawControlEnv)} returns
+     * {@link #transformShapeBeforeDraw(Shape, DrawControlEnvironment)} returns
      * null.
      *
      * @param shape the shape that was drawn. This is the original shape, not the one
      *              transformed by
-     *              {@link #transformShapeBeforeDraw(Shape, DrawControlEnv)}.
+     *              {@link #transformShapeBeforeDraw(Shape, DrawControlEnvironment)}.
      * @param env   Environment
      */
-    void afterShapeDraw(Shape shape, DrawControlEnv env);
+    void afterShapeDraw(Shape shape, DrawControlEnvironment env);
 
     /**
      * The environment of the draw operation
      */
-    interface DrawControlEnv {
+    interface DrawControlEnvironment {
         /**
          * @return the current paint set on the graphics.
          */

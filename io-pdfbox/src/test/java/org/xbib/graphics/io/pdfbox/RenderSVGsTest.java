@@ -17,8 +17,11 @@ import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.util.Matrix;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
+import org.xbib.graphics.io.pdfbox.color.DefaultColorMapper;
+import org.xbib.graphics.io.pdfbox.color.RGBtoCMYKColorMapper;
+import org.xbib.graphics.io.pdfbox.font.DefaultFontDrawer;
+import org.xbib.graphics.io.pdfbox.font.FontDrawer;
 
-import java.awt.Graphics2D;
 import java.awt.color.ICC_Profile;
 import java.io.File;
 import java.io.IOException;
@@ -96,7 +99,7 @@ public class RenderSVGsTest extends PdfBoxGraphics2DTestBase {
                 "/org/apache/pdfbox/resources/icc/ISOcoated_v2_300_bas.icc"));
         DefaultColorMapper colorMapper = new RGBtoCMYKColorMapper(icc_profile, pdfDocument);
         pdfBoxGraphics2D.setColorMapper(colorMapper);
-        FontTextDrawer fontTextDrawer;
+        FontDrawer fontDrawer;
         contentStream.beginText();
         contentStream.setStrokingColor(0.0f, 0.0f, 0.0f, 1.0f);
         contentStream.setNonStrokingColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -104,8 +107,8 @@ public class RenderSVGsTest extends PdfBoxGraphics2DTestBase {
         contentStream.setTextMatrix(Matrix.getTranslateInstance(10, 800));
         contentStream.showText("Mode: CMYK colorspace");
         contentStream.endText();
-        fontTextDrawer = new DefaultFontTextDrawer();
-        pdfBoxGraphics2D.setFontTextDrawer(fontTextDrawer);
+        fontDrawer = new DefaultFontDrawer();
+        pdfBoxGraphics2D.setFontTextDrawer(fontDrawer);
         pdfBoxGraphics2D.scale(scale, scale);
         gvtRoot.paint(pdfBoxGraphics2D);
         pdfBoxGraphics2D.dispose();
