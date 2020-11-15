@@ -1,8 +1,10 @@
 package org.xbib.graphics.io.vector;
 
+import java.awt.Rectangle;
+
 public interface VectorGraphics2DProvider<V extends VectorGraphics2D> {
 
     String name();
 
-    V provide(double x, double y, double width, double height);
+    V provide(Rectangle rectangle);
 }

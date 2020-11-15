@@ -10,6 +10,8 @@ import org.xbib.graphics.barcode.Symbol;
 import org.xbib.graphics.barcode.render.GraphicsRenderer;
 import org.xbib.graphics.io.vector.pdf.PDFGraphics2D;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.Rectangle;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -91,8 +93,11 @@ public class PDFRendererTest {
         symbol.setQuietZoneVertical(margin);
         int width = (int) (symbol.getWidth() * magnification);
         int height = (int) (symbol.getHeight() * magnification);
-        PDFGraphics2D pdfGraphics2D = new PDFGraphics2D(0, 0, width, height);
-        GraphicsRenderer graphicsRenderer = new GraphicsRenderer(pdfGraphics2D, magnification, paper, ink, false, false);
+        Rectangle rectangle = new Rectangle(0, 0, width, height);
+        PDFGraphics2D pdfGraphics2D = new PDFGraphics2D(rectangle);
+        pdfGraphics2D.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        GraphicsRenderer graphicsRenderer = new GraphicsRenderer(pdfGraphics2D,
+                rectangle, magnification, paper, ink, false, false);
         graphicsRenderer.render(symbol);
         graphicsRenderer.close();
         byte[] actualBytes = pdfGraphics2D.getBytes();

@@ -5,11 +5,7 @@ import org.xbib.graphics.imageio.plugins.png.pngj.PngHelperInternal;
 import org.xbib.graphics.imageio.plugins.png.pngj.PngjException;
 
 /**
- * bKGD Chunk.
- * <p>
- * see {@link http://www.w3.org/TR/PNG/#11bKGD}
- * <p>
- * This chunk structure depends on the image type
+ * bKGD Chunk. This chunk structure depends on the image type.
  */
 public class PngChunkBKGD extends PngChunkSingle {
     public final static String ID = ChunkHelper.bKGD;

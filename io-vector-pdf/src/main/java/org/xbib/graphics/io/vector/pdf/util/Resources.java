@@ -74,11 +74,12 @@ public class Resources extends PDFObject {
         String resourceId = getResourceId(fonts, font, PREFIX_FONT, currentFontId);
         String fontName = font.getPSName();
         String fontEncoding = "WinAnsiEncoding";
-        dictEntry.put(resourceId, Map.of("Type", "Font",
-                "Subtype", "TrueType",
-                "Encoding", fontEncoding,
-                "BaseFont", fontName
-                ));
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("Type", "Font");
+        map.put("Subtype", "TrueType");
+        map.put("Encoding", fontEncoding);
+        map.put("BaseFont", fontName);
+        dictEntry.put(resourceId,map);
         return resourceId;
     }
 
@@ -102,11 +103,12 @@ public class Resources extends PDFObject {
             dictEntry = new LinkedHashMap<>();
             dict.put(KEY_TRANSPARENCY, dictEntry);
         }
-        String resourceId = getResourceId(transparencies, transparency,
-                PREFIX_TRANSPARENCY, currentTransparencyId);
-        dictEntry.put(resourceId, Map.of("Type", "ExtGState",
-                "ca", transparency,
-                "CA", transparency));
+        String resourceId = getResourceId(transparencies, transparency, PREFIX_TRANSPARENCY, currentTransparencyId);
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("Type", "ExtGState");
+        map.put("ca", transparency);
+        map.put( "CA", transparency);
+        dictEntry.put(resourceId, map);
         return resourceId;
     }
 
@@ -119,7 +121,7 @@ public class Resources extends PDFObject {
      * @return An object of the first matching physical font. The original font
      * object is returned if it was a physical font or no font matched.
      */
-    public static Font getPhysicalFont(Font logicalFont, String testText) {
+    private static Font getPhysicalFont(Font logicalFont, String testText) {
         String logicalFamily = logicalFont.getFamily();
         if (!isLogicalFontFamily(logicalFamily)) {
             return logicalFont;
@@ -149,7 +151,7 @@ public class Resources extends PDFObject {
         return physicalFonts.poll();
     }
 
-    public static Font getPhysicalFont(Font logicalFont) {
+    private static Font getPhysicalFont(Font logicalFont) {
         return getPhysicalFont(logicalFont, FONT_TEST_STRING);
     }
 

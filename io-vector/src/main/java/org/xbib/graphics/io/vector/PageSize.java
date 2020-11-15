@@ -1,6 +1,6 @@
 package org.xbib.graphics.io.vector;
 
-import java.awt.geom.Rectangle2D;
+import java.awt.Rectangle;
 
 public class PageSize {
 
@@ -39,8 +39,8 @@ public class PageSize {
         this(0.0, 0.0, width, height);
     }
 
-    public PageSize(Rectangle2D size) {
-        this(size.getX(), size.getY(), size.getWidth(), size.getHeight());
+    public PageSize(Rectangle rectangle) {
+        this(rectangle.getX(), rectangle.getY(), rectangle.getWidth(), rectangle.getHeight());
     }
 
     public PageSize getPortrait() {

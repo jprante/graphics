@@ -10,6 +10,8 @@ import org.xbib.graphics.barcode.Symbol;
 import org.xbib.graphics.barcode.render.GraphicsRenderer;
 import org.xbib.graphics.io.vector.svg.SVGGraphics2D;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.Rectangle;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -91,8 +93,11 @@ public class SvgRendererTest {
         symbol.setQuietZoneVertical(margin);
         int width = (int) (symbol.getWidth() * magnification);
         int height = (int) (symbol.getHeight() * magnification);
-        SVGGraphics2D svgGraphics2D = new SVGGraphics2D(0, 0, width, height);
-        GraphicsRenderer graphicsRenderer = new GraphicsRenderer(svgGraphics2D, magnification, paper, ink, false, false);
+        Rectangle rectangle = new Rectangle(0, 0, width, height);
+        SVGGraphics2D svgGraphics2D = new SVGGraphics2D(rectangle);
+        svgGraphics2D.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        GraphicsRenderer graphicsRenderer = new GraphicsRenderer(svgGraphics2D,
+                rectangle, magnification, paper, ink, false, false);
         graphicsRenderer.render(symbol);
         graphicsRenderer.close();
         byte[] actualBytes = svgGraphics2D.getBytes();

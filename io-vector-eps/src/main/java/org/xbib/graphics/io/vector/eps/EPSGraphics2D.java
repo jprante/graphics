@@ -4,6 +4,7 @@ import org.xbib.graphics.io.vector.PageSize;
 import org.xbib.graphics.io.vector.VectorGraphics2D;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Rectangle;
 
 /**
  * {@code Graphics2D} implementation that saves all operations to a string
@@ -11,18 +12,8 @@ import java.awt.Color;
  */
 public class EPSGraphics2D extends VectorGraphics2D {
 
-    /**
-     * Initializes a new VectorGraphics2D pipeline for translating Graphics2D
-     * commands to EPS data. The document dimensions must be specified as
-     * parameters.
-     *
-     * @param x      Left offset.
-     * @param y      Top offset
-     * @param width  Width.
-     * @param height Height.
-     */
-    public EPSGraphics2D(double x, double y, double width, double height) {
-        super(new EPSProcessor(), new PageSize(x, y, width, height));
+    public EPSGraphics2D(Rectangle rectangle) {
+        super(new EPSProcessor(), new PageSize(rectangle));
         /*
          * The following are the default settings for the graphics state in an EPS file.
 		 * Although they currently appear in the document output, they do not have to be set explicitly.
