@@ -1,5 +1,6 @@
 package org.xbib.graphics.io.vector;
 
+import static org.xbib.graphics.io.vector.util.ImageUtil.toBufferedImage;
 import org.xbib.graphics.io.vector.commands.CreateCommand;
 import org.xbib.graphics.io.vector.commands.DisposeCommand;
 import org.xbib.graphics.io.vector.commands.DrawImageCommand;
@@ -31,7 +32,6 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.Paint;
 import java.awt.Polygon;
@@ -40,7 +40,6 @@ import java.awt.RenderingHints;
 import java.awt.RenderingHints.Key;
 import java.awt.Shape;
 import java.awt.Stroke;
-import java.awt.Transparency;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.font.TextLayout;
@@ -56,22 +55,17 @@ import java.awt.geom.RoundRectangle2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
-import java.awt.image.ColorModel;
 import java.awt.image.ImageObserver;
-import java.awt.image.PixelGrabber;
 import java.awt.image.RenderedImage;
-import java.awt.image.WritableRaster;
 import java.awt.image.renderable.RenderableImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.AttributedCharacterIterator;
-import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import javax.swing.ImageIcon;
 
 /**
  * Base for classes that want to implement vector export.
@@ -101,13 +95,17 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
 
     private GraphicsState state;
 
-    private Graphics2D debugValidateGraphics;
+    private Graphics2D graphics2D;
 
     public VectorGraphics2D() {
-        this(null, null);
+        this(null, null, null);
     }
 
     public VectorGraphics2D(Processor processor, PageSize pageSize) {
+        this(processor, pageSize, null);
+    }
+
+    public VectorGraphics2D(Processor processor, PageSize pageSize, Graphics2D graphics2D) {
         this.processor = processor;
         this.pageSize = pageSize;
         this.commands = new LinkedList<>();
@@ -121,9 +119,13 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
         }
         fontRenderContext = new FontRenderContext(null, false, true);
         state = new GraphicsState();
-        BufferedImage _debug_validate_bimg = new BufferedImage(200, 250, BufferedImage.TYPE_INT_ARGB);
-        debugValidateGraphics = (Graphics2D) _debug_validate_bimg.getGraphics();
-        debugValidateGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        if (graphics2D == null) {
+            BufferedImage bufferedImage = new BufferedImage(200, 250, BufferedImage.TYPE_INT_ARGB);
+            this.graphics2D = (Graphics2D) bufferedImage.getGraphics();
+            this.graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        } else {
+            this.graphics2D = graphics2D;
+        }
     }
 
     public PageSize getPageSize() {
@@ -161,29 +163,17 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
 
     @Override
     public void clip(Shape s) {
-        debugValidateGraphics.clip(s);
-        Shape clipOld = getClip();
-        Shape clip = getClip();
-        if ((clip != null) && (s != null)) {
-            s = intersectShapes(clip, s);
-        }
-        setClip(s);
-        Shape clipNew = getClip();
-        if ((clipNew == null || debugValidateGraphics.getClip() == null) && clipNew != debugValidateGraphics.getClip()) {
-            throw new IllegalStateException("clip() validation failed: clip(" + clipOld + ", " + s + ") => " + clipNew + " != " + debugValidateGraphics.getClip());
-        }
-        if (clipNew != null && notEquals(clipNew, debugValidateGraphics.getClip())) {
-            throw new IllegalStateException("clip() validation failed: clip(" + clipOld + ", " + s + ") => " + clipNew + " != " + debugValidateGraphics.getClip());
-        }
-    }
-
-    @Override
-    public void draw(Shape s) {
         if (isDisposed() || s == null) {
             return;
         }
-        emit(new DrawShapeCommand(s));
-        debugValidateGraphics.draw(s);
+        if (graphics2D != null) {
+            graphics2D.clip(s);
+        }
+        Shape clip = getClip();
+        if (clip != null) {
+            s = intersectShapes(clip, s);
+        }
+        setClip(s);
     }
 
     @Override
@@ -193,10 +183,21 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
     }
 
     @Override
+    public void draw(Shape s) {
+        if (isDisposed() || s == null) {
+            return;
+        }
+        emit(new DrawShapeCommand(s));
+        if (graphics2D != null) {
+            graphics2D.draw(s);
+        }
+    }
+
+    @Override
     public boolean drawImage(Image img, AffineTransform xform, ImageObserver obs) {
-        BufferedImage bimg = getTransformedImage(img, xform);
-        return drawImage(bimg, bimg.getMinX(), bimg.getMinY(),
-                bimg.getWidth(), bimg.getHeight(), null, null);
+        BufferedImage bufferedImage = getTransformedImage(img, xform);
+        return drawImage(bufferedImage, bufferedImage.getMinX(), bufferedImage.getMinY(),
+                bufferedImage.getWidth(), bufferedImage.getHeight(), null, null);
     }
 
     @Override
@@ -228,16 +229,9 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
         if (isDisposed() || str == null || str.trim().length() == 0) {
             return;
         }
-        boolean isTextAsVectors = false;
-        if (isTextAsVectors) {
-            TextLayout layout = new TextLayout(str, getFont(),
-                    getFontRenderContext());
-            Shape s = layout.getOutline(
-                    AffineTransform.getTranslateInstance(x, y));
-            fill(s);
-        } else {
-            emit(new DrawStringCommand(str, x, y));
-            debugValidateGraphics.drawString(str, x, y);
+        emit(new DrawStringCommand(str, x, y));
+        if (graphics2D != null) {
+            graphics2D.drawString(str, x, y);
         }
     }
 
@@ -249,8 +243,7 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
     @Override
     public void drawString(AttributedCharacterIterator iterator, float x, float y) {
         StringBuilder buf = new StringBuilder();
-        for (char c = iterator.first(); c != AttributedCharacterIterator.DONE;
-             c = iterator.next()) {
+        for (char c = iterator.first(); c != AttributedCharacterIterator.DONE; c = iterator.next()) {
             buf.append(c);
         }
         drawString(buf.toString(), x, y);
@@ -262,7 +255,9 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
             return;
         }
         emit(new FillShapeCommand(s));
-        debugValidateGraphics.fill(s);
+        if (graphics2D != null) {
+            graphics2D.fill(s);
+        }
     }
 
     @Override
@@ -277,9 +272,8 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
         }
         emit(new SetBackgroundCommand(color));
         state.setBackground(color);
-        debugValidateGraphics.setBackground(color);
-        if (!getBackground().equals(debugValidateGraphics.getBackground())) {
-            throw new IllegalStateException("setBackground() validation failed");
+        if (graphics2D != null) {
+            graphics2D.setBackground(color);
         }
     }
 
@@ -298,9 +292,8 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
         }
         emit(new SetCompositeCommand(comp));
         state.setComposite(comp);
-        debugValidateGraphics.setComposite(comp);
-        if (!getComposite().equals(debugValidateGraphics.getComposite())) {
-            throw new IllegalStateException("setComposite() validation failed");
+        if (graphics2D != null) {
+            graphics2D.setComposite(comp);
         }
     }
 
@@ -333,9 +326,8 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
         }
         emit(new SetPaintCommand(paint));
         state.setPaint(paint);
-        debugValidateGraphics.setPaint(paint);
-        if (!getPaint().equals(debugValidateGraphics.getPaint())) {
-            throw new IllegalStateException("setPaint() validation failed");
+        if (graphics2D != null) {
+            graphics2D.setPaint(paint);
         }
     }
 
@@ -382,10 +374,8 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
         }
         emit(new SetStrokeCommand(s));
         state.setStroke(s);
-
-        debugValidateGraphics.setStroke(s);
-        if (!getStroke().equals(debugValidateGraphics.getStroke())) {
-            throw new IllegalStateException("setStroke() validation failed");
+        if (graphics2D != null) {
+            graphics2D.setStroke(s);
         }
     }
 
@@ -397,12 +387,9 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
         }
         hitShape = state.transformShape(hitShape);
         boolean hit = hitShape.intersects(rect);
-
-        boolean _debug_hit = debugValidateGraphics.hit(rect, s, onStroke);
-        if (hit != _debug_hit) {
-            throw new IllegalStateException("setClip() validation failed");
+        if (graphics2D != null) {
+            graphics2D.hit(rect, s, onStroke);
         }
-
         return hit;
     }
 
@@ -427,10 +414,8 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
         }
         emit(new SetTransformCommand(tx));
         state.setTransform(tx);
-
-        debugValidateGraphics.setTransform(tx);
-        if (!getTransform().equals(debugValidateGraphics.getTransform())) {
-            throw new IllegalStateException("setTransform() validation failed");
+        if (graphics2D != null) {
+            graphics2D.setTransform(tx);
         }
     }
 
@@ -443,10 +428,8 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
         txNew.shear(shx, shy);
         emit(new ShearCommand(shx, shy));
         state.setTransform(txNew);
-
-        debugValidateGraphics.shear(shx, shy);
-        if (!getTransform().equals(debugValidateGraphics.getTransform())) {
-            throw new IllegalStateException("shear() validation failed");
+        if ( graphics2D != null) {
+            graphics2D.shear(shx, shy);
         }
     }
 
@@ -459,10 +442,8 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
         txNew.concatenate(tx);
         emit(new TransformCommand(tx));
         state.setTransform(txNew);
-
-        debugValidateGraphics.transform(tx);
-        if (!getTransform().equals(debugValidateGraphics.getTransform())) {
-            throw new IllegalStateException("transform() validation failed");
+        if (graphics2D != null) {
+            graphics2D.transform(tx);
         }
     }
 
@@ -480,9 +461,8 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
         txNew.translate(tx, ty);
         emit(new TranslateCommand(tx, ty));
         state.setTransform(txNew);
-        debugValidateGraphics.translate(tx, ty);
-        if (!getTransform().equals(debugValidateGraphics.getTransform())) {
-            throw new IllegalStateException("translate() validation failed");
+        if (graphics2D != null) {
+            graphics2D.translate(tx, ty);
         }
     }
 
@@ -505,14 +485,12 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
         emit(new RotateCommand(theta, x, y));
         state.setTransform(txNew);
         if (x == 0.0 && y == 0.0) {
-            debugValidateGraphics.rotate(theta);
-            if (!getTransform().equals(debugValidateGraphics.getTransform())) {
-                throw new IllegalStateException("rotate(theta) validation failed");
+            if (graphics2D != null) {
+                graphics2D.rotate(theta);
             }
         } else {
-            debugValidateGraphics.rotate(theta, x, y);
-            if (!getTransform().equals(debugValidateGraphics.getTransform())) {
-                throw new IllegalStateException("rotate(theta,x,y) validation failed");
+            if (graphics2D != null) {
+                graphics2D.rotate(theta, x, y);
             }
         }
     }
@@ -526,9 +504,8 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
         affineTransform.scale(sx, sy);
         emit(new ScaleCommand(sx, sy));
         state.setTransform(affineTransform);
-        debugValidateGraphics.scale(sx, sy);
-        if (!getTransform().equals(debugValidateGraphics.getTransform())) {
-            throw new IllegalStateException("scale() validation failed");
+        if (graphics2D != null) {
+            graphics2D.scale(sx, sy);
         }
     }
 
@@ -547,6 +524,7 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
 
     @Override
     public void copyArea(int x, int y, int width, int height, int dx, int dy) {
+        // unable to implement
     }
 
     @Override
@@ -561,7 +539,9 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
             return null;
         }
         emit(new CreateCommand(clone));
-        clone.debugValidateGraphics = (Graphics2D) debugValidateGraphics.create();
+        if (graphics2D != null) {
+            clone.graphics2D = (Graphics2D) graphics2D.create();
+        }
         return clone;
     }
 
@@ -572,13 +552,14 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
         }
         emit(new DisposeCommand(this));
         disposed = true;
-        debugValidateGraphics.dispose();
+        if (graphics2D != null) {
+            graphics2D.dispose();
+        }
     }
 
     @Override
     public void drawArc(int x, int y, int width, int height, int startAngle, int arcAngle) {
-        draw(new Arc2D.Double(x, y, width, height,
-                startAngle, arcAngle, Arc2D.OPEN));
+        draw(new Arc2D.Double(x, y, width, height, startAngle, arcAngle, Arc2D.OPEN));
     }
 
     @Override
@@ -587,21 +568,17 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
     }
 
     @Override
-    public boolean drawImage(Image img, int x, int y, Color bgcolor,
-                             ImageObserver observer) {
-        return drawImage(img, x, y, img.getWidth(observer),
-                img.getHeight(observer), bgcolor, observer);
+    public boolean drawImage(Image img, int x, int y, Color bgcolor, ImageObserver observer) {
+        return drawImage(img, x, y, img.getWidth(observer), img.getHeight(observer), bgcolor, observer);
     }
 
     @Override
-    public boolean drawImage(Image img, int x, int y, int width, int height,
-                             ImageObserver observer) {
+    public boolean drawImage(Image img, int x, int y, int width, int height, ImageObserver observer) {
         return drawImage(img, x, y, width, height, null, observer);
     }
 
     @Override
-    public boolean drawImage(Image img, int x, int y, int width, int height,
-                             Color bgcolor, ImageObserver observer) {
+    public boolean drawImage(Image img, int x, int y, int width, int height, Color bgcolor, ImageObserver observer) {
         if (isDisposed() || img == null) {
             return true;
         }
@@ -615,7 +592,9 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
             setColor(bgcolorOld);
         }
         emit(new DrawImageCommand(img, imageWidth, imageHeight, x, y, width, height));
-        debugValidateGraphics.drawImage(img, x, y, width, height, bgcolor, observer);
+        if (graphics2D != null) {
+            graphics2D.drawImage(img, x, y, width, height, bgcolor, observer);
+        }
         return true;
     }
 
@@ -737,16 +716,8 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
         }
         emit(new SetClipCommand(clip));
         state.setClip(clip);
-
-        debugValidateGraphics.setClip(clip);
-        if (getClip() == null) {
-            if (debugValidateGraphics.getClip() != null) {
-                throw new IllegalStateException("setClip() validation failed: clip=null, validation=" +
-                        debugValidateGraphics.getClip());
-            }
-        } else if (notEquals(getClip(), debugValidateGraphics.getClip())) {
-            throw new IllegalStateException("setClip() validation failed: clip=" + getClip() + ", validation=" +
-                    debugValidateGraphics.getClip());
+        if (graphics2D != null) {
+            graphics2D.setClip(clip);
         }
     }
 
@@ -771,9 +742,8 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
         emit(new SetColorCommand(c));
         state.setColor(c);
         state.setPaint(c);
-        debugValidateGraphics.setColor(c);
-        if (!getColor().equals(debugValidateGraphics.getColor())) {
-            throw new IllegalStateException("setColor() validation failed");
+        if (graphics2D != null) {
+            graphics2D.setColor(c);
         }
     }
 
@@ -789,9 +759,8 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
         }
         emit(new SetFontCommand(font));
         state.setFont(font);
-        debugValidateGraphics.setFont(font);
-        if (!getFont().equals(debugValidateGraphics.getFont())) {
-            throw new IllegalStateException("setFont() validation failed");
+        if (graphics2D != null) {
+            graphics2D.setFont(font);
         }
     }
 
@@ -812,7 +781,9 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
     @Override
     public void setPaintMode() {
         setComposite(AlphaComposite.SrcOver);
-        debugValidateGraphics.setPaintMode();
+        if (graphics2D != null) {
+            graphics2D.setPaintMode();
+        }
     }
 
     @Override
@@ -822,7 +793,9 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
         }
         emit(new SetXORModeCommand(c1));
         state.setXorMode(c1);
-        debugValidateGraphics.setXORMode(c1);
+        if (graphics2D != null) {
+            graphics2D.setXORMode(c1);
+        }
     }
 
     public Color getXORMode() {
@@ -849,13 +822,10 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
      * @return Image with transformed content
      */
     private BufferedImage getTransformedImage(Image image, AffineTransform xform) {
-        Integer interpolationType =
-                (Integer) getRenderingHint(RenderingHints.KEY_INTERPOLATION);
-        if (RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR
-                .equals(interpolationType)) {
+        Integer interpolationType = (Integer) getRenderingHint(RenderingHints.KEY_INTERPOLATION);
+        if (RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR.equals(interpolationType)) {
             interpolationType = AffineTransformOp.TYPE_NEAREST_NEIGHBOR;
-        } else if (RenderingHints.VALUE_INTERPOLATION_BILINEAR
-                .equals(interpolationType)) {
+        } else if (RenderingHints.VALUE_INTERPOLATION_BILINEAR.equals(interpolationType)) {
             interpolationType = AffineTransformOp.TYPE_BILINEAR;
         } else {
             interpolationType = AffineTransformOp.TYPE_BICUBIC;
@@ -865,7 +835,7 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
         return op.filter(bufferedImage, null);
     }
 
-    private static boolean notEquals(Shape shapeA, Shape shapeB) {
+    /*private static boolean notEquals(Shape shapeA, Shape shapeB) {
         PathIterator pathAIterator = shapeA.getPathIterator(null);
         PathIterator pathBIterator = shapeB.getPathIterator(null);
         if (pathAIterator.getWindingRule() != pathBIterator.getWindingRule()) {
@@ -888,99 +858,7 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
             pathBIterator.next();
         }
         return !pathBIterator.isDone();
-    }
-
-    /**
-     * Converts an arbitrary image to a {@code BufferedImage}.
-     *
-     * @param image Image that should be converted.
-     * @return a buffered image containing the image pixels, or the original
-     * instance if the image already was of type {@code BufferedImage}.
-     */
-    static BufferedImage toBufferedImage(RenderedImage image) {
-        if (image instanceof BufferedImage) {
-            return (BufferedImage) image;
-        }
-        ColorModel cm = image.getColorModel();
-        WritableRaster raster = cm.createCompatibleWritableRaster(image.getWidth(), image.getHeight());
-        boolean isRasterPremultiplied = cm.isAlphaPremultiplied();
-        Hashtable<String, Object> properties = null;
-        if (image.getPropertyNames() != null) {
-            properties = new Hashtable<>();
-            for (String key : image.getPropertyNames()) {
-                properties.put(key, image.getProperty(key));
-            }
-        }
-        BufferedImage bimage = new BufferedImage(cm, raster, isRasterPremultiplied, properties);
-        image.copyData(raster);
-        return bimage;
-    }
-
-    /**
-     * This method returns a buffered image with the contents of an image.
-     * Taken from http://www.exampledepot.com/egs/java.awt.image/Image2Buf.html
-     *
-     * @param image Image to be converted
-     * @return a buffered image with the contents of the specified image
-     */
-    static BufferedImage toBufferedImage(Image image) {
-        if (image instanceof BufferedImage) {
-            return (BufferedImage) image;
-        }
-        image = new ImageIcon(image).getImage();
-        boolean hasAlpha = hasAlpha(image);
-        BufferedImage bimage;
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        try {
-            int transparency = Transparency.OPAQUE;
-            if (hasAlpha) {
-                transparency = Transparency.TRANSLUCENT;
-            }
-            GraphicsDevice gs = ge.getDefaultScreenDevice();
-            GraphicsConfiguration gc = gs.getDefaultConfiguration();
-            bimage = gc.createCompatibleImage(image.getWidth(null), image.getHeight(null), transparency);
-        } catch (HeadlessException e) {
-            bimage = null;
-        }
-        if (bimage == null) {
-            int type = BufferedImage.TYPE_INT_RGB;
-            if (hasAlpha) {
-                type = BufferedImage.TYPE_INT_ARGB;
-            }
-            bimage = new BufferedImage(image.getWidth(null), image.getHeight(null), type);
-        }
-        Graphics g = bimage.createGraphics();
-        g.drawImage(image, 0, 0, null);
-        g.dispose();
-        return bimage;
-    }
-
-
-    /**
-     * This method returns {@code true} if the specified image has the
-     * possibility to store transparent pixels.
-     * Inspired by http://www.exampledepot.com/egs/java.awt.image/HasAlpha.html
-     *
-     * @param image Image that should be checked for alpha channel.
-     * @return {@code true} if the specified image can have transparent pixels,
-     * {@code false} otherwise
-     */
-    static boolean hasAlpha(Image image) {
-        ColorModel cm;
-        if (image instanceof BufferedImage) {
-            BufferedImage bimage = (BufferedImage) image;
-            cm = bimage.getColorModel();
-        } else {
-            PixelGrabber pg = new PixelGrabber(image, 0, 0, 1, 1, false);
-            try {
-                pg.grabPixels();
-            } catch (InterruptedException e) {
-                return false;
-            }
-            cm = pg.getColorModel();
-        }
-        return cm.hasAlpha();
-    }
+    }*/
 
     private static Shape intersectShapes(Shape s1, Shape s2) {
         if (s1 instanceof Rectangle2D && s2 instanceof Rectangle2D) {

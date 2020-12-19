@@ -26,12 +26,12 @@ public class PDFProcessor implements Processor {
         AbsoluteToRelativeTransformsFilter absoluteToRelativeTransformsFilter = new AbsoluteToRelativeTransformsFilter(commands);
         FillPaintedShapeAsImageFilter paintedShapeAsImageFilter = new FillPaintedShapeAsImageFilter(absoluteToRelativeTransformsFilter);
         Iterable<Command<?>> filtered = new StateChangeGroupingFilter(paintedShapeAsImageFilter);
-        PDFProcessorResult doc = new PDFProcessorResult(pageSize);
-        doc.setCompressed(compressed);
+        PDFProcessorResult processorResult = new PDFProcessorResult(pageSize);
+        processorResult.setCompressed(compressed);
         for (Command<?> command : filtered) {
-            doc.handle(command);
+            processorResult.handle(command);
         }
-        doc.close();
-        return doc;
+        processorResult.close();
+        return processorResult;
     }
 }

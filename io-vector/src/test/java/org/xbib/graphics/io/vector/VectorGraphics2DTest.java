@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.xbib.graphics.io.vector.VectorGraphics2D.hasAlpha;
-import static org.xbib.graphics.io.vector.VectorGraphics2D.toBufferedImage;
+import static org.xbib.graphics.io.vector.util.ImageUtil.hasAlpha;
+import static org.xbib.graphics.io.vector.util.ImageUtil.toBufferedImage;
 import org.junit.jupiter.api.Test;
 import org.xbib.graphics.io.vector.commands.CreateCommand;
 import org.xbib.graphics.io.vector.commands.DisposeCommand;
@@ -62,7 +62,6 @@ public class VectorGraphics2DTest {
         assertEquals(Color.BLUE, ((DisposeCommand) lastCommand).getValue().getColor());
     }
 
-
     @Test
     public void testToBufferedImage() {
         Image[] images = {
@@ -78,7 +77,6 @@ public class VectorGraphics2DTest {
                         }
                 ))
         };
-
         for (Image image : images) {
             BufferedImage bimage = toBufferedImage(image);
             assertNotNull(bimage);
@@ -90,11 +88,9 @@ public class VectorGraphics2DTest {
 
     @Test
     public void testHasAlpha() {
-        Image image;
-        image = new BufferedImage(320, 240, BufferedImage.TYPE_INT_ARGB);
+        Image image = new BufferedImage(320, 240, BufferedImage.TYPE_INT_ARGB);
         assertTrue(hasAlpha(image));
         image = new BufferedImage(320, 240, BufferedImage.TYPE_INT_RGB);
         assertFalse(hasAlpha(image));
     }
-
 }
