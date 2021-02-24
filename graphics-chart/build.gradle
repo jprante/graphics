@@ -1,0 +1,6 @@
+dependencies {
+    implementation project(':graphics-vector')
+    implementation project(':graphics-vector-eps')
+    implementation project(':graphics-vector-pdf')
+    implementation project(':graphics-vector-svg')
+}

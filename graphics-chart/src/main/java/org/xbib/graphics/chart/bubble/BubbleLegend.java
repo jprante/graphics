@@ -1,0 +1,68 @@
+package org.xbib.graphics.chart.bubble;
+
+import org.xbib.graphics.chart.Chart;
+import org.xbib.graphics.chart.legend.AbstractLegend;
+import org.xbib.graphics.chart.series.AxesChartSeries;
+import org.xbib.graphics.chart.style.AxesChartStyler;
+import org.xbib.graphics.chart.legend.LegendLayout;
+import org.xbib.graphics.chart.legend.LegendRenderType;
+
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
+import java.util.Map;
+
+public class BubbleLegend<ST extends AxesChartStyler, S extends AxesChartSeries> extends AbstractLegend<ST, S> {
+
+    private final ST axesChartStyler;
+
+    public BubbleLegend(Chart<ST, S> chart) {
+        super(chart);
+        axesChartStyler = chart.getStyler();
+    }
+
+    @Override
+    public void doPaint(Graphics2D g) {
+        double startx = xOffset + chart.getStyler().getLegendPadding();
+        double starty = yOffset + chart.getStyler().getLegendPadding();
+        Object oldHint = g.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        Map<String, S> map = chart.getSeriesMap();
+        for (S series : map.values()) {
+            if (series.isNotShownInLegend()) {
+                continue;
+            }
+            if (!series.isEnabled()) {
+                continue;
+            }
+            Map<String, Rectangle2D> seriesTextBounds = getSeriesTextBounds(series);
+            float legendEntryHeight = getLegendEntryHeight(seriesTextBounds, BOX_SIZE);
+            Shape rectSmall = new Ellipse2D.Double(startx, starty, BOX_SIZE, BOX_SIZE);
+            g.setColor(series.getFillColor());
+            g.fill(rectSmall);
+            g.setStroke(series.getLineStyle());
+            g.setColor(series.getLineColor());
+            g.draw(rectSmall);
+            final double x = startx + BOX_SIZE + chart.getStyler().getLegendPadding();
+            paintSeriesText(g, seriesTextBounds, BOX_SIZE, x, starty);
+            if (chart.getStyler().getLegendLayout() == LegendLayout.Vertical) {
+                starty += legendEntryHeight + chart.getStyler().getLegendPadding();
+            } else {
+                int markerWidth = BOX_SIZE;
+                if (series.getLegendRenderType() == LegendRenderType.Line) {
+                    markerWidth = chart.getStyler().getLegendSeriesLineLength();
+                }
+                float legendEntryWidth = getLegendEntryWidth(seriesTextBounds, markerWidth);
+                startx += legendEntryWidth + chart.getStyler().getLegendPadding();
+            }
+        }
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, oldHint);
+    }
+
+    @Override
+    public double getSeriesLegendRenderGraphicHeight(S series) {
+        return series.getLegendRenderType() == LegendRenderType.Box ? BOX_SIZE : axesChartStyler.getMarkerSize();
+    }
+}

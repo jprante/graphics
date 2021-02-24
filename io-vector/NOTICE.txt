@@ -1,5 +1,0 @@
-This work is based on VectorGraphics2D by Erich Seifert
-
-https://github.com/eseifert/vectorgraphics2d
-
-Lesser GNU Public License (LGPL 3)

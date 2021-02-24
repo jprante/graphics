@@ -1,0 +1,4 @@
+dependencies {
+    api "org.apache.pdfbox:pdfbox:${project.property('pdfbox.version')}"
+    implementation "net.java.dev.jna:jna:${project.property('jna.version')}"
+}

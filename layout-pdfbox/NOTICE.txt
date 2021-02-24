@@ -1,7 +1,0 @@
-This work is based on
-
-https://github.com/ralfstuckert/pdfbox-layout
-
-(MIT License)
-
-as of October, 2020
