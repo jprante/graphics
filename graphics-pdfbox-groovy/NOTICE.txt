@@ -1,0 +1,8 @@
+
+This is a modified version of Craig Burke's document-builder at
+
+https://github.com/craigburke/document-builder
+
+extended by a `DocumentAnalyzer` which can examine PDF documents by using Apache PdfBox https://pdfbox.apache.org
+
+This library will be extended by useful PDF classes with an emphasis on Groovy.

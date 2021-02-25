@@ -53,10 +53,12 @@ public class GraphicsRenderer {
      * Creates a new Java 2D renderer.
      *
      * @param g2d           the graphics to render to
+     * @param rectangle the visible rectangle
      * @param scalingFactor the scaling factor to apply
      * @param background         the paper (background) color
      * @param foreground           the ink (foreground) color
      * @param antialias if true give anti alias hint
+     * @param transparentBackground if true background should be transparent
      */
     public GraphicsRenderer(Graphics2D g2d,
                             Rectangle rectangle,
