@@ -4,8 +4,10 @@ import groovy.transform.AutoClone
 
 @AutoClone
 class Color {
+
     String hex = '000000'
-    def rgb = [0, 0, 0]
+
+    def rgb = [0f, 0f, 0f]
 
     void setColor(String value) {
         if (value.startsWith('#')) {

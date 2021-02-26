@@ -1,20 +1,22 @@
 package org.xbib.graphics.pdfbox.groovy
 
+import org.xbib.graphics.barcode.SymbolType
+
 class Barcode extends BaseNode {
 
     Integer x = 0
 
     Integer y = 0
 
-    Integer width = 0
+    Integer width
 
-    Integer height = 0
+    Integer height
 
     String value
 
-    BarcodeType type
+    SymbolType symbolType
 
     void setType(String type) {
-        this.type = Enum.valueOf(BarcodeType, type.toUpperCase())
+        this.symbolType = Enum.valueOf(SymbolType, type.toUpperCase())
     }
 }

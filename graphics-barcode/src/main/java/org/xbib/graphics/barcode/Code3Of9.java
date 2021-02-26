@@ -7,7 +7,7 @@ package org.xbib.graphics.barcode;
  * and percent (%). The standard does not require a check digit but a
  * modulo-43 check digit can be added if required.
  */
-public class Code3Of9 extends Symbol {
+public class Code3Of9 extends AbstractSymbol {
 
     private static final String[] CODE_39 = {
             "1112212111", "2112111121", "1122111121", "2122111111", "1112211121",
@@ -151,5 +151,18 @@ public class Code3Of9 extends Symbol {
 
     public enum CheckDigit {
         NONE, MOD43
+    }
+
+    public static class Provider implements SymbolProvider<Code3Of9> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.CODE39;
+        }
+
+        @Override
+        public Code3Of9 provide() {
+            return new Code3Of9();
+        }
     }
 }

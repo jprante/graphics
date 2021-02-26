@@ -2,7 +2,7 @@ package org.xbib.graphics.pdfbox.groovy.builder
 
 import org.apache.pdfbox.pdmodel.PDPageContentStream
 import org.xbib.graphics.barcode.HumanReadableLocation
-import org.xbib.graphics.barcode.Symbol
+import org.xbib.graphics.barcode.AbstractSymbol
 import org.xbib.graphics.barcode.util.Hexagon
 import org.xbib.graphics.barcode.util.TextBox
 
@@ -25,7 +25,7 @@ class PdfboxRenderer {
         this.scalingFactor = scalingfactor
     }
 
-    void render(Symbol symbol) throws IOException {
+    void render(AbstractSymbol symbol) throws IOException {
         Integer marginX = (symbol.getQuietZoneHorizontal() * scalingFactor) as Integer
         Integer marginY = (symbol.getQuietZoneVertical() * scalingFactor) as Integer
         // rectangles

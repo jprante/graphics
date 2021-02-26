@@ -7,7 +7,7 @@ import java.math.BigInteger;
  * Input data should be a 13 digit Global Trade Identification Number
  * without check digit or Application Identifier [01].
  */
-public class DataBar14 extends Symbol {
+public class DataBar14 extends AbstractSymbol {
 
     private int[] g_sum_table = {
             0, 161, 961, 2015, 2715, 0, 336, 1036, 1516
@@ -49,7 +49,7 @@ public class DataBar14 extends Symbol {
     }
 
     @Override
-    public void setDataType(DataType dummy) {
+    public void setDataType(SymbolDataType dummy) {
         // Do nothing!
     }
 
@@ -694,5 +694,18 @@ public class DataBar14 extends Symbol {
 
     private enum gb14Mode {
         LINEAR, OMNI, STACKED
+    }
+
+    public static class Provider implements SymbolProvider<DataBar14> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.DATABAR_14;
+        }
+
+        @Override
+        public DataBar14 provide() {
+            return new DataBar14();
+        }
     }
 }

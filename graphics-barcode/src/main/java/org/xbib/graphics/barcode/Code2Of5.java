@@ -8,7 +8,7 @@ import java.awt.geom.Rectangle2D;
 /**
  * Implements the Code 2 of 5 family of barcode standards.
  */
-public class Code2Of5 extends Symbol {
+public class Code2Of5 extends AbstractSymbol {
 
     private static final String[] C25_MATRIX_TABLE = {
             "113311", "311131", "131131", "331111", "113131", "313111", "133111", "111331", "311311", "131311"
@@ -419,7 +419,7 @@ public class Code2Of5 extends Symbol {
     }
 
     @Override
-    protected void plotSymbol() {
+    public void plotSymbol() {
         int xBlock;
         getRectangles().clear();
         getTexts().clear();
@@ -489,5 +489,18 @@ public class Code2Of5 extends Symbol {
 
     private enum ToFMode {
         MATRIX, INDUSTRIAL, IATA, DATA_LOGIC, INTERLEAVED, ITF14, DPLEIT, DPIDENT
+    }
+
+    public static class Provider implements SymbolProvider<Code2Of5> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.CODE25;
+        }
+
+        @Override
+        public Code2Of5 provide() {
+            return new Code2Of5();
+        }
     }
 }

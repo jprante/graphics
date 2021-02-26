@@ -15,13 +15,13 @@ import java.math.BigInteger;
  * tracking code, followed by a dash (-), followed by a delivery point
  * zip-code which can be 0, 5, 9 or 11 digits in length.
  */
-public class UspsOneCode extends Symbol {
+public class UspsOneCode extends AbstractSymbol {
 
     /* The following lookup tables were generated using the code in Appendix C */
 
-    private int[] byte_array = new int[13];
+    private final int[] byte_array = new int[13];
 
-    private int[] AppxD_I = { /* Appendix D Table 1 - 5 of 13 characters */
+    private final int[] appxD_I = { /* Appendix D Table 1 - 5 of 13 characters */
             0x001F, 0x1F00, 0x002F, 0x1E80, 0x0037, 0x1D80, 0x003B, 0x1B80, 0x003D, 0x1780,
             0x003E, 0x0F80, 0x004F, 0x1E40, 0x0057, 0x1D40, 0x005B, 0x1B40, 0x005D, 0x1740,
             0x005E, 0x0F40, 0x0067, 0x1CC0, 0x006B, 0x1AC0, 0x006D, 0x16C0, 0x006E, 0x0EC0,
@@ -310,7 +310,7 @@ public class UspsOneCode extends Symbol {
 
         for (i = 0; i < 10; i++) {
             if (codeword[i] < 1287) {
-                characters[i] = AppxD_I[codeword[i]];
+                characters[i] = appxD_I[codeword[i]];
             } else {
                 characters[i] = AppxD_II[codeword[i] - 1287];
             }
@@ -393,7 +393,7 @@ public class UspsOneCode extends Symbol {
     }
 
     @Override
-    protected void plotSymbol() {
+    public void plotSymbol() {
         int xBlock, shortHeight, longHeight;
         double x, y, w, h;
         getRectangles().clear();
@@ -446,6 +446,19 @@ public class UspsOneCode extends Symbol {
             }
             double centerX = getWidth() / 2.0;
             getTexts().add(new TextBox(centerX, baseline, readable.toString()));
+        }
+    }
+
+    public static class Provider implements SymbolProvider<UspsOneCode> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.USPS_ONE_CODE;
+        }
+
+        @Override
+        public UspsOneCode provide() {
+            return new UspsOneCode();
         }
     }
 }

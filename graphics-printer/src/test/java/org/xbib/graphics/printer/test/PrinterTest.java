@@ -1,7 +1,7 @@
-package org.xbib.graphics.ghostscript.test;
+package org.xbib.graphics.printer.test;
 
 import org.junit.jupiter.api.Test;
-import org.xbib.graphics.ghostscript.PrintUtility;
+import org.xbib.graphics.printer.PrintUtility;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

@@ -4,10 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.xbib.graphics.barcode.Code93;
-import org.xbib.graphics.barcode.render.GraphicsRenderer;
+import org.xbib.graphics.barcode.render.BarcodeGraphicsRenderer;
 import org.xbib.graphics.barcode.MaxiCode;
-import org.xbib.graphics.barcode.Symbol;
+import org.xbib.graphics.barcode.AbstractSymbol;
 import org.xbib.graphics.io.vector.eps.EPSGraphics2D;
 import java.awt.Color;
 import java.awt.Font;
@@ -22,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Locale;
 
+@DisabledOnOs(OS.MAC)
 public class EPSRendererTest {
 
     private Locale originalDefaultLocale;
@@ -83,7 +86,7 @@ public class EPSRendererTest {
         test(maxicode, 5, Color.WHITE, Color.BLACK, 5, "maxicode-basic.eps");
     }
 
-    private void test(Symbol symbol,
+    private void test(AbstractSymbol symbol,
                       double magnification,
                       Color paper,
                       Color ink,
@@ -96,10 +99,10 @@ public class EPSRendererTest {
         Rectangle rectangle = new Rectangle(0, 0, width, height);
         EPSGraphics2D epsGraphics2D = new EPSGraphics2D(rectangle);
         epsGraphics2D.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        GraphicsRenderer graphicsRenderer = new GraphicsRenderer(epsGraphics2D, rectangle,
+        BarcodeGraphicsRenderer barcodeGraphicsRenderer = new BarcodeGraphicsRenderer(epsGraphics2D, rectangle,
                 magnification, paper, ink, false, false);
-        graphicsRenderer.render(symbol);
-        graphicsRenderer.close();
+        barcodeGraphicsRenderer.render(symbol);
+        barcodeGraphicsRenderer.close();
         byte[] actualBytes = epsGraphics2D.getBytes();
         String actual = new String(actualBytes, StandardCharsets.UTF_8);
         try (BufferedWriter bufferedWriter = Files.newBufferedWriter(Paths.get("build/" + expectationFile))) {

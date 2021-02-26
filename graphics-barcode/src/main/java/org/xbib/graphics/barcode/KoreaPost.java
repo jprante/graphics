@@ -5,7 +5,7 @@ package org.xbib.graphics.barcode;
  * number. A Modulo-10 check digit is calculated and added, and should not form
  * part of the input data.
  */
-public class KoreaPost extends Symbol {
+public class KoreaPost extends AbstractSymbol {
 
     String[] koreaTable = {
             "1313150613", "0713131313", "0417131313", "1506131313", "0413171313",
@@ -57,5 +57,18 @@ public class KoreaPost extends Symbol {
         rowHeight[0] = -1;
         plotSymbol();
         return true;
+    }
+
+    public static class Provider implements SymbolProvider<KoreaPost> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.KOREA_POST;
+        }
+
+        @Override
+        public KoreaPost provide() {
+            return new KoreaPost();
+        }
     }
 }

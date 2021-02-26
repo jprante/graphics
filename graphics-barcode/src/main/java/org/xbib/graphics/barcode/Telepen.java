@@ -7,9 +7,9 @@ package org.xbib.graphics.barcode;
  * or pairs consisting of a numerical digit followed an X character.
  * Telepen Numeric also includes a modulo-127 check digit.
  */
-public class Telepen extends Symbol {
+public class Telepen extends AbstractSymbol {
 
-    public tp_mode mode;
+    public Mode mode;
     private String[] TeleTable = {
             "1111111111111111", "1131313111", "33313111", "1111313131",
             "3111313111", "11333131", "13133131", "111111313111", "31333111",
@@ -42,20 +42,20 @@ public class Telepen extends Symbol {
     };
 
     public Telepen() {
-        mode = tp_mode.NORMAL;
+        mode = Mode.NORMAL;
     }
 
     public void setNormalMode() {
-        mode = tp_mode.NORMAL;
+        mode = Mode.NORMAL;
     }
 
     public void setNumericMode() {
-        mode = tp_mode.NUMERIC;
+        mode = Mode.NUMERIC;
     }
 
     @Override
     public boolean encode() {
-        if (mode == tp_mode.NORMAL) {
+        if (mode == Mode.NORMAL) {
             return normal_mode();
         } else {
             return numeric_mode();
@@ -171,7 +171,20 @@ public class Telepen extends Symbol {
         return true;
     }
 
-    public enum tp_mode {
+    public enum Mode {
         NORMAL, NUMERIC
+    }
+
+    public static class Provider implements SymbolProvider<Telepen> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.TELEPEN;
+        }
+
+        @Override
+        public Telepen provide() {
+            return new Telepen();
+        }
     }
 }

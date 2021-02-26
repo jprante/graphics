@@ -5,7 +5,7 @@ package org.xbib.graphics.barcode;
  * Code 11 can encode any length string consisting of the digits 0-9 and the
  * dash character (-). One or two modulo-11 check digits are calculated.
  */
-public class Code11 extends Symbol {
+public class Code11 extends AbstractSymbol {
 
     private static final String[] CODE_11_TABLE = {
             "111121", "211121", "121121", "221111", "112121", "212111",
@@ -204,5 +204,18 @@ public class Code11 extends Symbol {
     @Override
     protected int[] getCodewords() {
         return getPatternAsCodewords(6);
+    }
+
+    public static class Provider implements SymbolProvider<Code11> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.CODE11;
+        }
+
+        @Override
+        public Code11 provide() {
+            return new Code11();
+        }
     }
 }

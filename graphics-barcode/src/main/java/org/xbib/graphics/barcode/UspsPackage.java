@@ -8,7 +8,7 @@ import java.awt.geom.Rectangle2D;
  * A linear barcode based on GS1-128. Includes additional data checks.
  * Specification at https://ribbs.usps.gov/intelligentmail_package/documents/tech_guides/BarcodePackageIMSpec.pdf
  */
-public class UspsPackage extends Symbol {
+public class UspsPackage extends AbstractSymbol {
 
     @Override
     public boolean encode() {
@@ -31,7 +31,7 @@ public class UspsPackage extends Symbol {
 
         Code128 code128 = new Code128();
         code128.unsetCc();
-        code128.setDataType(DataType.GS1);
+        code128.setDataType(SymbolDataType.GS1);
         code128.setContent(content);
 
         if (content.length() > 4) {
@@ -66,12 +66,11 @@ public class UspsPackage extends Symbol {
         rowHeight = new int[1];
         rowHeight[0] = -1;
         plotSymbol();
-
         return true;
     }
 
     @Override
-    protected void plotSymbol() {
+    public void plotSymbol() {
         int xBlock;
         int x, y, w, h;
         boolean black;
@@ -110,5 +109,18 @@ public class UspsPackage extends Symbol {
         double centerX = getWidth() / 2.0;
         getTexts().add(new TextBox(centerX, getHeight() - 6.0, readable.toString()));
         getTexts().add(new TextBox(centerX, 12.0, banner));
+    }
+
+    public static class Provider implements SymbolProvider<UspsPackage> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.USPS_PACKAGE;
+        }
+
+        @Override
+        public UspsPackage provide() {
+            return new UspsPackage();
+        }
     }
 }

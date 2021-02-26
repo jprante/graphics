@@ -7,7 +7,7 @@ import java.util.stream.IntStream;
  * Also SSCC-18 (Serial Shipping Container Code)
  * Encodes a 17 digit number, adding a Modulo-10 check digit.
  */
-public class Nve18 extends Symbol {
+public class Nve18 extends AbstractSymbol {
 
     @Override
     public boolean encode() {
@@ -51,7 +51,7 @@ public class Nve18 extends Symbol {
         content = "[00]" + gs1Equivalent + cdigit;
 
         // Defer to Code 128
-        code128.setDataType(DataType.GS1);
+        code128.setDataType(SymbolDataType.GS1);
         code128.setHumanReadableLocation(getHumanReadableLocation());
 
         try {
@@ -68,5 +68,18 @@ public class Nve18 extends Symbol {
         symbolWidth = code128.symbolWidth;
         encodeInfo.append(code128.encodeInfo);
         return true;
+    }
+
+    public static class Provider implements SymbolProvider<Nve18> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.NVE_18;
+        }
+
+        @Override
+        public Nve18 provide() {
+            return new Nve18();
+        }
     }
 }

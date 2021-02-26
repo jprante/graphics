@@ -7,7 +7,7 @@ import java.math.BigInteger;
  * Input data should be a 12 digit Global Trade Identification Number
  * without check digit or Application Identifier [01].
  */
-public class DataBarLimited extends Symbol {
+public class DataBarLimited extends AbstractSymbol {
 
     private static final int[] t_even_ltd = {
             28, 728, 6454, 203, 2408, 1, 16632
@@ -128,7 +128,7 @@ public class DataBarLimited extends Symbol {
     }
 
     @Override
-    public void setDataType(DataType dummy) {
+    public void setDataType(SymbolDataType dummy) {
         // Do nothing!
     }
 
@@ -472,5 +472,18 @@ public class DataBarLimited extends Symbol {
             widths[bar] = elmWidth;
         }
         widths[bar] = n;
+    }
+
+    public static class Provider implements SymbolProvider<DataBarLimited> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.DATABAR_LIMITED;
+        }
+
+        @Override
+        public DataBarLimited provide() {
+            return new DataBarLimited();
+        }
     }
 }

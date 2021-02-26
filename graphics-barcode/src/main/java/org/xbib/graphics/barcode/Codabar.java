@@ -8,7 +8,7 @@ package org.xbib.graphics.barcode;
  * ($), colon (:), slash (/), full stop (.) or plus (+). No check digit is
  * generated.
  */
-public class Codabar extends Symbol {
+public class Codabar extends AbstractSymbol {
 
     private static final String[] CODABAR_TABLE = {
             "11111221", "11112211", "11121121", "22111111", "11211211",
@@ -82,5 +82,18 @@ public class Codabar extends Symbol {
     @Override
     protected int[] getCodewords() {
         return getPatternAsCodewords(8);
+    }
+
+    public static class Provider implements SymbolProvider<Codabar> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.CODABAR;
+        }
+
+        @Override
+        public Codabar provide() {
+            return new Codabar();
+        }
     }
 }

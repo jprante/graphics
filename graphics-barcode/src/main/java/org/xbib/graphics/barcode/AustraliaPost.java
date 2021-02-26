@@ -6,7 +6,7 @@ import java.awt.geom.Rectangle2D;
 /**
  * Implements the <a href="http://auspost.com.au/media/documents/a-guide-to-printing-the-4state-barcode-v31-mar2012.pdf">Australia Post 4-State barcode</a>.
  */
-public class AustraliaPost extends Symbol {
+public class AustraliaPost extends AbstractSymbol {
 
     private static final char[] CHARACTER_SET = {
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D',
@@ -36,12 +36,11 @@ public class AustraliaPost extends Symbol {
             "301", "302", "303", "310", "311", "312", "313", "320", "321", "322", "323", "330", "331",
             "332", "333"
     };
-    private ausMode mode;
 
-    ;
+    private Mode mode;
 
     public AustraliaPost() {
-        mode = ausMode.AUSPOST;
+        mode = Mode.AUSPOST;
     }
 
     /**
@@ -102,7 +101,7 @@ public class AustraliaPost extends Symbol {
      * </table>
      */
     public void setPostMode() {
-        mode = ausMode.AUSPOST;
+        mode = Mode.AUSPOST;
     }
 
     /**
@@ -110,7 +109,7 @@ public class AustraliaPost extends Symbol {
      * 4-State Barcode (FCC 45) which requires an 8-digit DPID input.
      */
     public void setReplyMode() {
-        mode = ausMode.AUSREPLY;
+        mode = Mode.AUSREPLY;
     }
 
     /**
@@ -118,7 +117,7 @@ public class AustraliaPost extends Symbol {
      * Barcode (FCC 87) which requires an 8-digit DPID input.
      */
     public void setRouteMode() {
-        mode = ausMode.AUSROUTE;
+        mode = Mode.AUSROUTE;
     }
 
     /**
@@ -126,7 +125,7 @@ public class AustraliaPost extends Symbol {
      * Barcode (FCC 92) which requires an 8-digit DPID input.
      */
     public void setRedirectMode() {
-        mode = ausMode.AUSREDIRECT;
+        mode = Mode.AUSREDIRECT;
     }
 
     @Override
@@ -196,7 +195,7 @@ public class AustraliaPost extends Symbol {
 
         encodeInfo.append("FCC: ").append(formatControlCode).append('\n');
 
-        if (mode != ausMode.AUSPOST) {
+        if (mode != Mode.AUSPOST) {
             for (i = content.length(); i < 8; i++) {
                 zeroPaddedInput.append("0");
             }
@@ -324,7 +323,7 @@ public class AustraliaPost extends Symbol {
     }
 
     @Override
-    protected void plotSymbol() {
+    public void plotSymbol() {
         int xBlock;
         int x, y, w, h;
         getRectangles().clear();
@@ -359,5 +358,20 @@ public class AustraliaPost extends Symbol {
         symbolHeight = 8;
     }
 
-    private enum ausMode {AUSPOST, AUSREPLY, AUSROUTE, AUSREDIRECT}
+    private enum Mode {
+        AUSPOST, AUSREPLY, AUSROUTE, AUSREDIRECT
+    }
+
+    public static class Provider implements SymbolProvider<AustraliaPost> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.AUSTRALIA_POST;
+        }
+
+        @Override
+        public AustraliaPost provide() {
+            return new AustraliaPost();
+        }
+    }
 }

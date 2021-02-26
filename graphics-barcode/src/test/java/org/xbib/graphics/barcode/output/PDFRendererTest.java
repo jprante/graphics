@@ -4,10 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.xbib.graphics.barcode.Code93;
 import org.xbib.graphics.barcode.MaxiCode;
-import org.xbib.graphics.barcode.Symbol;
-import org.xbib.graphics.barcode.render.GraphicsRenderer;
+import org.xbib.graphics.barcode.AbstractSymbol;
+import org.xbib.graphics.barcode.render.BarcodeGraphicsRenderer;
 import org.xbib.graphics.io.vector.pdf.PDFGraphics2D;
 import java.awt.Color;
 import java.awt.Font;
@@ -22,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Locale;
 
+@DisabledOnOs(OS.MAC)
 public class PDFRendererTest {
 
     private Locale originalDefaultLocale;
@@ -83,7 +86,7 @@ public class PDFRendererTest {
         test(maxicode, 5, Color.WHITE, Color.BLACK, 5, "maxicode-basic.pdf");
     }
 
-    private void test(Symbol symbol,
+    private void test(AbstractSymbol symbol,
                       double magnification,
                       Color paper,
                       Color ink,
@@ -96,10 +99,10 @@ public class PDFRendererTest {
         Rectangle rectangle = new Rectangle(0, 0, width, height);
         PDFGraphics2D pdfGraphics2D = new PDFGraphics2D(rectangle);
         pdfGraphics2D.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        GraphicsRenderer graphicsRenderer = new GraphicsRenderer(pdfGraphics2D,
+        BarcodeGraphicsRenderer barcodeGraphicsRenderer = new BarcodeGraphicsRenderer(pdfGraphics2D,
                 rectangle, magnification, paper, ink, false, false);
-        graphicsRenderer.render(symbol);
-        graphicsRenderer.close();
+        barcodeGraphicsRenderer.render(symbol);
+        barcodeGraphicsRenderer.close();
         byte[] actualBytes = pdfGraphics2D.getBytes();
         String actual = new String(actualBytes, StandardCharsets.UTF_8);
         try (BufferedWriter bufferedWriter = Files.newBufferedWriter(Paths.get("build/" + expectationFile))) {

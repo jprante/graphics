@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * Renders symbologies using the Java Graphics API.
  */
-public class GraphicsRenderer {
+public class BarcodeGraphicsRenderer {
 
     /**
      * The graphics to render to.
@@ -60,13 +60,13 @@ public class GraphicsRenderer {
      * @param antialias if true give anti alias hint
      * @param transparentBackground if true background should be transparent
      */
-    public GraphicsRenderer(Graphics2D g2d,
-                            Rectangle rectangle,
-                            double scalingFactor,
-                            Color background,
-                            Color foreground,
-                            boolean antialias,
-                            boolean transparentBackground) {
+    public BarcodeGraphicsRenderer(Graphics2D g2d,
+                                   Rectangle rectangle,
+                                   double scalingFactor,
+                                   Color background,
+                                   Color foreground,
+                                   boolean antialias,
+                                   boolean transparentBackground) {
         this.g2d = g2d;
         this.rectangle = rectangle;
         this.scalingFactor = scalingFactor;
@@ -90,7 +90,9 @@ public class GraphicsRenderer {
         g2d.setBackground(background);
         if (!transparentBackground) {
             g2d.setColor(background);
-            g2d.fill(rectangle);
+            if (rectangle != null) {
+                g2d.fill(rectangle);
+            }
             g2d.setColor(foreground);
         }
         for (Rectangle2D.Double rect : symbol.getRectangles()) {

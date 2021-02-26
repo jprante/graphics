@@ -4,7 +4,7 @@ package org.xbib.graphics.barcode;
  * Implements <a href="http://en.wikipedia.org/wiki/Code_93">Code 93</a>.
  * Supports encoding of 7-bit ASCII text. Two check digits are added.
  */
-public class Code93 extends Symbol {
+public class Code93 extends AbstractSymbol {
 
     /**
      * Code 93 control characters, indexed by ASCII codes (NOTE: a = Ctrl $,
@@ -188,5 +188,18 @@ public class Code93 extends Symbol {
     @Override
     protected int[] getCodewords() {
         return getPatternAsCodewords(6);
+    }
+
+    public static class Provider implements SymbolProvider<Code93> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.CODE93;
+        }
+
+        @Override
+        public Code93 provide() {
+            return new Code93();
+        }
     }
 }

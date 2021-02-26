@@ -24,7 +24,7 @@ import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runners.Parameterized;
 import org.reflections.Reflections;
-import org.xbib.graphics.barcode.render.GraphicsRenderer;
+import org.xbib.graphics.barcode.render.BarcodeGraphicsRenderer;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -87,7 +87,7 @@ public class SymbolTest {
     private static Font DEJA_VU_SANS;
 
     /** The type of symbology being tested. */
-    private final Class< ? extends Symbol> symbolType;
+    private final Class< ? extends AbstractSymbol> symbolType;
 
     /** The test configuration properties. */
     private final Map< String, String > properties;
@@ -121,9 +121,9 @@ public class SymbolTest {
         }
         String backend = "org.xbib.graphics.barcode";
         Reflections reflections = new Reflections(backend);
-        Set< Class< ? extends Symbol >> symbols = reflections.getSubTypesOf(Symbol.class);
+        Set< Class< ? extends AbstractSymbol>> symbols = reflections.getSubTypesOf(AbstractSymbol.class);
         List< Object[] > data = new ArrayList<>();
-        for (Class< ? extends Symbol > symbol : symbols) {
+        for (Class< ? extends AbstractSymbol> symbol : symbols) {
             String symbolName = symbol.getSimpleName().toLowerCase();
             String dir = "src/test/resources/" + backend.replace('.', '/') + "/" + symbolName;
             for (File file : getPropertiesFiles(dir)) {
@@ -148,7 +148,7 @@ public class SymbolTest {
      * @param pngFile the file containing the expected final rendering of the bar code, if this test verifies successful behavior
      * @param errorFile the file containing the expected error message, if this test verifies a failure
      */
-    public SymbolTest(Class< ? extends Symbol > symbolType,
+    public SymbolTest(Class< ? extends AbstractSymbol> symbolType,
                       Map< String, String > properties,
                       File codewordsFile,
                       File pngFile,
@@ -167,7 +167,7 @@ public class SymbolTest {
      */
     @TestTemplate
     public void test() throws Exception {
-        Symbol symbol = symbolType.getDeclaredConstructor().newInstance();
+        AbstractSymbol symbol = symbolType.getDeclaredConstructor().newInstance();
         symbol.setFontName(DEJA_VU_SANS.getFontName());
         try {
             setProperties(symbol, properties);
@@ -189,7 +189,7 @@ public class SymbolTest {
      * @throws IOException if there is any I/O error
      * @throws ReaderException if ZXing has an issue decoding the barcode image
      */
-    private void verifySuccess(Symbol symbol) throws IOException, ReaderException {
+    private void verifySuccess(AbstractSymbol symbol) throws IOException, ReaderException {
         if (symbol.errorMsg.length() > 0) {
             fail("got error message: " + symbol.errorMsg);
         }
@@ -242,7 +242,7 @@ public class SymbolTest {
      * @param symbol the symbol to be read
      * @return a ZXing reader that can read the specified symbol
      */
-    private static Reader findReader(Symbol symbol) {
+    private static Reader findReader(AbstractSymbol symbol) {
         if (symbol instanceof Code93) {
             return new Code93Reader();
         } else if (symbol instanceof Code3Of9) {
@@ -282,7 +282,7 @@ public class SymbolTest {
      * @param symbol the symbol which encoded the content
      * @return the barcode content, without the checksum
      */
-    private static String removeChecksum(String s, Symbol symbol) {
+    private static String removeChecksum(String s, AbstractSymbol symbol) {
         if (symbol instanceof Ean || symbol instanceof Upc) {
             return s.substring(0, s.length() - 1);
         } else {
@@ -298,7 +298,7 @@ public class SymbolTest {
      * @param symbol the symbol which encoded the content
      * @return the barcode content, without the start/stop characters
      */
-    private static String removeStartStopChars(String s, Symbol symbol) {
+    private static String removeStartStopChars(String s, AbstractSymbol symbol) {
         if (symbol instanceof Codabar) {
             return s.substring(1, s.length() - 1);
         } else {
@@ -312,7 +312,7 @@ public class SymbolTest {
      * @param symbol the symbol to check
      * @throws IOException if there is any I/O error
      */
-    private void verifyError(Symbol symbol) throws IOException {
+    private void verifyError(AbstractSymbol symbol) throws IOException {
         String expectedError = Files.readAllLines(errorFile.toPath(), StandardCharsets.UTF_8).get(0);
         assertTrue(symbol.errorMsg.toString().contains(expectedError));
     }
@@ -323,7 +323,7 @@ public class SymbolTest {
      * @param symbol the symbol to generate expectation files for
      * @throws IOException if there is any I/O error
      */
-    private void generateExpectationFiles(Symbol symbol) throws IOException {
+    private void generateExpectationFiles(AbstractSymbol symbol) throws IOException {
         if (symbol.errorMsg != null && symbol.errorMsg.length() > 0) {
             generateErrorExpectationFile(symbol);
         } else {
@@ -338,7 +338,7 @@ public class SymbolTest {
      * @param symbol the symbol to generate the error expectation file for
      * @throws IOException if there is any I/O error
      */
-    private void generateErrorExpectationFile(Symbol symbol) throws IOException {
+    private void generateErrorExpectationFile(AbstractSymbol symbol) throws IOException {
         if (!errorFile.exists()) {
             PrintWriter writer = new PrintWriter(errorFile);
             writer.println(symbol.errorMsg);
@@ -352,7 +352,7 @@ public class SymbolTest {
      * @param symbol the symbol to generate codewords for
      * @throws IOException if there is any I/O error
      */
-    private void generateCodewordsExpectationFile(Symbol symbol) throws IOException {
+    private void generateCodewordsExpectationFile(AbstractSymbol symbol) throws IOException {
         //if (!codewordsFile.exists()) {
             PrintWriter writer = new PrintWriter(codewordsFile);
             try {
@@ -375,7 +375,7 @@ public class SymbolTest {
      * @param symbol the symbol to draw
      * @throws IOException if there is any I/O error
      */
-    private void generatePngExpectationFile(Symbol symbol) throws IOException {
+    private void generatePngExpectationFile(AbstractSymbol symbol) throws IOException {
         BufferedImage img = draw(symbol, 10.0d);
         if (img != null) {
             ImageIO.write(img, "png", pngFile);
@@ -403,14 +403,14 @@ public class SymbolTest {
      * @param symbol the symbol to draw
      * @return the resultant image
      */
-    private static BufferedImage draw(Symbol symbol, double scalingFactor) {
+    private static BufferedImage draw(AbstractSymbol symbol, double scalingFactor) {
         int width = (int) (symbol.getWidth() * scalingFactor);
         int height = (int) (symbol.getHeight() * scalingFactor);
         if (width > 0 && height > 0) {
             BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
             Rectangle rectangle = new Rectangle(0, 0, img.getWidth(), img.getHeight());
             Graphics2D g2d = img.createGraphics();
-            GraphicsRenderer renderer = new GraphicsRenderer(g2d, rectangle,
+            BarcodeGraphicsRenderer renderer = new BarcodeGraphicsRenderer(g2d, rectangle,
                     scalingFactor, Color.WHITE, Color.BLACK, true, false);
             renderer.render(symbol);
             g2d.dispose();
@@ -427,7 +427,7 @@ public class SymbolTest {
      * @param properties the attribute names and values to set
      * @throws ReflectiveOperationException if there is any reflection error
      */
-    private static void setProperties(Symbol symbol, Map< String, String > properties) throws ReflectiveOperationException {
+    private static void setProperties(AbstractSymbol symbol, Map< String, String > properties) throws ReflectiveOperationException {
         for (Map.Entry< String, String > entry : properties.entrySet()) {
             String name = entry.getKey();
             String value = entry.getValue();

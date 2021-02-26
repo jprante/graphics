@@ -5,7 +5,7 @@ package org.xbib.graphics.barcode;
  * MSI Plessey can encode a string of numeric digits and has a range
  * of check digit options.
  */
-public class MsiPlessey extends Symbol {
+public class MsiPlessey extends AbstractSymbol {
 
     private final String[] MSI_PlessTable = {
             "12121212", "12121221", "12122112", "12122121", "12211212", "12211221",
@@ -184,5 +184,18 @@ public class MsiPlessey extends Symbol {
 
     public enum CheckDigit {
         NONE, MOD10, MOD10_MOD10, MOD11, MOD11_MOD10
+    }
+
+    public static class Provider implements SymbolProvider<MsiPlessey> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.MSI_PLESSEY;
+        }
+
+        @Override
+        public MsiPlessey provide() {
+            return new MsiPlessey();
+        }
     }
 }

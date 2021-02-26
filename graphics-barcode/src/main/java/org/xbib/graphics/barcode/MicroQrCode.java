@@ -10,7 +10,7 @@ import java.io.UnsupportedEncodingException;
  * QR Code symbols can encode characters in the Latin-1 set and Kanji
  * characters which are members of the Shift-JIS encoding scheme.
  */
-public class MicroQrCode extends Symbol {
+public class MicroQrCode extends AbstractSymbol {
     /* Table 5 - Encoding/Decoding table for Alphanumeric mode */
     private static final char[] RHODIUM = {
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D',
@@ -1589,5 +1589,18 @@ public class MicroQrCode extends Symbol {
 
     public enum EccMode {
         L, M, Q, H
+    }
+
+    public static class Provider implements SymbolProvider<MicroQrCode> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.MICRO_QRCODE;
+        }
+
+        @Override
+        public MicroQrCode provide() {
+            return new MicroQrCode();
+        }
     }
 }

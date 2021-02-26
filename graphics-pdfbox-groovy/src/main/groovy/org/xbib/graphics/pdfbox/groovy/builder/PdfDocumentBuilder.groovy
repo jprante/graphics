@@ -4,9 +4,16 @@ import groovy.transform.InheritConstructors
 import groovy.util.logging.Log4j2
 import groovy.xml.MarkupBuilder
 import org.apache.pdfbox.pdmodel.common.PDMetadata
-import org.xbib.graphics.pdfbox.groovy.*
+import org.xbib.graphics.pdfbox.groovy.Barcode
+import org.xbib.graphics.pdfbox.groovy.Cell
 import org.xbib.graphics.pdfbox.groovy.Document
+import org.xbib.graphics.pdfbox.groovy.HeaderFooterOptions
+import org.xbib.graphics.pdfbox.groovy.Image
 import org.xbib.graphics.pdfbox.groovy.Line
+import org.xbib.graphics.pdfbox.groovy.PageBreak
+import org.xbib.graphics.pdfbox.groovy.Row
+import org.xbib.graphics.pdfbox.groovy.Table
+import org.xbib.graphics.pdfbox.groovy.TextBlock
 import org.xbib.graphics.pdfbox.groovy.render.ParagraphRenderer
 import org.xbib.graphics.pdfbox.groovy.render.TableRenderer
 

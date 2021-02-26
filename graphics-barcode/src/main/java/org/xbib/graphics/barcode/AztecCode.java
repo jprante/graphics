@@ -9,7 +9,7 @@ import org.xbib.graphics.barcode.util.ReedSolomon;
  * 3000 alphabetic characters or 1900 bytes of data in a two-dimensional matrix
  * symbol.
  */
-public class AztecCode extends Symbol {
+public class AztecCode extends AbstractSymbol {
 
     private static final int[] COMPACT_AZTEC_MAP = { //27 x 27 data grid
             609, 608, 411, 413, 415, 417, 419, 421, 423, 425, 427, 429, 431, 433,
@@ -586,7 +586,7 @@ public class AztecCode extends Symbol {
 
         eciProcess(); // Get ECI mode
 
-        if ((inputDataType == DataType.GS1) && (readerInit)) {
+        if ((inputSymbolDataType == SymbolDataType.GS1) && (readerInit)) {
             errorMsg.append("Cannot encode in GS1 and Reader Initialisation mode at the same time");
             return false;
         }
@@ -1236,7 +1236,7 @@ public class AztecCode extends Symbol {
         /* Lookup input string in encoding table */
         maplength = 0;
 
-        if (inputDataType == DataType.GS1) {
+        if (inputSymbolDataType == SymbolDataType.GS1) {
             /* Add FNC1 to beginning of GS1 messages */
             charmap[maplength] = 0; // FLG
             typemap[maplength++] = 8; // PUNC
@@ -1277,7 +1277,7 @@ public class AztecCode extends Symbol {
         }
 
         for (i = 0; i < inputBytes.length; i++) {
-            if ((inputDataType == DataType.GS1) && ((inputBytes[i] & 0xFF) == '[')) {
+            if ((inputSymbolDataType == SymbolDataType.GS1) && ((inputBytes[i] & 0xFF) == '[')) {
                 /* FNC1 represented by FLG(0) */
                 charmap[maplength] = 0; // FLG
                 typemap[maplength++] = 8; // PUNC
@@ -1985,5 +1985,18 @@ public class AztecCode extends Symbol {
         }
 
         return binary.toString();
+    }
+
+    public static class Provider implements SymbolProvider<AztecCode> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.AUSTRALIA_POST;
+        }
+
+        @Override
+        public AztecCode provide() {
+            return new AztecCode();
+        }
     }
 }

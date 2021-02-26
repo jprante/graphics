@@ -6,7 +6,7 @@ package org.xbib.graphics.barcode;
  * Requires a numeric input up to 8 digits in length. Check digit is
  * calculated.
  */
-public class Code32 extends Symbol {
+public class Code32 extends AbstractSymbol {
     private char[] tabella = {
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'B', 'C', 'D', 'F',
             'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
@@ -21,27 +21,22 @@ public class Code32 extends Symbol {
         StringBuilder risultante;
         int[] codeword = new int[6];
         Code3Of9 c39 = new Code3Of9();
-
         if (content.length() > 8) {
             errorMsg.append("Input too long");
             return false;
         }
-
         if (!(content.matches("[0-9]+"))) {
             errorMsg.append("Invalid characters in input");
             return false;
         }
-
         /* Add leading zeros as required */
         localstr = new StringBuilder();
         for (i = content.length(); i < 8; i++) {
             localstr.append("0");
         }
         localstr.append(content);
-
         /* Calculate the check digit */
         checksum = 0;
-        checkpart = 0;
         for (i = 0; i < 4; i++) {
             checkpart = Character.getNumericValue(localstr.charAt(i * 2));
             checksum += checkpart;
@@ -52,7 +47,6 @@ public class Code32 extends Symbol {
                 checksum += checkpart;
             }
         }
-
         /* Add check digit to data string */
         checkdigit = checksum % 10;
         localstr.append((char) (checkdigit + '0'));
@@ -99,5 +93,18 @@ public class Code32 extends Symbol {
         this.pattern[0] = c39.pattern[0];
         this.plotSymbol();
         return true;
+    }
+
+    public static class Provider implements SymbolProvider<Code32> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.CODE32;
+        }
+
+        @Override
+        public Code32 provide() {
+            return new Code32();
+        }
     }
 }

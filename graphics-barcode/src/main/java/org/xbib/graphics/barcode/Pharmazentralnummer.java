@@ -4,7 +4,7 @@ package org.xbib.graphics.barcode;
  * PZN8 is a Code 39 based symbology used by the pharmaceutical industry in
  * Germany. PZN8 encodes a 7 digit number and includes a modulo-10 check digit.
  */
-public class Pharmazentralnummer extends Symbol {
+public class Pharmazentralnummer extends AbstractSymbol {
 
     /* Pharmazentral Nummer is a Code 3 of 9 symbol with an extra
      * check digit. Now generates PZN-8.
@@ -65,5 +65,18 @@ public class Pharmazentralnummer extends Symbol {
         rowHeight[0] = -1;
         plotSymbol();
         return true;
+    }
+
+    public static class Provider implements SymbolProvider<Pharmazentralnummer> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.PHARMAZENTRALNUMMER;
+        }
+
+        @Override
+        public Pharmazentralnummer provide() {
+            return new Pharmazentralnummer();
+        }
     }
 }

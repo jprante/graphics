@@ -12,7 +12,7 @@ import java.util.List;
  * and a "linear" element which can be UPC, EAN, Code 128 or
  * GS1 DataBar symbol.
  */
-public class Composite extends Symbol {
+public class Composite extends AbstractSymbol {
     /* CC-A component coefficients from ISO/IEC 24728:2006 Annex F */
     private int[] ccaCoeffs = {
             /* k = 4 */
@@ -435,11 +435,11 @@ public class Composite extends Symbol {
     private int linearWidth; // Width of Code 128 linear
 
     public Composite() {
-        inputDataType = DataType.GS1;
+        inputSymbolDataType = SymbolDataType.GS1;
     }
 
     @Override
-    public void setDataType(DataType dummy) {
+    public void setDataType(SymbolDataType dummy) {
         // Do nothing!
     }
 
@@ -555,7 +555,7 @@ public class Composite extends Symbol {
                             bottomShift = 7;
                             break;
                     }
-                    code128.setDataType(DataType.GS1);
+                    code128.setDataType(SymbolDataType.GS1);
                     code128.setContent(linearContent);
                     linearWidth = code128.symbolWidth;
                     linearRect = code128.getRectangles();
@@ -2842,5 +2842,18 @@ public class Composite extends Symbol {
 
     public enum CompositeMode {
         CC_A, CC_B, CC_C
+    }
+
+    public static class Provider implements SymbolProvider<Composite> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.COMPOSITE;
+        }
+
+        @Override
+        public Composite provide() {
+            return new Composite();
+        }
     }
 }

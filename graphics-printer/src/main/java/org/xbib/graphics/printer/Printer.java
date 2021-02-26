@@ -1,4 +1,4 @@
-package org.xbib.graphics.ghostscript;
+package org.xbib.graphics.printer;
 
 import javax.print.PrintService;
 import javax.print.attribute.standard.Media;

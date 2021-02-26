@@ -8,7 +8,7 @@ import java.awt.geom.Rectangle2D;
  * for the identification of pharmaceuticals. The symbology is able to encode
  * whole numbers between 4 and 64570080.
  */
-public class Pharmacode2Track extends Symbol {
+public class Pharmacode2Track extends AbstractSymbol {
 
     @Override
     public boolean encode() {
@@ -73,7 +73,7 @@ public class Pharmacode2Track extends Symbol {
     }
 
     @Override
-    protected void plotSymbol() {
+    public void plotSymbol() {
         int xBlock;
         int x, y, w, h;
         getRectangles().clear();
@@ -102,5 +102,18 @@ public class Pharmacode2Track extends Symbol {
         }
         symbolWidth = pattern[0].length() * 2;
         symbolHeight = defaultHeight;
+    }
+
+    public static class Provider implements SymbolProvider<Pharmacode2Track> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.PHARMACODE2TRACK;
+        }
+
+        @Override
+        public Pharmacode2Track provide() {
+            return new Pharmacode2Track();
+        }
     }
 }

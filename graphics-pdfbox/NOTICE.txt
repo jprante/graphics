@@ -1,0 +1,8 @@
+
+This work is based on
+
+https://github.com/rototor/pdfbox-graphics2d
+
+as of December 2020
+
+APache 2.0 License

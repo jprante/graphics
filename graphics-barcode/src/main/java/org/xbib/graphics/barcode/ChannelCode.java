@@ -4,7 +4,7 @@ package org.xbib.graphics.barcode;
  * Implements Channel Code according to ANSI/AIM BC12-1998.
  * Channel code encodes whole integer values between 0 and 7,742,862.
  */
-public class ChannelCode extends Symbol {
+public class ChannelCode extends AbstractSymbol {
     private int[] space = new int[11];
     private int[] bar = new int[11];
     private double currentValue;
@@ -150,6 +150,19 @@ public class ChannelCode extends Symbol {
                 horizontalSpacing += (char) (space[i] + '0');
                 horizontalSpacing += (char) (bar[i] + '0');
             }
+        }
+    }
+
+    public static class Provider implements SymbolProvider<ChannelCode> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.CHANNEL_CODE;
+        }
+
+        @Override
+        public ChannelCode provide() {
+            return new ChannelCode();
         }
     }
 }

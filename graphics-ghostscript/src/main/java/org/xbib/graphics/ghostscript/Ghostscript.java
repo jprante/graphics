@@ -8,7 +8,6 @@ import org.xbib.graphics.ghostscript.internal.GhostscriptLibraryLoader;
 import org.xbib.graphics.ghostscript.internal.LoggingOutputStream;
 import org.xbib.graphics.ghostscript.internal.NullOutputStream;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -32,7 +31,7 @@ public class Ghostscript {
 
     private static final Logger logger = Logger.getLogger(Ghostscript.class.getName());
 
-    public static final String ENCODING_PARAMETER = "org.xbib.graphics.gs.encoding";
+    public static final String ENCODING_PARAMETER = "org.xbib.graphics.ghostscript.encoding";
 
     private static Ghostscript instance;
 
@@ -46,26 +45,21 @@ public class Ghostscript {
 
     private static OutputStream stdErr;
 
-    private static String tmpDir;
+    private static Path tmpDir;
 
     private Ghostscript() {
     }
 
     public static synchronized Ghostscript getInstance() throws IOException {
         if (instance == null) {
-            tmpDir = System.getenv("TMPDIR");
-            if (tmpDir != null) {
-                if (new File(tmpDir).mkdirs()) {
-                    logger.info("tmp dir " + tmpDir + " created");
-                }
-            }
+            prepareTmp();
             instance = new Ghostscript();
             libraryInstance = getGhostscriptLibrary();
             nativeInstanceByRef = getNativeInstanceByRef();
-            //stdOut = new LoggingOutputStream(logger);
-            //stdErr = new LoggingOutputStream(logger);
-            //instance.setStdOut(stdOut);
-            //instance.setStdErr(stdErr);
+            stdOut = new LoggingOutputStream(logger);
+            stdErr = new LoggingOutputStream(logger);
+            instance.setStdOut(stdOut);
+            instance.setStdErr(stdErr);
         }
         return instance;
     }
@@ -96,19 +90,16 @@ public class Ghostscript {
      * @throws IOException if delete of instance fails
      */
     public static synchronized void deleteInstance() throws IOException {
-        if (libraryInstance != null) {
-            //libraryInstance.gsapi_exit(nativeInstanceByRef.getValue());
-            libraryInstance.gsapi_delete_instance(nativeInstanceByRef.getValue());
-            libraryInstance = null;
-        }
-        if (nativeInstanceByRef != null) {
-            nativeInstanceByRef = null;
-        }
         if (instance != null) {
-            if (tmpDir != null) {
-                deleteGs(tmpDir);
+            if (libraryInstance != null) {
+                libraryInstance.gsapi_delete_instance(nativeInstanceByRef.getValue());
+                libraryInstance = null;
+            }
+            if (nativeInstanceByRef != null) {
+                nativeInstanceByRef = null;
             }
             instance = null;
+            deleteTmp();
         }
     }
 
@@ -118,6 +109,7 @@ public class Ghostscript {
      * @return the Ghostscript revision data.
      */
     public static GhostscriptRevision getRevision() {
+        getGhostscriptLibrary();
         GhostscriptLibrary.gsapi_revision_s revision = new GhostscriptLibrary.gsapi_revision_s();
         libraryInstance.gsapi_revision(revision, revision.size());
         GhostscriptRevision result = new GhostscriptRevision();
@@ -192,9 +184,8 @@ public class Ghostscript {
      * @throws IOException if initialize fails
      */
     public void initialize(String[] args) throws IOException {
-        if (libraryInstance == null || nativeInstanceByRef == null) {
-            return;
-        }
+        getGhostscriptLibrary();
+        getNativeInstanceByRef();
         int result;
         GhostscriptLibrary.stdin_fn stdinCallback = null;
         if (getStdIn() != null) {
@@ -265,12 +256,10 @@ public class Ghostscript {
      * @throws IOException if exit fails
      */
     public void exit() throws IOException {
-        if (libraryInstance == null || nativeInstanceByRef == null) {
-            return;
-        }
+        getGhostscriptLibrary();
+        getNativeInstanceByRef();
         Pointer pointer = nativeInstanceByRef.getValue();
         if (pointer != null) {
-            logger.info("gsapi_exit " + pointer);
             int result = libraryInstance.gsapi_exit(pointer);
             if (result != 0) {
                 throw new IOException("can not exit Ghostscript interpreter, error code " + result);
@@ -286,9 +275,8 @@ public class Ghostscript {
      * @throws IOException if run fails
      */
     public void runString(String string) throws IOException {
-        if (libraryInstance == null || nativeInstanceByRef == null) {
-            return;
-        }
+        getGhostscriptLibrary();
+        getNativeInstanceByRef();
         IntByReference exitCode = new IntByReference();
         libraryInstance.gsapi_run_string_begin(nativeInstanceByRef.getValue(), 0, exitCode);
         if (exitCode.getValue() != 0) {
@@ -320,9 +308,8 @@ public class Ghostscript {
      * @throws IOException if run of file fails
      */
     public void runFile(String fileName) throws IOException {
-        if (libraryInstance == null || nativeInstanceByRef == null) {
-            return;
-        }
+        getGhostscriptLibrary();
+        getNativeInstanceByRef();
         IntByReference exitCode = new IntByReference();
         libraryInstance.gsapi_run_file(nativeInstanceByRef.getValue(), fileName, 0, exitCode);
         if (exitCode.getValue() != 0) {
@@ -330,25 +317,47 @@ public class Ghostscript {
         }
     }
 
-    private static void deleteGs(String path) throws IOException {
-        logger.info("delete gs_* in " + path);
+    private static void prepareTmp() throws IOException {
+        String tmp = System.getenv("TMPDIR"); // the variable that ghostscript uses
+        if (tmp == null) {
+            tmp = System.getenv("TEMP");
+        }
+        if (tmp == null) {
+            throw new IllegalStateException("no TEMP/TMPDIR environment set for ghostscript");
+        }
+        tmpDir = Paths.get(tmp);
+        deleteTmp();
+        Files.createDirectories(tmpDir);
+    }
+
+    private static void deleteTmp() throws IOException {
+        if (tmpDir == null) {
+            return;
+        }
+        if (!Files.exists(tmpDir)) {
+            return;
+        }
         try {
-            Files.walkFileTree(Paths.get(path), new SimpleFileVisitor<>() {
+            Files.walkFileTree(tmpDir, new SimpleFileVisitor<>() {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    if (file.startsWith("gs_")) {
-                        Files.delete(file);
-                    }
+                    logger.info("deleting " + file);
+                    Files.deleteIfExists(file);
                     return FileVisitResult.CONTINUE;
                 }
 
                 @Override
-                public FileVisitResult postVisitDirectory(Path dir, IOException exc) {
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                    logger.info("deleting " + dir);
+                    Files.deleteIfExists(dir);
                     return FileVisitResult.CONTINUE;
                 }
             });
         } catch (NoSuchFileException e) {
             logger.log(Level.WARNING, e.getMessage(), e);
+        } finally {
+            logger.info("deleting " + tmpDir);
+            Files.deleteIfExists(tmpDir);
         }
     }
 }

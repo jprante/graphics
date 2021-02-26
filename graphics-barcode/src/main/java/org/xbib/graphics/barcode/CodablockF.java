@@ -9,10 +9,10 @@ import java.io.UnsupportedEncodingException;
  * encode any 8-bit ISO 8859-1 (Latin-1) data up to approximately 1000
  * alpha-numeric characters or 2000 numeric digits in length.
  */
-public class CodablockF extends Symbol {
+public class CodablockF extends AbstractSymbol {
 
     /* Annex A Table A.1 */
-    private String[] C128Table = {"212222", "222122", "222221", "121223", "121322", "131222", "122213",
+    private final String[] c128Table = {"212222", "222122", "222221", "121223", "121322", "131222", "122213",
             "122312", "132212", "221213", "221312", "231212", "112232", "122132", "122231", "113222",
             "123122", "123221", "223211", "221132", "221231", "213212", "223112", "312131", "311222",
             "321122", "321221", "312212", "322112", "322211", "212123", "212321", "232121", "111323",
@@ -115,7 +115,7 @@ public class CodablockF extends Symbol {
         k1_sum = 0;
         k2_sum = 0;
         for (i = 0; i < input_length; i++) {
-            if ((inputDataType == DataType.GS1) && source[i] == '[') {
+            if ((inputSymbolDataType == SymbolDataType.GS1) && source[i] == '[') {
                 k1_sum += (i + 1) * 29; /* GS */
                 k2_sum += i * 29;
             } else {
@@ -208,35 +208,35 @@ public class CodablockF extends Symbol {
 
             row_pattern = new StringBuilder();
             /* Start character */
-            row_pattern.append(C128Table[103]); /* Always Start A */
+            row_pattern.append(c128Table[103]); /* Always Start A */
 
             switch (subset_selector[i]) {
                 case MODEA:
-                    row_pattern.append(C128Table[98]);
+                    row_pattern.append(c128Table[98]);
                     encodeInfo.append("MODEA ");
                     break;
                 case MODEB:
-                    row_pattern.append(C128Table[100]);
+                    row_pattern.append(c128Table[100]);
                     encodeInfo.append("MODEB ");
                     break;
                 case MODEC:
-                    row_pattern.append(C128Table[99]);
+                    row_pattern.append(c128Table[99]);
                     encodeInfo.append("MODEC ");
                     break;
             }
-            row_pattern.append(C128Table[row_indicator[i]]);
-            encodeInfo.append(Integer.toString(row_indicator[i])).append(" ");
+            row_pattern.append(c128Table[row_indicator[i]]);
+            encodeInfo.append(row_indicator[i]).append(" ");
 
             for (j = 0; j < columns_needed; j++) {
-                row_pattern.append(C128Table[blockmatrix[i][j]]);
-                encodeInfo.append(Integer.toString(blockmatrix[i][j])).append(" ");
+                row_pattern.append(c128Table[blockmatrix[i][j]]);
+                encodeInfo.append(blockmatrix[i][j]).append(" ");
             }
 
-            row_pattern.append(C128Table[row_check[i]]);
-            encodeInfo.append("(").append(Integer.toString(row_check[i])).append(") ");
+            row_pattern.append(c128Table[row_check[i]]);
+            encodeInfo.append("(").append(row_check[i]).append(") ");
 
             /* Stop character */
-            row_pattern.append(C128Table[106]);
+            row_pattern.append(c128Table[106]);
 
             /* Write the information into the symbol */
             pattern[i] = row_pattern.toString();
@@ -293,7 +293,7 @@ public class CodablockF extends Symbol {
                 c = columns_needed;
                 current_mode = character_subset_select(input_position);
                 subset_selector[current_row] = current_mode;
-                if ((current_row == 0) && (inputDataType == DataType.GS1)) {
+                if ((current_row == 0) && (inputSymbolDataType == SymbolDataType.GS1)) {
                     /* Section 4.4.7.1 */
                     blockmatrix[current_row][column_position] = 102; /* FNC1 */
                     column_position++;
@@ -301,7 +301,7 @@ public class CodablockF extends Symbol {
                 }
             }
 
-            if ((inputDataType == DataType.GS1) && (source[input_position] == '[')) {
+            if ((inputSymbolDataType == SymbolDataType.GS1) && (source[input_position] == '[')) {
                 blockmatrix[current_row][column_position] = 102; /* FNC1 */
                 column_position++;
                 c--;
@@ -487,7 +487,7 @@ public class CodablockF extends Symbol {
             if (!done) {
                 if (((current_mode == cfMode.MODEA) || (current_mode == cfMode.MODEB))
                         && ((findSubset(source[input_position]) == Mode.ABORC)
-                        || ((inputDataType == DataType.GS1) && (source[input_position] == '[')))) {
+                        || ((inputSymbolDataType == SymbolDataType.GS1) && (source[input_position] == '[')))) {
                     /* Count the number of numeric digits */
                     /*  If 4 or more numeric data characters occur together when in subsets A or B:
                      a.      If there is an even number of numeric data characters, insert a Code C character before the
@@ -498,12 +498,12 @@ public class CodablockF extends Symbol {
                     j = 0;
                     do {
                         i++;
-                        if ((inputDataType == DataType.GS1) && (source[input_position + j] == '[')) {
+                        if ((inputSymbolDataType == SymbolDataType.GS1) && (source[input_position + j] == '[')) {
                             i++;
                         }
                         j++;
                     } while ((findSubset(source[input_position + j]) == Mode.ABORC)
-                            || ((inputDataType == DataType.GS1) && (source[input_position + j] == '[')));
+                            || ((inputSymbolDataType == SymbolDataType.GS1) && (source[input_position + j] == '[')));
                     i--;
 
                     if (i >= 4) {
@@ -793,7 +793,7 @@ public class CodablockF extends Symbol {
     }
 
     @Override
-    protected void plotSymbol() {
+    public void plotSymbol() {
         int xBlock, yBlock;
         int x, y, w, h;
         boolean black;
@@ -848,5 +848,18 @@ public class CodablockF extends Symbol {
 
     private enum cfMode {
         MODEA, MODEB, MODEC
+    }
+
+    public static class Provider implements SymbolProvider<CodablockF> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.CODABLOCK_F;
+        }
+
+        @Override
+        public CodablockF provide() {
+            return new CodablockF();
+        }
     }
 }

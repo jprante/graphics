@@ -18,7 +18,7 @@ import java.awt.geom.Rectangle2D;
  *
  * @author <a href="mailto:jakel2006@me.com">Robert Elliott</a>
  */
-public class Upc extends Symbol {
+public class Upc extends AbstractSymbol {
 
     private boolean useAddOn;
 
@@ -330,7 +330,7 @@ public class Upc extends Symbol {
     }
 
     @Override
-    protected void plotSymbol() {
+    public void plotSymbol() {
         int xBlock;
         int x, y, w, h;
         boolean black;
@@ -441,5 +441,18 @@ public class Upc extends Symbol {
 
     public enum Mode {
         UPCA, UPCE
+    }
+
+    public static class Provider implements SymbolProvider<Upc> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.UPC;
+        }
+
+        @Override
+        public Upc provide() {
+            return new Upc();
+        }
     }
 }

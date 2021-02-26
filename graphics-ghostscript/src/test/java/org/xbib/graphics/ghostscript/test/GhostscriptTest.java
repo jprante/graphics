@@ -1,5 +1,6 @@
 package org.xbib.graphics.ghostscript.test;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -7,13 +8,11 @@ import org.xbib.graphics.ghostscript.Ghostscript;
 import org.xbib.graphics.ghostscript.GhostscriptRevision;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class GhostscriptTest {
@@ -25,6 +24,11 @@ public class GhostscriptTest {
     @BeforeAll
     public static void setup() throws IOException {
         gs = Ghostscript.getInstance();
+    }
+
+    @AfterAll
+    public static void down() throws IOException {
+        Ghostscript.deleteInstance();
     }
 
     @Test
@@ -76,24 +80,17 @@ public class GhostscriptTest {
     public void testStdOut() throws IOException {
         InputStream is = new ByteArrayInputStream("devicenames ==\n".getBytes());
         gs.setStdIn(is);
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        gs.setStdOut(os);
         String[] args = { "-dNODISPLAY", "-sOutputFile=%stdout", "-f", "-"};
         gs.initialize(args);
         gs.exit();
-        assertTrue(os.toString().length() > 0);
-        os.close();
         is.close();
     }
 
     @Test
     public void testStdErr() throws IOException {
-        ByteArrayOutputStream os = null;
         try {
             InputStream is = new ByteArrayInputStream("stupid\n".getBytes());
             gs.setStdIn(is);
-            os = new ByteArrayOutputStream();
-            gs.setStdErr(os);
             String[] args = { "-dNODISPLAY", "-sOutputFile=%stdout", "-f", "-"};
             gs.initialize(args);
             gs.exit();
@@ -101,14 +98,6 @@ public class GhostscriptTest {
         } catch (Exception e) {
             if (!e.getMessage().contains("error code -100")) {
                 fail(e.getMessage());
-            }
-        } finally {
-            try {
-                assert os != null;
-                assertTrue(os.toString().length() > 0);
-                os.close();
-            } catch (IOException e2) {
-                fail(e2.getMessage());
             }
         }
     }

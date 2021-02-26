@@ -7,7 +7,7 @@ import java.awt.geom.Rectangle2D;
  * Encoding supports full 7-bit ASCII input up to a maximum of 49 characters
  * or 81 numeric digits. GS1 data encoding is also supported.
  */
-public class Code49 extends Symbol {
+public class Code49 extends AbstractSymbol {
 
     private final String[] c49_table7 = {
             /* Table 7: Code 49 ASCII Chart */
@@ -988,7 +988,7 @@ public class Code49 extends Symbol {
             return false;
         }
 
-        if (inputDataType == DataType.GS1) {
+        if (inputSymbolDataType == SymbolDataType.GS1) {
             intermediate.append("*"); // FNC1
         }
         for (i = 0; i < length; i++) {
@@ -996,7 +996,7 @@ public class Code49 extends Symbol {
                 errorMsg.append("Invalid characters in input");
                 return false;
             }
-            if ((inputDataType == DataType.GS1) && (content.charAt(i) == '[')) {
+            if ((inputSymbolDataType == SymbolDataType.GS1) && (content.charAt(i) == '[')) {
                 intermediate.append("*"); // FNC1
             } else {
                 intermediate.append(c49_table7[content.charAt(i)]);
@@ -1293,7 +1293,7 @@ public class Code49 extends Symbol {
     }
 
     @Override
-    protected void plotSymbol() {
+    public void plotSymbol() {
         int xBlock, yBlock;
         int x, y, w, h;
         boolean black;
@@ -1341,5 +1341,18 @@ public class Code49 extends Symbol {
         symbolWidth += 30;
         symbolHeight += 2;
         mergeVerticalBlocks();
+    }
+
+    public static class Provider implements SymbolProvider<Code49> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.CODE49;
+        }
+
+        @Override
+        public Code49 provide() {
+            return new Code49();
+        }
     }
 }

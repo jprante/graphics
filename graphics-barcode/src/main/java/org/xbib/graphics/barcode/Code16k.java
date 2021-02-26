@@ -10,7 +10,7 @@ import java.io.UnsupportedEncodingException;
  * of any 8-bit ISO 8859-1 (Latin-1) data with a maximum data capacity of 77
  * alpha-numeric characters or 154 numerical digits.
  */
-public class Code16k extends Symbol {
+public class Code16k extends AbstractSymbol {
 
     /* EN 12323 Table 1 - "Code 16K" character encodations */
     private static final String[] C_16_K_TABLE = {
@@ -137,7 +137,7 @@ public class Code16k extends Symbol {
         indexchaine = 0;
 
         mode = findSubset(inputData[indexchaine]);
-        if ((inputDataType == DataType.GS1) && (inputData[indexchaine] == '[')) {
+        if ((inputSymbolDataType == SymbolDataType.GS1) && (inputData[indexchaine] == '[')) {
             mode = Mode.ABORC;
         } /* FNC1 */
 
@@ -152,7 +152,7 @@ public class Code16k extends Symbol {
                 indexchaine++;
                 if (indexchaine < input_length) {
                     mode = findSubset(inputData[indexchaine]);
-                    if ((inputDataType == DataType.GS1) && (inputData[indexchaine] == '[')) {
+                    if ((inputSymbolDataType == SymbolDataType.GS1) && (inputData[indexchaine] == '[')) {
                         mode = Mode.ABORC;
                     } /* FNC1 */
                 }
@@ -280,14 +280,14 @@ public class Code16k extends Symbol {
                 }
             }
 
-            if ((set[i] == 'C') && (!((inputDataType == DataType.GS1) && (content.charAt(i) == '[')))) {
+            if ((set[i] == 'C') && (!((inputSymbolDataType == SymbolDataType.GS1) && (content.charAt(i) == '[')))) {
                 glyph_count = glyph_count + 0.5;
             } else {
                 glyph_count = glyph_count + 1.0;
             }
         }
 
-        if ((inputDataType == DataType.GS1) && (set[0] != 'A')) {
+        if ((inputSymbolDataType == SymbolDataType.GS1) && (set[0] != 'A')) {
             /* FNC1 can be integrated with mode character */
             glyph_count--;
         }
@@ -327,7 +327,7 @@ public class Code16k extends Symbol {
             if (m == 2) {
                 m = 5;
             }
-            if (inputDataType == DataType.GS1) {
+            if (inputSymbolDataType == SymbolDataType.GS1) {
                 errorMsg.append("Cannot use both GS1 mode and Reader Initialisation");
                 return false;
             } else {
@@ -339,7 +339,7 @@ public class Code16k extends Symbol {
             values[bar_characters + 1] = 96; /* FNC3 */
             bar_characters += 2;
         } else {
-            if (inputDataType == DataType.GS1) {
+            if (inputSymbolDataType == SymbolDataType.GS1) {
                 /* Integrate FNC1 */
                 switch (set[0]) {
                     case 'B':
@@ -461,7 +461,7 @@ public class Code16k extends Symbol {
                 bar_characters++;
             }
 
-            if (!((inputDataType == DataType.GS1) && (inputData[read] == '['))) {
+            if (!((inputSymbolDataType == SymbolDataType.GS1) && (inputData[read] == '['))) {
                 switch (set[read]) { /* Encode data characters */
                     case 'A':
                     case 'a':
@@ -712,7 +712,7 @@ public class Code16k extends Symbol {
     }
 
     @Override
-    protected void plotSymbol() {
+    public void plotSymbol() {
         int xBlock, yBlock;
         int x, y, w, h;
         boolean black;
@@ -766,4 +766,16 @@ public class Code16k extends Symbol {
         NULL, SHIFTA, LATCHA, SHIFTB, LATCHB, SHIFTC, LATCHC, AORB, ABORC, CANDB, CANDBB
     }
 
+    public static class Provider implements SymbolProvider<Code16k> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.CODE16K;
+        }
+
+        @Override
+        public Code16k provide() {
+            return new Code16k();
+        }
+    }
 }

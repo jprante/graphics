@@ -6,7 +6,7 @@ package org.xbib.graphics.barcode;
  * DataBar expanded encodes GS1 data in either a linear or stacked
  * format.
  */
-public class DataBarExpanded extends Symbol {
+public class DataBarExpanded extends AbstractSymbol {
 
     private static final int[] G_SUM_EXP = {
             0, 348, 1388, 2948, 3988
@@ -77,7 +77,7 @@ public class DataBarExpanded extends Symbol {
 
     public DataBarExpanded() {
         linkageFlag = false;
-        inputDataType = DataType.GS1;
+        inputSymbolDataType = SymbolDataType.GS1;
     }
 
     private static int calculateRemainder(int binaryStringLength) {
@@ -104,7 +104,7 @@ public class DataBarExpanded extends Symbol {
     ;
 
     @Override
-    public void setDataType(DataType dummy) {
+    public void setDataType(SymbolDataType dummy) {
         // Do nothing!
     }
 
@@ -1648,5 +1648,18 @@ public class DataBarExpanded extends Symbol {
 
     private enum EncodeMode {
         NUMERIC, ALPHA, ISOIEC, INVALID_CHAR, ANY_ENC, ALPHA_OR_ISO
+    }
+
+    public static class Provider implements SymbolProvider<DataBarExpanded> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.DATABAR_EXPANDED;
+        }
+
+        @Override
+        public DataBarExpanded provide() {
+            return new DataBarExpanded();
+        }
     }
 }

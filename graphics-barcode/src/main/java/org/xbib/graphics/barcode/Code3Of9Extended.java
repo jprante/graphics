@@ -5,7 +5,7 @@ package org.xbib.graphics.barcode;
  * Supports encoding of all characters in the 7-bit ASCII table. A
  * modulo-43 check digit can be added if required.
  */
-public class Code3Of9Extended extends Symbol {
+public class Code3Of9Extended extends AbstractSymbol {
 
     private final String[] ECode39 = {
             "%U", "$A", "$B", "$C", "$D", "$E", "$F", "$G", "$H", "$I", "$J", "$K",
@@ -75,5 +75,18 @@ public class Code3Of9Extended extends Symbol {
 
     public enum CheckDigit {
         NONE, MOD43
+    }
+
+    public static class Provider implements SymbolProvider<Code3Of9Extended> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.CODE39_EXT;
+        }
+
+        @Override
+        public Code3Of9Extended provide() {
+            return new Code3Of9Extended();
+        }
     }
 }

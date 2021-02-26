@@ -8,7 +8,7 @@ import org.xbib.graphics.barcode.util.ReedSolomon;
  * Aztec Runes is a fixed-size matrix symbology which can encode whole
  * integer values between 0 and 255.
  */
-public class AztecRune extends Symbol {
+public class AztecRune extends AbstractSymbol {
 
     private int[] bitPlacementMap = {
             1, 1, 2, 3, 4, 5, 6, 7, 8, 0, 1,
@@ -164,5 +164,18 @@ public class AztecRune extends Symbol {
 
         plotSymbol();
         return true;
+    }
+
+    public static class Provider implements SymbolProvider<AztecRune> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.AZTEC_RUNE;
+        }
+
+        @Override
+        public AztecRune provide() {
+            return new AztecRune();
+        }
     }
 }

@@ -3,7 +3,7 @@ package org.xbib.graphics.barcode.output;
 import org.junit.jupiter.api.Test;
 import org.xbib.graphics.barcode.Code3Of9;
 import org.xbib.graphics.barcode.HumanReadableLocation;
-import org.xbib.graphics.barcode.render.GraphicsRenderer;
+import org.xbib.graphics.barcode.render.BarcodeGraphicsRenderer;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -26,7 +26,7 @@ public class Code39Test {
         int width = (int) (code3Of9.getWidth() * scalingFactor);
         int height = (int) (code3Of9.getHeight() * scalingFactor);
         BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
-        GraphicsRenderer renderer = createRenderer(bufferedImage, scalingFactor);
+        BarcodeGraphicsRenderer renderer = createRenderer(bufferedImage, scalingFactor);
         renderer.render(code3Of9);
         renderer.close();
         OutputStream outputStream = Files.newOutputStream(Paths.get("build/barcode1.png"));
@@ -42,7 +42,7 @@ public class Code39Test {
         //code3Of9.setContent("20180123456");
         code3Of9.setContent("11111111111");
         BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
-        GraphicsRenderer renderer = createRenderer(bufferedImage, 3.0d);
+        BarcodeGraphicsRenderer renderer = createRenderer(bufferedImage, 3.0d);
         renderer.render(code3Of9);
         renderer.close();
         OutputStream outputStream = Files.newOutputStream(Paths.get("build/barcode2.png"));
@@ -50,9 +50,9 @@ public class Code39Test {
         outputStream.close();
     }
 
-    private GraphicsRenderer createRenderer(BufferedImage bufferedImage, double scalingFactor) {
+    private BarcodeGraphicsRenderer createRenderer(BufferedImage bufferedImage, double scalingFactor) {
         Graphics2D g2d = bufferedImage.createGraphics();
         Rectangle rectangle = new Rectangle(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
-        return new GraphicsRenderer(g2d, rectangle, scalingFactor, Color.WHITE, Color.BLACK, false, false);
+        return new BarcodeGraphicsRenderer(g2d, rectangle, scalingFactor, Color.WHITE, Color.BLACK, false, false);
     }
 }

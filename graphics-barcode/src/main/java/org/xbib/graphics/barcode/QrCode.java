@@ -11,7 +11,7 @@ import java.io.UnsupportedEncodingException;
  * Latin-1 set and Kanji characters which are members of the Shift-JIS encoding
  * scheme.
  */
-public class QrCode extends Symbol {
+public class QrCode extends AbstractSymbol {
 
     /* Table 5 - Encoding/Decoding table for Alphanumeric mode */
     private final char[] rhodium = {
@@ -658,7 +658,7 @@ public class QrCode extends Symbol {
                 if (isXAlpha((char) (inputData[i] & 0xFF))) {
                     inputMode[i] = qrMode.ALPHANUM;
                 }
-                if ((inputDataType == DataType.GS1) && (inputData[i] == '[')) {
+                if ((inputSymbolDataType == SymbolDataType.GS1) && (inputData[i] == '[')) {
                     inputMode[i] = qrMode.ALPHANUM;
                 }
                 if (isXNumeric((char) (inputData[i] & 0xff))) {
@@ -682,7 +682,7 @@ public class QrCode extends Symbol {
             count += 12;
         }
 
-        if (inputDataType == DataType.GS1) {
+        if (inputSymbolDataType == SymbolDataType.GS1) {
             count += 4;
         }
 
@@ -924,7 +924,7 @@ public class QrCode extends Symbol {
             count += 12;
         }
 
-        if (inputDataType == DataType.GS1) {
+        if (inputSymbolDataType == SymbolDataType.GS1) {
             count += 4;
         }
 
@@ -1031,7 +1031,7 @@ public class QrCode extends Symbol {
             }
         }
 
-        if (inputDataType == DataType.GS1) {
+        if (inputSymbolDataType == SymbolDataType.GS1) {
             binary.append("0101"); /* FNC1 */
 
         }
@@ -1137,7 +1137,7 @@ public class QrCode extends Symbol {
                             // Process 8-bit byte
                             int lbyte = (inputData[position + i] & 0xFF);
 
-                            if ((inputDataType == DataType.GS1) && (lbyte == '[')) {
+                            if ((inputSymbolDataType == SymbolDataType.GS1) && (lbyte == '[')) {
                                 lbyte = 0x1d; /* FNC1 */
 
                             }
@@ -1164,14 +1164,14 @@ public class QrCode extends Symbol {
                     while (i < short_data_block_length) {
 
                         if (!alphanumPercent) {
-                            if ((inputDataType == DataType.GS1) && (inputData[position + i] == '%')) {
+                            if ((inputSymbolDataType == SymbolDataType.GS1) && (inputData[position + i] == '%')) {
                                 first = positionOf('%', rhodium);
                                 second = positionOf('%', rhodium);
                                 count = 2;
                                 prod = (first * 45) + second;
                                 i++;
                             } else {
-                                if ((inputDataType == DataType.GS1) && (inputData[position + i] == '[')) {
+                                if ((inputSymbolDataType == SymbolDataType.GS1) && (inputData[position + i] == '[')) {
                                     first = positionOf('%', rhodium); /* FNC1 */
 
                                 } else {
@@ -1183,13 +1183,13 @@ public class QrCode extends Symbol {
 
                                 if (i < short_data_block_length) {
                                     if (inputMode[position + i] == qrMode.ALPHANUM) {
-                                        if ((inputDataType == DataType.GS1) && (inputData[position + i] == '%')) {
+                                        if ((inputSymbolDataType == SymbolDataType.GS1) && (inputData[position + i] == '%')) {
                                             second = positionOf('%', rhodium);
                                             count = 2;
                                             prod = (first * 45) + second;
                                             alphanumPercent = true;
                                         } else {
-                                            if ((inputDataType == DataType.GS1) && (inputData[position + i] == '[')) {
+                                            if ((inputSymbolDataType == SymbolDataType.GS1) && (inputData[position + i] == '[')) {
                                                 second = positionOf('%', rhodium); /* FNC1 */
 
                                             } else {
@@ -1211,13 +1211,13 @@ public class QrCode extends Symbol {
 
                             if (i < short_data_block_length) {
                                 if (inputMode[position + i] == qrMode.ALPHANUM) {
-                                    if ((inputDataType == DataType.GS1) && (inputData[position + i] == '%')) {
+                                    if ((inputSymbolDataType == SymbolDataType.GS1) && (inputData[position + i] == '%')) {
                                         second = positionOf('%', rhodium);
                                         count = 2;
                                         prod = (first * 45) + second;
                                         alphanumPercent = true;
                                     } else {
-                                        if ((inputDataType == DataType.GS1) && (inputData[position + i] == '[')) {
+                                        if ((inputSymbolDataType == SymbolDataType.GS1) && (inputData[position + i] == '[')) {
                                             second = positionOf('%', rhodium); /* FNC1 */
 
                                         } else {
@@ -2004,5 +2004,18 @@ public class QrCode extends Symbol {
     public enum EccMode {
 
         L, M, Q, H
+    }
+
+    public static class Provider implements SymbolProvider<QrCode> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.QRCODE;
+        }
+
+        @Override
+        public QrCode provide() {
+            return new QrCode();
+        }
     }
 }

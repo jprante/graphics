@@ -12,16 +12,16 @@ import java.awt.geom.Rectangle2D;
  * POSTNET and PLANET both use numerical input data and include a modulo-10
  * check digit.
  */
-public class Postnet extends Symbol {
+public class Postnet extends AbstractSymbol {
 
     private static final String[] PN_TABLE = {
             "LLSSS", "SSSLL", "SSLSL", "SSLLS", "SLSSL", "SLSLS", "SLLSS", "LSSSL", "LSSLS", "LSLSS"
     };
 
-    ;
     private static final String[] PL_TABLE = {
             "SSLLL", "LLLSS", "LLSLS", "LLSSL", "LSLLS", "LSLSL", "LSSLL", "SLLLS", "SLLSL", "SLSLL"
     };
+
     private Mode mode;
 
     public Postnet() {
@@ -140,7 +140,7 @@ public class Postnet extends Symbol {
     }
 
     @Override
-    protected void plotSymbol() {
+    public void plotSymbol() {
         int xBlock, shortHeight;
         double x, y, w, h;
         getRectangles().clear();
@@ -181,5 +181,18 @@ public class Postnet extends Symbol {
 
     public enum Mode {
         PLANET, POSTNET
+    }
+
+    public static class Provider implements SymbolProvider<Postnet> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.POSTNET;
+        }
+
+        @Override
+        public Postnet provide() {
+            return new Postnet();
+        }
     }
 }

@@ -14,7 +14,7 @@ import java.awt.geom.Rectangle2D;
  * generally for internal use only. Check digit is calculated and should not
  * be in input data. Leading zeroes are added as required.
  */
-public class Ean extends Symbol {
+public class Ean extends AbstractSymbol {
 
     private boolean useAddOn;
 
@@ -244,7 +244,7 @@ public class Ean extends Symbol {
     }
 
     @Override
-    protected void plotSymbol() {
+    public void plotSymbol() {
         int xBlock;
         int x, y, w, h;
         boolean black;
@@ -362,5 +362,18 @@ public class Ean extends Symbol {
 
     public enum Mode {
         EAN8, EAN13
+    }
+
+    public static class Provider implements SymbolProvider<Ean> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.EAN;
+        }
+
+        @Override
+        public Ean provide() {
+            return new Ean();
+        }
     }
 }

@@ -74,13 +74,8 @@ class PdfDocument implements Closeable {
                 papersize = PDRectangle.A4
                 break
         }
-        switch (document.orientation) {
-            case 'landscape':
+        if (document.orientation == 'landscape') {
                 papersize = swapOrientation(papersize)
-                break;
-            case 'portrait':
-            default:
-                break
         }
         document.width = papersize.width as int
         document.height = papersize.height as int

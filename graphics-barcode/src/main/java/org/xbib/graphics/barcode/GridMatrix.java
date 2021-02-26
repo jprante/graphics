@@ -9,7 +9,7 @@ import java.io.UnsupportedEncodingException;
  * 8859-1 (Latin-1) character set as well as those in the GB-2312 character set.
  * Input is assumed to be formatted as a UTF string.
  */
-public class GridMatrix extends Symbol {
+public class GridMatrix extends AbstractSymbol {
 
     private final char[] shift_set = {
             /* From Table 7 - Encoding of control characters */
@@ -2011,5 +2011,18 @@ public class GridMatrix extends Symbol {
     private enum gmMode {
 
         NULL, GM_NUMBER, GM_LOWER, GM_UPPER, GM_MIXED, GM_CONTROL, GM_BYTE, GM_CHINESE
+    }
+
+    public static class Provider implements SymbolProvider<GridMatrix> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.GRID_MATRIX;
+        }
+
+        @Override
+        public GridMatrix provide() {
+            return new GridMatrix();
+        }
     }
 }

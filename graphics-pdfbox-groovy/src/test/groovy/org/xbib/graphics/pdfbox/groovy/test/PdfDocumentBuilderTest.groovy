@@ -2,6 +2,7 @@ package org.xbib.graphics.pdfbox.groovy.test
 
 import groovy.util.logging.Log4j2
 import org.junit.Test
+import org.xbib.graphics.barcode.SymbolType
 import org.xbib.graphics.pdfbox.groovy.builder.PdfDocumentBuilder
 
 import java.nio.file.Files
@@ -115,13 +116,45 @@ class PdfDocumentBuilderTest {
     }
 
     @Test
+    void testPdfWithBarcode() {
+        OutputStream outputStream = Files.newOutputStream(Paths.get('build/barcode.pdf'))
+        outputStream.withCloseable {
+            PdfDocumentBuilder builder = new PdfDocumentBuilder(outputStream)
+            builder.create {
+                document(font: [family: 'Helvetica'], margin: [top: 1.cm]) {
+                    paragraph(margin: [left: 7.mm, top: 0.cm]) {
+                        text "Hello World 1"
+                    }
+                    paragraph(margin: [left: 7.mm, top: 2.cm]) {
+                        barcode(width: 6.cm, height: 2.cm, value: '20180123456', type: SymbolType.CODE39)
+                    }
+                    paragraph(margin: [left: 7.mm, top: 0.cm]) {
+                        text "Hello World 2"
+                    }
+                    paragraph(margin: [left: 7.mm, top: 1.cm, bottom: 1.cm]) {
+                        barcode(width: 10.cm, height: 0.5.cm, value: 'ABCDEFGHIJKLMN', type: SymbolType.CODE39)
+                    }
+                    paragraph(margin: [left: 7.mm, top: 0.cm]) {
+                        text "Hello World 3"
+                    }
+                    paragraph(margin: [left: 7.mm, top: 4.cm]) {
+                        barcode(width: 6.cm, height: 4.cm, value: 'Hello', type: SymbolType.QRCODE)
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
     void testPdfWithImage() {
         byte[] logo = getClass().getResourceAsStream('/img/logo-print.png').bytes
         OutputStream outputStream = Files.newOutputStream(Paths.get("build/testimage.pdf"))
         outputStream.withCloseable {
             PdfDocumentBuilder builder = new PdfDocumentBuilder(outputStream)
             List layout = [
-                    [key: 'Typ', value: 'Online', 'bold': true]
+                    [key: 'A', value: '1', 'bold': true],
+                    [key: 'B', value: '2', 'bold': true],
+                    [key: 'C', value: '3', 'bold': true]
             ]
             builder.create {
                 document(font: [family: 'Helvetica'], margin: [top: 1.cm]) {
@@ -164,23 +197,6 @@ class PdfDocumentBuilderTest {
                             }
                         }
                     }
-                }
-            }
-        }
-    }
-
-    @Test
-    void testPdfWithBarcode() {
-        OutputStream outputStream = Files.newOutputStream(Paths.get('build/barcode.pdf'))
-        outputStream.withCloseable {
-            PdfDocumentBuilder builder = new PdfDocumentBuilder(outputStream)
-            builder.create {
-                document {
-                    paragraph {
-                        text "Hello World"
-                        barcode(x: 10.cm, y: 1.cm, width: 6.cm, height: 2.cm, value: '20180123456')
-                    }
-                    paragraph "Hello World bottom"
                 }
             }
         }

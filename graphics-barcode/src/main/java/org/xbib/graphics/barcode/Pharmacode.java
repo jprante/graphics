@@ -6,7 +6,7 @@ package org.xbib.graphics.barcode;
  * Pharmacode is used for the identification of pharmaceuticals. The symbology
  * is able to encode whole numbers between 3 and 131070.
  */
-public class Pharmacode extends Symbol {
+public class Pharmacode extends AbstractSymbol {
 
     @Override
     public boolean encode() {
@@ -62,5 +62,18 @@ public class Pharmacode extends Symbol {
         rowHeight[0] = -1;
         plotSymbol();
         return true;
+    }
+
+    public static class Provider implements SymbolProvider<Pharmacode> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.PHARMACODE;
+        }
+
+        @Override
+        public Pharmacode provide() {
+            return new Pharmacode();
+        }
     }
 }

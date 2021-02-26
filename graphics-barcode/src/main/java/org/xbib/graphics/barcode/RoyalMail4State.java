@@ -9,10 +9,10 @@ import java.util.Locale;
  * delivery postcode followed by house number. A check digit is calculated
  * and added.
  */
-public class RoyalMail4State extends Symbol {
+public class RoyalMail4State extends AbstractSymbol {
     /* Handles the 4 State barcodes used in the UK by Royal Mail */
 
-    private String[] RoyalTable = {
+    private final String[] royalTable = {
             "TTFF", "TDAF", "TDFA", "DTAF", "DTFA", "DDAA", "TADF", "TFTF", "TFDA",
             "DATF", "DADA", "DFTA", "TAFD", "TFAD", "TFFT", "DAAD", "DAFT", "DFAT",
             "ATDF", "ADTF", "ADDA", "FTTF", "FTDA", "FDTA", "ATFD", "ADAD", "ADFT",
@@ -41,7 +41,7 @@ public class RoyalMail4State extends Symbol {
 
         for (i = 0; i < content.length(); i++) {
             index = positionOf(content.charAt(i), krSet);
-            dest.append(RoyalTable[index]);
+            dest.append(royalTable[index]);
             top += (index + 1) % 6;
             bottom += ((index / 6) + 1) % 6;
         }
@@ -56,7 +56,7 @@ public class RoyalMail4State extends Symbol {
             column = 5;
         }
 
-        dest.append(RoyalTable[(6 * row) + column]);
+        dest.append(royalTable[(6 * row) + column]);
 
         encodeInfo.append("Check Digit: ").append((6 * row) + column).append("\n");
 
@@ -75,7 +75,7 @@ public class RoyalMail4State extends Symbol {
     }
 
     @Override
-    protected void plotSymbol() {
+    public void plotSymbol() {
         int xBlock;
         int x, y, w, h;
         getRectangles().clear();
@@ -108,5 +108,18 @@ public class RoyalMail4State extends Symbol {
         }
         symbolWidth = pattern[0].length() * 3;
         symbolHeight = 8;
+    }
+
+    public static class Provider implements SymbolProvider<RoyalMail4State> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.ROYALMAIL4STATE;
+        }
+
+        @Override
+        public RoyalMail4State provide() {
+            return new RoyalMail4State();
+        }
     }
 }

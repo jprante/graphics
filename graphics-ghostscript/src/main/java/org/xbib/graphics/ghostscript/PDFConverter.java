@@ -5,11 +5,15 @@ import org.xbib.graphics.ghostscript.internal.LoggingOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ResourceBundle;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class PDFConverter {
@@ -68,6 +72,8 @@ public class PDFConverter {
      */
     private final PaperSize paperSize;
 
+    private final Path tmpPath;
+
     public PDFConverter() {
         this(OPTION_AUTOROTATEPAGES_OFF, OPTION_PROCESSCOLORMODEL_RGB,
                 OPTION_PDFSETTINGS_PRINTER, "1.4", false, PaperSize.A4);
@@ -80,10 +86,11 @@ public class PDFConverter {
                         boolean pdfx, PaperSize paperSize) {
         this.autoRotatePages = autoRotatePages;
         this.processColorModel = processColorModel;
-        this. pdfsettings = pdfsettings;
+        this.pdfsettings = pdfsettings;
         this.compatibilityLevel = compatibilityLevel;
         this.pdfx = pdfx;
         this.paperSize = paperSize;
+        this.tmpPath = Paths.get("/var/tmp/" + this);
     }
 
     /**
@@ -98,6 +105,8 @@ public class PDFConverter {
         if (outputStream == null) {
             return;
         }
+        prepare(tmpPath);
+        Path output = Files.createTempFile(tmpPath, "pdf", "pdf");
         Ghostscript gs = Ghostscript.getInstance();
         List<String> gsArgs = new LinkedList<>();
         gsArgs.add("-ps2pdf");
@@ -151,7 +160,6 @@ public class PDFConverter {
         gsArgs.add("-dDEVICEWIDTHPOINTS=" + paperSize.getWidth());
         gsArgs.add("-dDEVICEHEIGHTPOINTS=" + paperSize.getHeight());
         gsArgs.add("-sDEVICE=pdfwrite");
-        Path output = Files.createTempFile("pdf", "pdf");
         gsArgs.add("-sOutputFile=" + output.toAbsolutePath().toString());
         //gsArgs.add("-q");
         gsArgs.add("-f");
@@ -164,7 +172,39 @@ public class PDFConverter {
             Files.copy(output.toAbsolutePath(), outputStream);
         } finally {
             Ghostscript.deleteInstance();
-            Files.delete(output);
+            delete(tmpPath);
+        }
+    }
+
+    private static void prepare(Path path) throws IOException {
+        Files.createDirectories(path);
+    }
+
+    private static void delete(Path path) throws IOException {
+        if (path == null) {
+            return;
+        }
+        if (!Files.exists(path)) {
+            return;
+        }
+        try {
+            Files.walkFileTree(path.toAbsolutePath(), new SimpleFileVisitor<>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    Files.deleteIfExists(file);
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                    Files.deleteIfExists(dir);
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        } catch (Exception e) {
+            logger.log(Level.WARNING, e.getMessage(), e);
+        } finally {
+            Files.deleteIfExists(path);
         }
     }
 }

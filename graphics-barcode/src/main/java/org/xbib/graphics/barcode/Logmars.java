@@ -8,7 +8,7 @@ package org.xbib.graphics.barcode;
  * A Modulo-43 check digit is calculated and added, and should not form part
  * of the input data.
  */
-public class Logmars extends Symbol {
+public class Logmars extends AbstractSymbol {
 
     private static final String[] CODE39LM = {
             "1113313111", "3113111131", "1133111131", "3133111111", "1113311131",
@@ -93,5 +93,18 @@ public class Logmars extends Symbol {
         rowHeight = new int[]{-1};
         plotSymbol();
         return true;
+    }
+
+    public static class Provider implements SymbolProvider<Logmars> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.LOG_MARS;
+        }
+
+        @Override
+        public Logmars provide() {
+            return new Logmars();
+        }
     }
 }

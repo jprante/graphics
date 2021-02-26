@@ -13,7 +13,7 @@ import java.util.Arrays;
  * any from the ISO 8859-1 (Latin-1) character set.
  * TODO: Add ECI functionality.
  */
-public class MaxiCode extends Symbol {
+public class MaxiCode extends AbstractSymbol {
 
     /**
      * MaxiCode module sequence, from ISO/IEC 16023 Figure 5 (30 x 33 data grid).
@@ -851,8 +851,7 @@ public class MaxiCode extends Symbol {
     }
 
     @Override
-    protected void plotSymbol() {
-
+    public void plotSymbol() {
         // hexagons
         for (int row = 0; row < 33; row++) {
             for (int col = 0; col < 30; col++) {
@@ -866,7 +865,6 @@ public class MaxiCode extends Symbol {
                 }
             }
         }
-
         // circles
         double[] radii = {10.85, 8.97, 7.10, 5.22, 3.31, 1.43};
         for (double aRadii : radii) {
@@ -879,5 +877,18 @@ public class MaxiCode extends Symbol {
     @Override
     protected int[] getCodewords() {
         return codewords;
+    }
+
+    public static class Provider implements SymbolProvider<MaxiCode> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.MAXI_CODE;
+        }
+
+        @Override
+        public MaxiCode provide() {
+            return new MaxiCode();
+        }
     }
 }

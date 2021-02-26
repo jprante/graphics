@@ -9,7 +9,7 @@ import java.util.Locale;
  * characters A-Z and the dash (-) character. A modulo-19 check digit is
  * added and should not be included in the input data.
  */
-public class JapanPost extends Symbol {
+public class JapanPost extends AbstractSymbol {
 
     private static final String[] JAPAN_TABLE = {
             "FFT", "FDA", "DFA", "FAD", "FTF", "DAF", "AFD", "ADF", "TFF", "FTT",
@@ -101,7 +101,7 @@ public class JapanPost extends Symbol {
     }
 
     @Override
-    protected void plotSymbol() {
+    public void plotSymbol() {
         int xBlock;
         int x, y, w, h;
         getRectangles().clear();
@@ -134,5 +134,18 @@ public class JapanPost extends Symbol {
         }
         symbolWidth = pattern[0].length() * 3;
         symbolHeight = 8;
+    }
+
+    public static class Provider implements SymbolProvider<JapanPost> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.JAPAN_POST;
+        }
+
+        @Override
+        public JapanPost provide() {
+            return new JapanPost();
+        }
     }
 }

@@ -7,7 +7,7 @@ import java.io.UnsupportedEncodingException;
  * Code 128 supports encoding of 8-bit ISO 8859-1 (Latin-1) characters.
  * Setting GS1 mode allows encoding in GS1-128 (also known as UPC/EAN-128).
  */
-public class Code128 extends Symbol {
+public class Code128 extends AbstractSymbol {
     private String[] code128Table = {
             "212222", "222122", "222221", "121223", "121322", "131222", "122213",
             "122312", "132212", "221213", "221312", "231212", "112232", "122132",
@@ -163,7 +163,7 @@ public class Code128 extends Symbol {
         mode_type[0] = mode;
         mode_length[0] = 1;
 
-        if (inputDataType == DataType.GS1) {
+        if (inputSymbolDataType == SymbolDataType.GS1) {
             mode = Mode.ABORC;
         }
 
@@ -174,7 +174,7 @@ public class Code128 extends Symbol {
         for (i = 1; i < sourcelen; i++) {
             last_mode = mode;
             mode = findSubset(inputData[i]);
-            if ((inputDataType == DataType.GS1) && inputData[i] == '[') {
+            if ((inputSymbolDataType == SymbolDataType.GS1) && inputData[i] == '[') {
                 mode = Mode.ABORC;
             }
             if ((modeCSupression) && (mode == Mode.ABORC)) {
@@ -193,7 +193,7 @@ public class Code128 extends Symbol {
         reduceSubsetChanges();
 
 
-        if (inputDataType == DataType.GS1) {
+        if (inputSymbolDataType == SymbolDataType.GS1) {
             /* Put set data into set[] */
             read = 0;
             for (i = 0; i < index_point; i++) {
@@ -323,7 +323,7 @@ public class Code128 extends Symbol {
             }
 
             if (set[i] == Mode.LATCHC) {
-                if ((inputDataType == DataType.GS1) && (inputData[i] == '[')) {
+                if ((inputSymbolDataType == SymbolDataType.GS1) && (inputData[i] == '[')) {
                     glyph_count += 1.0;
                 } else {
                     glyph_count += 0.5;
@@ -401,7 +401,7 @@ public class Code128 extends Symbol {
         }
         bar_characters++;
 
-        if (inputDataType == DataType.GS1) {
+        if (inputSymbolDataType == SymbolDataType.GS1) {
             dest.append(code128Table[102]);
             values[1] = 102;
             bar_characters++;
@@ -529,7 +529,7 @@ public class Code128 extends Symbol {
                 bar_characters++;
             }
 
-            if (!((inputDataType == DataType.GS1) && (inputData[read] == '['))) {
+            if (!((inputSymbolDataType == SymbolDataType.GS1) && (inputData[read] == '['))) {
                 /* Encode data characters */
                 c = inputData[read];
                 switch (set[read]) {
@@ -655,11 +655,11 @@ public class Code128 extends Symbol {
         /* Stop character */
         dest.append(code128Table[106]);
 
-        if (!(inputDataType == DataType.GS1)) {
+        if (!(inputSymbolDataType == SymbolDataType.GS1)) {
             readable = new StringBuilder(content);
         }
 
-        if (inputDataType == DataType.HIBC) {
+        if (inputSymbolDataType == SymbolDataType.HIBC) {
             readable.append("*").append(content).append("*");
         }
 
@@ -839,5 +839,20 @@ public class Code128 extends Symbol {
         SHIFTN, LATCHN, SHIFTF, LATCHF
     }
 
-    private enum Composite {OFF, CCA, CCB, CCC}
+    private enum Composite {
+        OFF, CCA, CCB, CCC
+    }
+
+    public static class Provider implements SymbolProvider<Code128> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.CODE128;
+        }
+
+        @Override
+        public Code128 provide() {
+            return new Code128();
+        }
+    }
 }

@@ -8,7 +8,7 @@ import org.xbib.graphics.barcode.util.ReedSolomon;
  * Data Matrix is a 2D matrix symbology capable of encoding characters in the
  * ISO/IEC 8859-1 (Latin-1) character set.
  */
-public class DataMatrix extends Symbol {
+public class DataMatrix extends AbstractSymbol {
 
     private static final int[] c40_shift = {
             1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -90,7 +90,7 @@ public class DataMatrix extends Symbol {
     private int[] target = new int[2200];
     private int[] binary = new int[2200];
     private int binary_length;
-    private dm_mode last_mode;
+    private Mode last_mode;
     private int[] places;
     private boolean isSquare;
     private int[] inputData;
@@ -441,7 +441,7 @@ public class DataMatrix extends Symbol {
 
         encodeInfo.append("Encoding: ");
         int sp, tp, i;
-        dm_mode current_mode, next_mode;
+        Mode current_mode, next_mode;
         int inputlen = content.length();
 
         sp = 0;
@@ -454,10 +454,10 @@ public class DataMatrix extends Symbol {
         binary_length = 0;
 
         /* step (a) */
-        current_mode = dm_mode.DM_ASCII;
-        next_mode = dm_mode.DM_ASCII;
+        current_mode = Mode.DM_ASCII;
+        next_mode = Mode.DM_ASCII;
 
-        if (inputDataType == DataType.GS1) {
+        if (inputSymbolDataType == SymbolDataType.GS1) {
             target[tp] = 232;
             tp++;
             binary[binary_length] = ' ';
@@ -494,7 +494,7 @@ public class DataMatrix extends Symbol {
         }
 
         if (readerInit) {
-            if (inputDataType == DataType.GS1) {
+            if (inputSymbolDataType == SymbolDataType.GS1) {
                 errorMsg.append("Cannot encode in GS1 mode and Reader Initialisation at the same time");
                 return 0;
             } else {
@@ -539,8 +539,8 @@ public class DataMatrix extends Symbol {
             current_mode = next_mode;
 
             /* step (b) - ASCII encodation */
-            if (current_mode == dm_mode.DM_ASCII) {
-                next_mode = dm_mode.DM_ASCII;
+            if (current_mode == Mode.DM_ASCII) {
+                next_mode = Mode.DM_ASCII;
 
                 for (i = 0; i < 8; i++) {
                     process_buffer[i] = 0;
@@ -557,7 +557,7 @@ public class DataMatrix extends Symbol {
                 } else {
                     next_mode = lookAheadTest(sp, current_mode);
 
-                    if (next_mode != dm_mode.DM_ASCII) {
+                    if (next_mode != Mode.DM_ASCII) {
                         switch (next_mode) {
                             case DM_C40:
                                 target[tp] = 230;
@@ -609,7 +609,7 @@ public class DataMatrix extends Symbol {
                             binary[binary_length] = ' ';
                             binary_length++;
                         } else {
-                            if ((inputDataType == DataType.GS1) && (inputData[sp] == '[')) {
+                            if ((inputSymbolDataType == SymbolDataType.GS1) && (inputData[sp] == '[')) {
                                 target[tp] = 232; /* FNC1 */
                                 encodeInfo.append("FNC1 ");
                             } else {
@@ -627,21 +627,21 @@ public class DataMatrix extends Symbol {
             }
 
             /* step (c) C40 encodation */
-            if (current_mode == dm_mode.DM_C40) {
+            if (current_mode == Mode.DM_C40) {
                 int shift_set, value;
 
-                next_mode = dm_mode.DM_C40;
+                next_mode = Mode.DM_C40;
                 if (process_p == 0) {
                     next_mode = lookAheadTest(sp, current_mode);
                 }
 
-                if (next_mode != dm_mode.DM_C40) {
+                if (next_mode != Mode.DM_C40) {
                     target[tp] = 254;
                     tp++;
                     binary[binary_length] = ' ';
                     binary_length++; /* Unlatch */
 
-                    next_mode = dm_mode.DM_ASCII;
+                    next_mode = Mode.DM_ASCII;
                     encodeInfo.append("ASC ");
                 } else {
                     if (inputData[sp] > 127) {
@@ -657,7 +657,7 @@ public class DataMatrix extends Symbol {
                         value = c40_value[inputData[sp]];
                     }
 
-                    if ((inputDataType == DataType.GS1) && (inputData[sp] == '[')) {
+                    if ((inputSymbolDataType == SymbolDataType.GS1) && (inputData[sp] == '[')) {
                         shift_set = 2;
                         value = 27; /* FNC1 */
 
@@ -701,21 +701,21 @@ public class DataMatrix extends Symbol {
             }
 
             /* step (d) Text encodation */
-            if (current_mode == dm_mode.DM_TEXT) {
+            if (current_mode == Mode.DM_TEXT) {
                 int shift_set, value;
 
-                next_mode = dm_mode.DM_TEXT;
+                next_mode = Mode.DM_TEXT;
                 if (process_p == 0) {
                     next_mode = lookAheadTest(sp, current_mode);
                 }
 
-                if (next_mode != dm_mode.DM_TEXT) {
+                if (next_mode != Mode.DM_TEXT) {
                     target[tp] = 254;
                     tp++;
                     binary[binary_length] = ' ';
                     binary_length++; /* Unlatch */
 
-                    next_mode = dm_mode.DM_ASCII;
+                    next_mode = Mode.DM_ASCII;
                     encodeInfo.append("ASC ");
                 } else {
                     if (inputData[sp] > 127) {
@@ -731,7 +731,7 @@ public class DataMatrix extends Symbol {
                         value = text_value[inputData[sp]];
                     }
 
-                    if ((inputDataType == DataType.GS1) && (inputData[sp] == '[')) {
+                    if ((inputSymbolDataType == SymbolDataType.GS1) && (inputData[sp] == '[')) {
                         shift_set = 2;
                         value = 27; /* FNC1 */
 
@@ -774,21 +774,21 @@ public class DataMatrix extends Symbol {
             }
 
             /* step (e) X12 encodation */
-            if (current_mode == dm_mode.DM_X12) {
+            if (current_mode == Mode.DM_X12) {
                 int value = 0;
 
-                next_mode = dm_mode.DM_X12;
+                next_mode = Mode.DM_X12;
                 if (process_p == 0) {
                     next_mode = lookAheadTest(sp, current_mode);
                 }
 
-                if (next_mode != dm_mode.DM_X12) {
+                if (next_mode != Mode.DM_X12) {
                     target[tp] = 254;
                     tp++;
                     binary[binary_length] = ' ';
                     binary_length++; /* Unlatch */
 
-                    next_mode = dm_mode.DM_ASCII;
+                    next_mode = Mode.DM_ASCII;
                     encodeInfo.append("ASC ");
                 } else {
                     if (inputData[sp] == 13) {
@@ -843,18 +843,18 @@ public class DataMatrix extends Symbol {
             }
 
             /* step (f) EDIFACT encodation */
-            if (current_mode == dm_mode.DM_EDIFACT) {
+            if (current_mode == Mode.DM_EDIFACT) {
                 int value = 0;
 
-                next_mode = dm_mode.DM_EDIFACT;
+                next_mode = Mode.DM_EDIFACT;
                 if (process_p == 3) {
                     next_mode = lookAheadTest(sp, current_mode);
                 }
 
-                if (next_mode != dm_mode.DM_EDIFACT) {
+                if (next_mode != Mode.DM_EDIFACT) {
                     process_buffer[process_p] = 31;
                     process_p++;
-                    next_mode = dm_mode.DM_ASCII;
+                    next_mode = Mode.DM_ASCII;
                 } else {
                     if ((inputData[sp] >= '@') && (inputData[sp] <= '^')) {
                         value = inputData[sp] - '@';
@@ -901,10 +901,10 @@ public class DataMatrix extends Symbol {
             }
 
             /* step (g) Base 256 encodation */
-            if (current_mode == dm_mode.DM_BASE256) {
+            if (current_mode == Mode.DM_BASE256) {
                 next_mode = lookAheadTest(sp, current_mode);
 
-                if (next_mode == dm_mode.DM_BASE256) {
+                if (next_mode == Mode.DM_BASE256) {
                     target[tp] = inputData[sp];
                     encodeInfo.append(Integer.toString(target[tp])).append(" ");
                     tp++;
@@ -912,7 +912,7 @@ public class DataMatrix extends Symbol {
                     binary[binary_length] = 'b';
                     binary_length++;
                 } else {
-                    next_mode = dm_mode.DM_ASCII;
+                    next_mode = Mode.DM_ASCII;
                     encodeInfo.append("ASC ");
                 }
             }
@@ -1133,16 +1133,16 @@ public class DataMatrix extends Symbol {
         return false;
     }
 
-    private dm_mode lookAheadTest(int position, dm_mode current_mode) {
+    private Mode lookAheadTest(int position, Mode current_mode) {
         /* 'look ahead test' from Annex P */
 
         double ascii_count, c40_count, text_count, x12_count, edf_count, b256_count, best_count;
         int sp;
         int sourcelen = content.length();
-        dm_mode best_scheme = dm_mode.NULL;
+        Mode best_scheme = Mode.NULL;
 
         /* step (j) */
-        if (current_mode == dm_mode.DM_ASCII) {
+        if (current_mode == Mode.DM_ASCII) {
             ascii_count = 0.0;
             c40_count = 1.0;
             text_count = 1.0;
@@ -1189,30 +1189,30 @@ public class DataMatrix extends Symbol {
                 c40_count = Math.ceil(c40_count);
 
                 best_count = c40_count;
-                best_scheme = dm_mode.DM_C40; // (k)(7)
+                best_scheme = Mode.DM_C40; // (k)(7)
 
                 if (x12_count < best_count) {
                     best_count = x12_count;
-                    best_scheme = dm_mode.DM_X12; // (k)(6)
+                    best_scheme = Mode.DM_X12; // (k)(6)
                 }
 
                 if (text_count < best_count) {
                     best_count = text_count;
-                    best_scheme = dm_mode.DM_TEXT; // (k)(5)
+                    best_scheme = Mode.DM_TEXT; // (k)(5)
                 }
 
                 if (edf_count < best_count) {
                     best_count = edf_count;
-                    best_scheme = dm_mode.DM_EDIFACT; // (k)(4)
+                    best_scheme = Mode.DM_EDIFACT; // (k)(4)
                 }
 
                 if (b256_count < best_count) {
                     best_count = b256_count;
-                    best_scheme = dm_mode.DM_BASE256; // (k)(3)
+                    best_scheme = Mode.DM_BASE256; // (k)(3)
                 }
 
                 if (ascii_count <= best_count) {
-                    best_scheme = dm_mode.DM_ASCII; // (k)(2)
+                    best_scheme = Mode.DM_ASCII; // (k)(2)
                 }
             } else {
 
@@ -1274,12 +1274,12 @@ public class DataMatrix extends Symbol {
                         edf_count += (13.0 / 4.0); // (p)(3)
                     }
                 }
-                if ((inputDataType == DataType.GS1) && (inputData[sp] == '[')) {
+                if ((inputSymbolDataType == SymbolDataType.GS1) && (inputData[sp] == '[')) {
                     edf_count += 6.0;
                 }
 
                 /* base 256 ... step (q) */
-                if ((inputDataType == DataType.GS1) && (inputData[sp] == '[')) {
+                if ((inputSymbolDataType == SymbolDataType.GS1) && (inputData[sp] == '[')) {
                     b256_count += 4.0; // (q)(1)
                 } else {
                     b256_count += 1.0; // (q)(2)
@@ -1297,15 +1297,15 @@ public class DataMatrix extends Symbol {
                         ((c40_count + 1.0) < text_count)) {
 
                     if (c40_count < x12_count) {
-                        best_scheme = dm_mode.DM_C40;
+                        best_scheme = Mode.DM_C40;
                     }
 
                     if (c40_count == x12_count) {
                         if (p_r_6_2_1(sp, sourcelen)) {
                             // Test (r)(6)(ii)(i)
-                            best_scheme = dm_mode.DM_X12;
+                            best_scheme = Mode.DM_X12;
                         } else {
-                            best_scheme = dm_mode.DM_C40;
+                            best_scheme = Mode.DM_C40;
                         }
                     }
                 }
@@ -1316,7 +1316,7 @@ public class DataMatrix extends Symbol {
                         ((x12_count + 1.0) < edf_count) &&
                         ((x12_count + 1.0) < text_count) &&
                         ((x12_count + 1.0) < c40_count)) {
-                    best_scheme = dm_mode.DM_X12;
+                    best_scheme = Mode.DM_X12;
                 }
 
                 /* step (r)(4) */
@@ -1325,7 +1325,7 @@ public class DataMatrix extends Symbol {
                         ((text_count + 1.0) < edf_count) &&
                         ((text_count + 1.0) < x12_count) &&
                         ((text_count + 1.0) < c40_count)) {
-                    best_scheme = dm_mode.DM_TEXT;
+                    best_scheme = Mode.DM_TEXT;
                 }
 
                 /* step (r)(3) */
@@ -1334,7 +1334,7 @@ public class DataMatrix extends Symbol {
                         ((edf_count + 1.0) < text_count) &&
                         ((edf_count + 1.0) < x12_count) &&
                         ((edf_count + 1.0) < c40_count)) {
-                    best_scheme = dm_mode.DM_EDIFACT;
+                    best_scheme = Mode.DM_EDIFACT;
                 }
 
                 /* step (r)(2) */
@@ -1343,7 +1343,7 @@ public class DataMatrix extends Symbol {
                                 ((b256_count + 1.0) < text_count) &&
                                 ((b256_count + 1.0) < x12_count) &&
                                 ((b256_count + 1.0) < c40_count))) {
-                    best_scheme = dm_mode.DM_BASE256;
+                    best_scheme = Mode.DM_BASE256;
                 }
 
                 /* step (r)(1) */
@@ -1352,12 +1352,12 @@ public class DataMatrix extends Symbol {
                         ((ascii_count + 1.0) <= text_count) &&
                         ((ascii_count + 1.0) <= x12_count) &&
                         ((ascii_count + 1.0) <= c40_count)) {
-                    best_scheme = dm_mode.DM_ASCII;
+                    best_scheme = Mode.DM_ASCII;
                 }
             }
 
             sp++;
-        } while (best_scheme == dm_mode.NULL); // step (s)
+        } while (best_scheme == Mode.NULL); // step (s)
 
         return best_scheme;
     }
@@ -1629,8 +1629,21 @@ public class DataMatrix extends Symbol {
         places[r * NC + c] = (p << 3) + b;
     }
 
-    private enum dm_mode {
+    private enum Mode {
 
         NULL, DM_ASCII, DM_C40, DM_TEXT, DM_X12, DM_EDIFACT, DM_BASE256
+    }
+
+    public static class Provider implements SymbolProvider<DataMatrix> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.DATA_MATRIX;
+        }
+
+        @Override
+        public DataMatrix provide() {
+            return new DataMatrix();
+        }
     }
 }

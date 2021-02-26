@@ -12,7 +12,7 @@ import java.util.List;
  * of 1850 text characters, or 2710 digits. The maximum size MicroPDF417 symbol
  * can hold 250 alphanumeric characters or 366 digits.
  */
-public class Pdf417 extends Symbol {
+public class Pdf417 extends AbstractSymbol {
 
     private static final int MAX_NUMERIC_COMPACTION_BLOCK_SIZE = 44;
 
@@ -1699,6 +1699,19 @@ public class Pdf417 extends Symbol {
         @Override
         public String toString() {
             return mode + "x" + length;
+        }
+    }
+
+    public static class Provider implements SymbolProvider<Pdf417> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.PDF417;
+        }
+
+        @Override
+        public Pdf417 provide() {
+            return new Pdf417();
         }
     }
 }

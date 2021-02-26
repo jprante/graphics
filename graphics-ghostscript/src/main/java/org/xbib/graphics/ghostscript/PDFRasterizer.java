@@ -24,6 +24,7 @@ import java.io.OutputStream;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -52,8 +53,10 @@ public class PDFRasterizer implements Closeable {
 
     private final Map<String, ImageReader> imageReaders;
 
+    private final Path tmpPath;
+
     public PDFRasterizer(String subject) {
-        this("org.xbib.graphics.gs/1.0.8", "Jörg Prante <prante@hbz-nrw.de>", subject);
+        this("org.xbib.graphics.ghostscript/4.0.1", "Jörg Prante", subject);
     }
 
     public PDFRasterizer(String creator, String author, String subject) {
@@ -61,6 +64,7 @@ public class PDFRasterizer implements Closeable {
         this.author = author;
         this.subject = subject;
         this.imageReaders = createImageReaders();
+        this.tmpPath = Paths.get("/var/tmp/" + this);
     }
 
     @Override
@@ -79,7 +83,8 @@ public class PDFRasterizer implements Closeable {
         if (Files.size(source) == 0) {
             throw new IOException("empty file at " + source.toString());
         }
-        Path tmp = Files.createTempDirectory("pdf-rasterize");
+        prepare(tmpPath);
+        Path tmp = Files.createTempDirectory(tmpPath, "pdf-rasterize");
         if (!Files.isWritable(tmp)) {
             throw new IOException("unable to write to " + tmp.toString());
         }
@@ -90,7 +95,7 @@ public class PDFRasterizer implements Closeable {
             scalePDF(tmpTarget, target);
             logger.info("convert source=" + source + " done");
         } finally {
-            delete(tmp);
+            delete(tmpPath);
         }
     }
 
@@ -102,16 +107,17 @@ public class PDFRasterizer implements Closeable {
         if (!Files.isReadable(source.toAbsolutePath())) {
             throw new IOException("unable to read " + source.toString());
         }
-        Path tmp = Files.createTempDirectory("pdf-rasterize");
+        prepare(tmpPath);
+        Path tmp = Files.createTempDirectory(tmpPath, "pdf-rasterize");
         try {
             pdfToGrayScreenImage(source.toAbsolutePath(), tmp);
             Path tmpTarget = tmp.resolve(target.getFileName());
             mergeImagesToPDF(tmp, tmpTarget);
             //toPDFA(tmpTarget, target);
             scalePDF(tmpTarget, target);
-        } finally {
-            delete(tmp);
             logger.info("convert source=" + source.toAbsolutePath() + " done");
+        } finally {
+            delete(tmpPath);
         }
     }
 
@@ -123,8 +129,8 @@ public class PDFRasterizer implements Closeable {
         if (!Files.isReadable(source.toAbsolutePath())) {
             throw new IOException("unable to read " + source.toString());
         }
+        Ghostscript gs = Ghostscript.getInstance();
         try {
-            Ghostscript gs = Ghostscript.getInstance();
             List<String> gsArgs = new LinkedList<>();
             gsArgs.add("-dNOPAUSE");
             gsArgs.add("-dBATCH");
@@ -144,9 +150,9 @@ public class PDFRasterizer implements Closeable {
             gs.setStdErr(new LoggingOutputStream(logger));
             gs.initialize(gsArgs.toArray(new String[gsArgs.size()]));
             gs.exit();
+            logger.info("pdfToImage done");
         } finally {
             Ghostscript.deleteInstance();
-            logger.info("pdfToImage done");
         }
     }
 
@@ -155,8 +161,8 @@ public class PDFRasterizer implements Closeable {
                                         String prefix,
                                         String pageRange) throws IOException {
         logger.info("pdfToImage source=" + sourceFile + " target=" + targetDir + " started");
+        Ghostscript gs = Ghostscript.getInstance();
         try {
-            Ghostscript gs = Ghostscript.getInstance();
             List<String> gsArgs = new LinkedList<>();
             gsArgs.add("-dNOPAUSE");
             gsArgs.add("-dBATCH");
@@ -186,9 +192,9 @@ public class PDFRasterizer implements Closeable {
             gs.setStdErr(new LoggingOutputStream(logger));
             gs.initialize(gsArgs.toArray(new String[gsArgs.size()]));
             gs.exit();
+            logger.info("pdfToImage done");
         } finally {
             Ghostscript.deleteInstance();
-            logger.info("pdfToImage done");
         }
     }
 
@@ -266,8 +272,8 @@ public class PDFRasterizer implements Closeable {
     public synchronized void scalePDF(Path sourceFile,
                                       Path targetFile) throws IOException {
         logger.info("scalePDF: source = " + sourceFile + " target = " + targetFile + " starting");
+        Ghostscript gs = Ghostscript.getInstance();
         try {
-            Ghostscript gs = Ghostscript.getInstance();
             List<String> gsArgs = new LinkedList<>();
             gsArgs.add("-dNOPAUSE");
             gsArgs.add("-dBATCH");
@@ -285,18 +291,19 @@ public class PDFRasterizer implements Closeable {
             logger.info(gsArgs.toString());
             gs.initialize(gsArgs.toArray(new String[gsArgs.size()]));
             gs.exit();
+            logger.info("scalePDF: source = " + sourceFile + " target = " + targetFile + " done");
         } finally {
             Ghostscript.deleteInstance();
-            logger.info("scalePDF: source = " + sourceFile + " target = " + targetFile + " done");
         }
     }
 
     public void toPDFA(Path source, Path target) throws IOException {
-        Path iccPath = Files.createTempFile("srgb", ".icc");
-        Path pdfapsPathTmp = Files.createTempFile("PDFA_def", ".tmp");
-        Path pdfapsPath = Files.createTempFile("PDFA_def", ".ps");
+        prepare(tmpPath);
+        Path iccPath = Files.createTempFile(tmpPath, "srgb", ".icc");
+        Path pdfapsPathTmp = Files.createTempFile(tmpPath, "PDFA_def", ".tmp");
+        Path pdfapsPath = Files.createTempFile(tmpPath, "PDFA_def", ".ps");
+        Ghostscript gs = Ghostscript.getInstance();
         try {
-            Ghostscript gs = Ghostscript.getInstance();
             Files.copy(getClass().getResourceAsStream("/iccprofiles/srgb.icc"),
                     iccPath, StandardCopyOption.REPLACE_EXISTING);
             Files.copy(getClass().getResourceAsStream("/lib/PDFA_def.ps"),
@@ -434,6 +441,10 @@ public class PDFRasterizer implements Closeable {
         return pos >= 0 ? filename.substring(pos + 1).toLowerCase(Locale.ROOT) : null;
     }
 
+    private static void prepare(Path path) throws IOException {
+        Files.createDirectories(path);
+    }
+
     private static void delete(Path path) throws IOException {
         if (path == null) {
             return;
@@ -441,7 +452,6 @@ public class PDFRasterizer implements Closeable {
         if (!Files.exists(path)) {
             return;
         }
-        logger.info("delete " + path);
         try {
             Files.walkFileTree(path.toAbsolutePath(), new SimpleFileVisitor<>() {
                 @Override

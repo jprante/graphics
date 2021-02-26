@@ -12,7 +12,11 @@ dependencies {
 test {
     useJUnitPlatform()
     failFast = false
+    environment 'TMPDIR', '/var/tmp/gs'
     systemProperty 'java.awt.headless', 'true'
+    systemProperty 'jna.debug', 'true'
+    //systemProperty 'jna.library.path',  file('src/test/resources/').toString()
+    systemProperty 'java.util.logging.config.file', 'src/test/resources/logging.properties'
     testLogging {
         events 'STARTED', 'PASSED', 'FAILED', 'SKIPPED'
         showStandardStreams = true

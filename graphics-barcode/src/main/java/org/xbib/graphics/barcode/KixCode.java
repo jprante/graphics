@@ -8,7 +8,7 @@ import java.util.Locale;
  * (Netherlands). Input data can consist of digits 0-9 and characters A-Z.
  * Input should be 11 characters in length. No check digit is added.
  */
-public class KixCode extends Symbol {
+public class KixCode extends AbstractSymbol {
 
     /* Handles Dutch Post TNT KIX symbols */
     /* The same as RM4SCC but without check digit */
@@ -58,7 +58,7 @@ public class KixCode extends Symbol {
     }
 
     @Override
-    protected void plotSymbol() {
+    public void plotSymbol() {
         int xBlock;
         int x, y, w, h;
         getRectangles().clear();
@@ -91,5 +91,18 @@ public class KixCode extends Symbol {
         }
         symbolWidth = pattern[0].length() * 3;
         symbolHeight = 8;
+    }
+
+    public static class Provider implements SymbolProvider<KixCode> {
+
+        @Override
+        public boolean canProvide(SymbolType type) {
+            return type == SymbolType.KIX_CODE;
+        }
+
+        @Override
+        public KixCode provide() {
+            return new KixCode();
+        }
     }
 }
