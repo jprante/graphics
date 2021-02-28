@@ -1,6 +1,6 @@
 package org.xbib.graphics.pdfbox.layout.util;
 
-import org.xbib.graphics.pdfbox.layout.text.FontDescriptor;
+import org.xbib.graphics.pdfbox.layout.font.FontDescriptor;
 import org.xbib.graphics.pdfbox.layout.text.TextSequenceUtil;
 import java.io.IOException;
 import java.util.regex.Matcher;

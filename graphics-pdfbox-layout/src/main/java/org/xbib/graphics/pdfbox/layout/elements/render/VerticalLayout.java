@@ -234,11 +234,11 @@ public class VerticalLayout implements Layout {
             float horizontalExtraSpace = getTargetWidth(renderContext)
                     - drawable.getWidth();
             switch (alignment) {
-                case Right:
+                case RIGHT:
                     offsetX = horizontalExtraSpace
                             - verticalLayoutHint.getMarginRight();
                     break;
-                case Center:
+                case CENTER:
                     offsetX = horizontalExtraSpace / 2f;
                     break;
                 default:

@@ -1,7 +1,8 @@
 package org.xbib.graphics.pdfbox.layout.text;
 
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.xbib.graphics.pdfbox.layout.util.CompatibilityHelper;
+import org.apache.pdfbox.util.Matrix;
+import org.xbib.graphics.pdfbox.layout.font.FontDescriptor;
 import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,9 +31,11 @@ public class TextLine implements TextSequence {
      */
     private static final String WIDTH = "width";
 
-    private final List<StyledText> styledTextList = new ArrayList<StyledText>();
+    private final List<StyledText> styledTextList = new ArrayList<>();
+
     private NewLine newLine;
-    private final Map<String, Object> cache = new HashMap<String, Object>();
+
+    private final Map<String, Object> cache = new HashMap<>();
 
     private void clearCache() {
         cache.clear();
@@ -160,48 +163,44 @@ public class TextLine implements TextSequence {
                             Alignment alignment, float availableLineWidth,
                             DrawListener drawListener) throws IOException {
         contentStream.saveGraphicsState();
-        contentStream.beginText();
-
         float x = upperLeft.getX();
-        float y = upperLeft.getY() - getAscent(); // the baseline
-        float offset = TextSequenceUtil.getOffset(this, availableLineWidth, alignment);
-        x += offset;
-        CompatibilityHelper.setTextTranslation(contentStream, x, y);
-        float extraWordSpacing = 0;
-        if (alignment == Alignment.Justify && (getNewLine() instanceof WrappingNewLine)) {
-            extraWordSpacing = (availableLineWidth - getWidth()) / (styledTextList.size() - 1);
-        }
-
+        float y = upperLeft.getY() - getAscent();
         FontDescriptor lastFontDesc = null;
         float lastBaselineOffset = 0;
         Color lastColor = null;
         float gap = 0;
+        float extraWordSpacing = 0;
+        if (alignment == Alignment.JUSTIFY && (getNewLine() instanceof WrappingNewLine)) {
+            extraWordSpacing = (availableLineWidth - getWidth()) / (styledTextList.size() - 1);
+        }
+        float offset = TextSequenceUtil.getOffset(this, availableLineWidth, alignment);
+        x += offset;
         for (StyledText styledText : styledTextList) {
+            Matrix matrix = Matrix.getTranslateInstance(x, y);
+            if (styledText.getLeftMargin() > 0) {
+                gap += styledText.getLeftMargin();
+            }
+            boolean moveBaseline = styledText.getBaselineOffset() != lastBaselineOffset;
+            if (moveBaseline || gap > 0) {
+                float baselineDelta = lastBaselineOffset - styledText.getBaselineOffset();
+                lastBaselineOffset = styledText.getBaselineOffset();
+                matrix = matrix.multiply(new Matrix(1, 0, 0, 1, gap, baselineDelta));
+                x += gap;
+            }
+            contentStream.beginText();
+            contentStream.setTextMatrix(matrix);
             if (!styledText.getFontDescriptor().equals(lastFontDesc)) {
                 lastFontDesc = styledText.getFontDescriptor();
-                contentStream.setFont(lastFontDesc.getFont(),
-                        lastFontDesc.getSize());
+                contentStream.setFont(lastFontDesc.getFont(), lastFontDesc.getSize());
             }
             if (!styledText.getColor().equals(lastColor)) {
                 lastColor = styledText.getColor();
                 contentStream.setNonStrokingColor(lastColor);
             }
-            if (styledText.getLeftMargin() > 0) {
-                gap += styledText.getLeftMargin();
-            }
-
-            boolean moveBaseline = styledText.getBaselineOffset() != lastBaselineOffset;
-            if (moveBaseline || gap > 0) {
-                float baselineDelta = lastBaselineOffset - styledText.getBaselineOffset();
-                lastBaselineOffset = styledText.getBaselineOffset();
-                CompatibilityHelper.moveTextPosition(contentStream, gap, baselineDelta);
-                x += gap;
-            }
             if (styledText.getText().length() > 0) {
-                CompatibilityHelper.showText(contentStream,
-                        styledText.getText());
+                contentStream.showText(styledText.getText());
             }
-
+            contentStream.endText();
             if (drawListener != null) {
                 float currentUpperLeft = y + styledText.getAsent();
                 drawListener.drawn(styledText,
@@ -210,13 +209,11 @@ public class TextLine implements TextSequence {
                         styledText.getHeight());
             }
             x += styledText.getWidthWithoutMargin();
-
             gap = extraWordSpacing;
             if (styledText.getRightMargin() > 0) {
                 gap += styledText.getRightMargin();
             }
         }
-        contentStream.endText();
         contentStream.restoreGraphicsState();
     }
 

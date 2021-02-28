@@ -1,4 +1,4 @@
-package org.xbib.graphics.pdfbox.layout.text;
+package org.xbib.graphics.pdfbox.layout.font;
 
 import org.apache.pdfbox.pdmodel.font.PDFont;
 

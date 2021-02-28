@@ -61,11 +61,7 @@ public class HyperlinkAnnotationProcessor implements AnnotationProcessor {
         Iterable<HyperlinkAnnotation> hyperlinkAnnotations = annotatedText
                 .getAnnotationsOfType(HyperlinkAnnotation.class);
         for (HyperlinkAnnotation hyperlinkAnnotation : hyperlinkAnnotations) {
-            List<Hyperlink> links = linkMap.get(drawContext.getCurrentPage());
-            if (links == null) {
-                links = new ArrayList<Hyperlink>();
-                linkMap.put(drawContext.getCurrentPage(), links);
-            }
+            List<Hyperlink> links = linkMap.computeIfAbsent(drawContext.getCurrentPage(), k -> new ArrayList<>());
             PDRectangle bounds = new PDRectangle();
             bounds.setLowerLeftX(upperLeft.getX());
             bounds.setLowerLeftY(upperLeft.getY() - height);

@@ -23,7 +23,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class Frame implements Element, Drawable, WidthRespecting, Dividable {
 
-    private final List<Drawable> innerList = new CopyOnWriteArrayList<Drawable>();
+    private final List<Drawable> innerList = new CopyOnWriteArrayList<>();
 
     private float paddingLeft;
     private float paddingRight;

@@ -1,11 +1,11 @@
 package org.xbib.graphics.pdfbox.layout.test;
 
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.junit.jupiter.api.Test;
 import org.xbib.graphics.pdfbox.layout.elements.Document;
 import org.xbib.graphics.pdfbox.layout.elements.Paragraph;
 import org.xbib.graphics.pdfbox.layout.elements.render.VerticalLayoutHint;
 import org.xbib.graphics.pdfbox.layout.text.Alignment;
+import org.xbib.graphics.pdfbox.layout.font.BaseFont;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
@@ -37,18 +37,18 @@ public class Margin {
 
         Document document = new Document(40, 60, 40, 60);
         Paragraph paragraph = new Paragraph();
-        paragraph.addText(text1, 11, PDType1Font.HELVETICA);
-        document.add(paragraph, new VerticalLayoutHint(Alignment.Left, 0, 100,
+        paragraph.addText(text1, 11, BaseFont.HELVETICA);
+        document.add(paragraph, new VerticalLayoutHint(Alignment.LEFT, 0, 100,
                 100, 100));
 
         paragraph = new Paragraph();
-        paragraph.addText(text2, 11, PDType1Font.HELVETICA);
-        document.add(paragraph, new VerticalLayoutHint(Alignment.Right, 0, 50,
+        paragraph.addText(text2, 11, BaseFont.HELVETICA);
+        document.add(paragraph, new VerticalLayoutHint(Alignment.RIGHT, 0, 50,
                 0, 0));
 
         paragraph = new Paragraph();
-        paragraph.addText(text3, 11, PDType1Font.HELVETICA);
-        document.add(paragraph, new VerticalLayoutHint(Alignment.Right, 150,
+        paragraph.addText(text3, 11, BaseFont.HELVETICA);
+        document.add(paragraph, new VerticalLayoutHint(Alignment.RIGHT, 150,
                 150, 20, 0));
 
         final OutputStream outputStream = new FileOutputStream("build/margin.pdf");

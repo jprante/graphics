@@ -14,8 +14,6 @@ import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationLink;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDBorderStyleDictionary;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.destination.PDDestination;
-import org.apache.pdfbox.rendering.ImageType;
-import org.apache.pdfbox.rendering.PDFRenderer;
 import org.apache.pdfbox.util.Matrix;
 import org.xbib.graphics.pdfbox.layout.text.Position;
 import org.xbib.graphics.pdfbox.layout.text.annotations.Annotations.HyperlinkAnnotation.LinkStyle;
@@ -23,22 +21,12 @@ import java.awt.Color;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.WeakHashMap;
 
-/**
- * Provide compatible methods for API changes from pdfbox 1x to 2x.
- */
 public class CompatibilityHelper {
 
     private static final String BULLET = "\u2022";
 
     private static final String DOUBLE_ANGLE = "\u00bb";
-
-    private static final String IMAGE_CACHE = "IMAGE_CACHE";
-
-    private static final Map<PDDocument, Map<String, Map<?, ?>>> documentCaches = new WeakHashMap<>();
 
     private static PDBorderStyleDictionary noBorder;
 
@@ -88,49 +76,14 @@ public class CompatibilityHelper {
         contentStream.showText(text);
     }
 
-    public static void setTextTranslation(
-            final PDPageContentStream contentStream, final float x,
-            final float y) throws IOException {
-        contentStream.setTextMatrix(Matrix.getTranslateInstance(x, y));
-    }
-
-    public static void moveTextPosition(
-            final PDPageContentStream contentStream, final float x,
-            final float y) throws IOException {
-        contentStream.transform(new Matrix(1, 0, 0, 1, x, y));
-    }
-
     public static PDPageContentStream createAppendablePDPageContentStream(
             final PDDocument pdDocument, final PDPage page) throws IOException {
         return new PDPageContentStream(pdDocument, page, PDPageContentStream.AppendMode.APPEND, true);
     }
 
-    public static void drawImage(final BufferedImage image,
-                                 final PDDocument document, final PDPageContentStream contentStream,
-                                 Position upperLeft, final float width, final float height)
-            throws IOException {
-        PDImageXObject cachedImage = getCachedImage(document, image);
-        float x = upperLeft.getX();
-        float y = upperLeft.getY() - height;
-        contentStream.drawImage(cachedImage, x, y, width, height);
-    }
 
     public static int getPageRotation(final PDPage page) {
         return page.getRotation();
-    }
-
-    /**
-     * Renders the given page as an RGB image.
-     *
-     * @param document   the document containing the page.
-     * @param pageIndex  the index of the page to render.
-     * @param resolution the image resolution.
-     * @return the rendered image
-     * @throws IOException by pdfbox
-     */
-    public static BufferedImage createImageFromPage(final PDDocument document, int pageIndex, final int resolution) throws IOException {
-        PDFRenderer pdfRenderer = new PDFRenderer(document);
-        return pdfRenderer.renderImageWithDPI(pageIndex, resolution, ImageType.RGB);
     }
 
     public static PDAnnotationLink createLink(PDPage page, PDRectangle rect, Color color,
@@ -146,7 +99,6 @@ public class CompatibilityHelper {
     public static PDAnnotationLink createLink(PDPage page, PDRectangle rect, Color color,
                                               LinkStyle linkStyle, final PDDestination destination) {
         PDAnnotationLink pdLink = createLink(page, rect, color, linkStyle);
-
         PDActionGoTo gotoAction = new PDActionGoTo();
         gotoAction.setDestination(destination);
         pdLink.setAction(gotoAction);
@@ -159,35 +111,34 @@ public class CompatibilityHelper {
      * @param annotation the annotation.
      * @param color      the color to set.
      */
-    public static void setAnnotationColor(final PDAnnotation annotation, Color color) {
+    public static void setAnnotationColor(PDAnnotation annotation, Color color) {
         annotation.setColor(toPDColor(color));
     }
 
+    private static PDColor toPDColor(final Color color) {
+        float[] components = {
+                color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f
+        };
+        return new PDColor(components, PDDeviceRGB.INSTANCE);
+    }
 
     private static PDAnnotationLink createLink(PDPage page, PDRectangle rect, Color color,
                                                LinkStyle linkStyle) {
         PDAnnotationLink pdLink = new PDAnnotationLink();
-        pdLink.setBorderStyle(toBorderStyle(linkStyle));
+        if (linkStyle == LinkStyle.none) {
+            if (noBorder == null) {
+                noBorder = new PDBorderStyleDictionary();
+                noBorder.setWidth(0);
+            }
+            return pdLink;
+        }
+        PDBorderStyleDictionary borderStyle = new PDBorderStyleDictionary();
+        borderStyle.setStyle(PDBorderStyleDictionary.STYLE_UNDERLINE);
+        pdLink.setBorderStyle(borderStyle);
         PDRectangle rotatedRect = transformToPageRotation(rect, page);
         pdLink.setRectangle(rotatedRect);
         setAnnotationColor(pdLink, color);
         return pdLink;
-    }
-
-    private static PDBorderStyleDictionary toBorderStyle(
-            final LinkStyle linkStyle) {
-        if (linkStyle == LinkStyle.none) {
-            return getNoBorder();
-        }
-        PDBorderStyleDictionary borderStyle = new PDBorderStyleDictionary();
-        borderStyle.setStyle(PDBorderStyleDictionary.STYLE_UNDERLINE);
-        return borderStyle;
-    }
-
-    private static PDColor toPDColor(final Color color) {
-        float[] components = new float[]{
-                color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f};
-        return new PDColor(components, PDDeviceRGB.INSTANCE);
     }
 
     /**
@@ -208,8 +159,7 @@ public class CompatibilityHelper {
      * @param yOffset the offset in y-direction to add.
      * @return the quad points.
      */
-    public static float[] toQuadPoints(final PDRectangle rect, float xOffset,
-                                       float yOffset) {
+    private static float[] toQuadPoints(final PDRectangle rect, float xOffset, float yOffset) {
         float[] quads = new float[8];
         quads[0] = rect.getLowerLeftX() + xOffset; // x1
         quads[1] = rect.getUpperRightY() + yOffset; // y1
@@ -229,8 +179,7 @@ public class CompatibilityHelper {
      * @param page       the page.
      * @return the transformed quad points.
      */
-    public static float[] transformToPageRotation(
-            final float[] quadPoints, final PDPage page) {
+    public static float[] transformToPageRotation(final float[] quadPoints, final PDPage page) {
         AffineTransform transform = transformToPageRotation(page);
         if (transform == null) {
             return quadPoints;
@@ -247,8 +196,7 @@ public class CompatibilityHelper {
      * @param page the page.
      * @return the transformed rectangle.
      */
-    public static PDRectangle transformToPageRotation(
-            final PDRectangle rect, final PDPage page) {
+    private static PDRectangle transformToPageRotation(final PDRectangle rect, final PDPage page) {
         AffineTransform transform = transformToPageRotation(page);
         if (transform == null) {
             return rect;
@@ -278,49 +226,4 @@ public class CompatibilityHelper {
         transform.translate(-offset, offset);
         return transform;
     }
-
-    private static PDBorderStyleDictionary getNoBorder() {
-        if (noBorder == null) {
-            noBorder = new PDBorderStyleDictionary();
-            noBorder.setWidth(0);
-        }
-        return noBorder;
-    }
-
-
-    private static synchronized Map<String, Map<?, ?>> getDocumentCache(
-            final PDDocument document) {
-        Map<String, Map<?, ?>> cache = documentCaches.get(document);
-        if (cache == null) {
-            cache = new HashMap<String, Map<?, ?>>();
-            documentCaches.put(document, cache);
-        }
-        return cache;
-    }
-
-    private static synchronized Map<BufferedImage, PDImageXObject> getImageCache(
-            final PDDocument document) {
-        Map<String, Map<?, ?>> documentCache = getDocumentCache(document);
-        @SuppressWarnings("unchecked")
-        Map<BufferedImage, PDImageXObject> imageCache = (Map<BufferedImage, PDImageXObject>) documentCache
-                .get(IMAGE_CACHE);
-        if (imageCache == null) {
-            imageCache = new HashMap<BufferedImage, PDImageXObject>();
-            documentCache.put(IMAGE_CACHE, imageCache);
-        }
-        return imageCache;
-    }
-
-    private static synchronized PDImageXObject getCachedImage(
-            final PDDocument document, final BufferedImage image)
-            throws IOException {
-        Map<BufferedImage, PDImageXObject> imageCache = getImageCache(document);
-        PDImageXObject pdxObjectImage = imageCache.get(image);
-        if (pdxObjectImage == null) {
-            pdxObjectImage = LosslessFactory.createFromImage(document, image);
-            imageCache.put(image, pdxObjectImage);
-        }
-        return pdxObjectImage;
-    }
-
 }

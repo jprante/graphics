@@ -3,6 +3,7 @@ package org.xbib.graphics.pdfbox.layout.text;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.xbib.graphics.pdfbox.layout.elements.Dividable.Divided;
 import org.xbib.graphics.pdfbox.layout.elements.Paragraph;
+import org.xbib.graphics.pdfbox.layout.font.FontDescriptor;
 import org.xbib.graphics.pdfbox.layout.util.Pair;
 import org.xbib.graphics.pdfbox.layout.util.WordBreakerFactory;
 import java.io.IOException;
@@ -473,9 +474,9 @@ public class TextSequenceUtil {
                                   final float targetWidth, final Alignment alignment)
             throws IOException {
         switch (alignment) {
-            case Right:
+            case RIGHT:
                 return targetWidth - textLine.getWidth();
-            case Center:
+            case CENTER:
                 return (targetWidth - textLine.getWidth()) / 2f;
             default:
                 return 0;

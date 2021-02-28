@@ -1,6 +1,7 @@
 package org.xbib.graphics.pdfbox.layout.text;
 
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.xbib.graphics.pdfbox.layout.font.FontDescriptor;
 import java.awt.Color;
 import java.io.IOException;
 

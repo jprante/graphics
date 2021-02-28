@@ -9,11 +9,11 @@ import org.xbib.graphics.pdfbox.layout.elements.VerticalSpacer;
 import org.xbib.graphics.pdfbox.layout.elements.render.ColumnLayout;
 import org.xbib.graphics.pdfbox.layout.elements.render.VerticalLayout;
 import org.xbib.graphics.pdfbox.layout.elements.render.VerticalLayoutHint;
-import org.xbib.graphics.pdfbox.layout.text.BaseFont;
+import org.xbib.graphics.pdfbox.layout.font.BaseFont;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
-public class Rotation {
+public class RotationTest {
 
     @Test
     public void test() throws Exception {
@@ -36,16 +36,16 @@ public class Rotation {
                 + "gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.\n";
 
         Paragraph paragraph1 = new Paragraph();
-        paragraph1.addMarkup(text1, 11, BaseFont.Times);
+        paragraph1.addMarkup(text1, 11, BaseFont.TIMES);
         Paragraph paragraph2 = new Paragraph();
-        paragraph2.addMarkup(text2, 12, BaseFont.Helvetica);
+        paragraph2.addMarkup(text2, 12, BaseFont.HELVETICA);
         Paragraph paragraph3 = new Paragraph();
-        paragraph3.addMarkup(text1, 8, BaseFont.Courier);
+        paragraph3.addMarkup(text1, 8, BaseFont.COURIER);
 
         Paragraph titleA4 = new Paragraph();
-        titleA4.addMarkup("*Format A4 Landscape*", 20, BaseFont.Times);
+        titleA4.addMarkup("*Format A4 Landscape*", 20, BaseFont.TIMES);
         Paragraph titleA5 = new Paragraph();
-        titleA5.addMarkup("*Format A4 Landscape rotated by -90 degrees*", 20, BaseFont.Times);
+        titleA5.addMarkup("*Format A4 Landscape rotated by -90 degrees*", 20, BaseFont.TIMES);
 
         PageFormat a4_landscape = PageFormat.with().margins(40, 50, 40, 60).landscape().build();
         PageFormat a4_landscape_rotated = PageFormat.with().margins(40, 50, 40, 60).landscape().rotation(-90).build();

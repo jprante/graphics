@@ -9,14 +9,14 @@ import org.xbib.graphics.pdfbox.layout.text.Alignment;
 public class ColumnLayoutHint extends VerticalLayoutHint {
 
     public final static ColumnLayoutHint LEFT = new ColumnLayoutHint(
-            Alignment.Left);
+            Alignment.LEFT);
     public final static ColumnLayoutHint CENTER = new ColumnLayoutHint(
-            Alignment.Center);
+            Alignment.CENTER);
     public final static ColumnLayoutHint RIGHT = new ColumnLayoutHint(
-            Alignment.Right);
+            Alignment.RIGHT);
 
     /**
-     * Creates a layout hint with {@link Alignment#Left left alignment}.
+     * Creates a layout hint with {@link Alignment#LEFT left alignment}.
      */
     public ColumnLayoutHint() {
         super();

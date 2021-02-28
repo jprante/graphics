@@ -1,7 +1,7 @@
 package org.xbib.graphics.pdfbox.layout.text.annotations;
 
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.xbib.graphics.pdfbox.layout.text.FontDescriptor;
+import org.xbib.graphics.pdfbox.layout.font.Font;
+import org.xbib.graphics.pdfbox.layout.font.FontDescriptor;
 import org.xbib.graphics.pdfbox.layout.text.StyledText;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -15,7 +15,24 @@ import java.util.List;
  */
 public class AnnotatedStyledText extends StyledText implements Annotated {
 
-    private final List<Annotation> annotations = new ArrayList<Annotation>();
+    private final List<Annotation> annotations = new ArrayList<>();
+
+
+    /**
+     * Creates a styled text.
+     *
+     * @param text           the text to draw. Must not contain line feeds ('\n').
+     * @param size           the size of the font.
+     * @param font           the font to use..
+     * @param color          the color to use.
+     * @param baselineOffset the offset of the baseline.
+     * @param annotations    the annotations associated with the text.
+     */
+    public AnnotatedStyledText(String text, float size, Font font,
+                               Color color, final float baselineOffset,
+                               Collection<? extends Annotation> annotations) {
+        this(text, new FontDescriptor(font.getPlainFont(), size), color, baselineOffset, 0, 0, annotations);
+    }
 
     /**
      * Creates a styled text.
@@ -29,8 +46,10 @@ public class AnnotatedStyledText extends StyledText implements Annotated {
      * @param annotations    the annotations associated with the text.
      */
     public AnnotatedStyledText(final String text,
-                               final FontDescriptor fontDescriptor, final Color color,
-                               final float leftMargin, final float rightMargin,
+                               final FontDescriptor fontDescriptor,
+                               final Color color,
+                               final float leftMargin,
+                               final float rightMargin,
                                final float baselineOffset,
                                Collection<? extends Annotation> annotations) {
         super(text, fontDescriptor, color, baselineOffset, leftMargin,
@@ -38,23 +57,6 @@ public class AnnotatedStyledText extends StyledText implements Annotated {
         if (annotations != null) {
             this.annotations.addAll(annotations);
         }
-    }
-
-    /**
-     * Creates a styled text.
-     *
-     * @param text           the text to draw. Must not contain line feeds ('\n').
-     * @param size           the size of the font.
-     * @param font           the font to use..
-     * @param color          the color to use.
-     * @param baselineOffset the offset of the baseline.
-     * @param annotations    the annotations associated with the text.
-     */
-    public AnnotatedStyledText(String text, float size, PDFont font,
-                               Color color, final float baselineOffset,
-                               Collection<? extends Annotation> annotations) {
-        this(text, new FontDescriptor(font, size), color, baselineOffset, 0, 0,
-                annotations);
     }
 
     @Override

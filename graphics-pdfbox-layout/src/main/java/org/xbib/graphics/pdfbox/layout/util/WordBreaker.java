@@ -1,6 +1,6 @@
 package org.xbib.graphics.pdfbox.layout.util;
 
-import org.xbib.graphics.pdfbox.layout.text.FontDescriptor;
+import org.xbib.graphics.pdfbox.layout.font.FontDescriptor;
 import java.io.IOException;
 
 /**
@@ -21,8 +21,8 @@ public interface WordBreaker {
      * @return the broken word, or <code>null</code> if it cannot be broken.
      * @throws IOException by pdfbox
      */
-    Pair<String> breakWord(final String word,
-                           final FontDescriptor fontDescriptor, final float maxWidth,
-                           final boolean breakHardIfNecessary) throws IOException;
+    Pair<String> breakWord(String word,
+                           FontDescriptor fontDescriptor, float maxWidth,
+                           boolean breakHardIfNecessary) throws IOException;
 
 }

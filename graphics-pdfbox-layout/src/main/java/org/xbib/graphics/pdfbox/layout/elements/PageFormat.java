@@ -2,7 +2,6 @@ package org.xbib.graphics.pdfbox.layout.elements;
 
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.xbib.graphics.pdfbox.layout.elements.render.VerticalLayout;
-import org.xbib.graphics.pdfbox.layout.text.Constants;
 
 /**
  * Defines the size and orientation of a page. The default is A4 portrait
@@ -10,19 +9,48 @@ import org.xbib.graphics.pdfbox.layout.text.Constants;
  */
 public class PageFormat implements Element {
 
+    private static final int DEFAULT_USER_SPACE_UNIT_DPI = 72;
+
+    private static final float MM_TO_UNITS = 1 / (10 * 2.54f)
+            * DEFAULT_USER_SPACE_UNIT_DPI;
+
+    public static final PDRectangle A0 = new PDRectangle(841 * MM_TO_UNITS,
+            1189 * MM_TO_UNITS);
+    public static final PDRectangle A1 = new PDRectangle(594 * MM_TO_UNITS,
+            841 * MM_TO_UNITS);
+    public static final PDRectangle A2 = new PDRectangle(420 * MM_TO_UNITS,
+            594 * MM_TO_UNITS);
+    public static final PDRectangle A3 = new PDRectangle(297 * MM_TO_UNITS,
+            420 * MM_TO_UNITS);
+    public static final PDRectangle A4 = new PDRectangle(210 * MM_TO_UNITS,
+            297 * MM_TO_UNITS);
+    public static final PDRectangle A5 = new PDRectangle(148 * MM_TO_UNITS,
+            210 * MM_TO_UNITS);
+    public static final PDRectangle A6 = new PDRectangle(105 * MM_TO_UNITS,
+            148 * MM_TO_UNITS);
+
+    public static final PDRectangle Letter = new PDRectangle(215.9f * MM_TO_UNITS,
+            279.4f * MM_TO_UNITS);
+
     private final float marginLeft;
+
     private final float marginRight;
+
     private final float marginTop;
+
     private final float marginBottom;
+
     private final PDRectangle mediaBox;
+
     private final Orientation orientation;
+
     private final int rotation;
 
     /**
      * Creates a PageFormat with A4 portrait without margins.
      */
     public PageFormat() {
-        this(Constants.A4);
+        this(A4);
     }
 
     /**
@@ -31,7 +59,7 @@ public class PageFormat implements Element {
      * @param mediaBox the size.
      */
     public PageFormat(final PDRectangle mediaBox) {
-        this(mediaBox, Orientation.Portrait);
+        this(mediaBox, Orientation.PORTRAIT);
     }
 
     /**
@@ -93,9 +121,9 @@ public class PageFormat implements Element {
             return orientation;
         }
         if (getMediaBox().getWidth() > getMediaBox().getHeight()) {
-            return Orientation.Landscape;
+            return Orientation.LANDSCAPE;
         }
-        return Orientation.Portrait;
+        return Orientation.PORTRAIT;
     }
 
     /**
@@ -153,7 +181,7 @@ public class PageFormat implements Element {
         private float marginRight;
         private float marginTop;
         private float marginBottom;
-        private PDRectangle mediaBox = Constants.A4;
+        private PDRectangle mediaBox = A4;
         private Orientation orientation;
         private int rotation;
 
@@ -244,82 +272,82 @@ public class PageFormat implements Element {
         }
 
         /**
-         * Sets the media box to size {@link Constants#A0}.
+         * Sets the media box to size {@link #A0}.
          *
          * @return the builder.
          */
         public PageFormatBuilder A0() {
-            this.mediaBox = Constants.A0;
+            this.mediaBox = A0;
             return this;
         }
 
         /**
-         * Sets the media box to size {@link Constants#A1}.
+         * Sets the media box to size {@link #A1}.
          *
          * @return the builder.
          */
         public PageFormatBuilder A1() {
-            this.mediaBox = Constants.A1;
+            this.mediaBox = A1;
             return this;
         }
 
         /**
-         * Sets the media box to size {@link Constants#A2}.
+         * Sets the media box to size {@link #A2}.
          *
          * @return the builder.
          */
         public PageFormatBuilder A2() {
-            this.mediaBox = Constants.A2;
+            this.mediaBox = A2;
             return this;
         }
 
         /**
-         * Sets the media box to size {@link Constants#A3}.
+         * Sets the media box to size {@link #A3}.
          *
          * @return the builder.
          */
         public PageFormatBuilder A3() {
-            this.mediaBox = Constants.A3;
+            this.mediaBox = A3;
             return this;
         }
 
         /**
-         * Sets the media box to size {@link Constants#A4}.
+         * Sets the media box to size {@link #A4}.
          *
          * @return the builder.
          */
         public PageFormatBuilder A4() {
-            this.mediaBox = Constants.A4;
+            this.mediaBox = A4;
             return this;
         }
 
         /**
-         * Sets the media box to size {@link Constants#A5}.
+         * Sets the media box to size {@link #A5}.
          *
          * @return the builder.
          */
         public PageFormatBuilder A5() {
-            this.mediaBox = Constants.A5;
+            this.mediaBox = A5;
             return this;
         }
 
         /**
-         * Sets the media box to size {@link Constants#A6}.
+         * Sets the media box to size {@link #A6}.
          *
          * @return the builder.
          */
         public PageFormatBuilder A6() {
-            this.mediaBox = Constants.A6;
+            this.mediaBox = A6;
             return this;
         }
 
         /**
-         * Sets the media box to size {@link Constants#Letter}.
+         * Sets the media box to size {@link #Letter}.
          *
          * @return the builder.
          */
         public PageFormatBuilder letter() {
-            this.mediaBox = Constants.Letter;
+            this.mediaBox = Letter;
             return this;
         }
 
@@ -335,22 +363,22 @@ public class PageFormat implements Element {
         }
 
         /**
-         * Sets the orientation to {@link Orientation#Portrait}.
+         * Sets the orientation to {@link Orientation#PORTRAIT}.
          *
          * @return the builder.
          */
         public PageFormatBuilder portrait() {
-            this.orientation = Orientation.Portrait;
+            this.orientation = Orientation.PORTRAIT;
             return this;
         }
 
         /**
-         * Sets the orientation to {@link Orientation#Landscape}.
+         * Sets the orientation to {@link Orientation#LANDSCAPE}.
          *
          * @return the builder.
          */
         public PageFormatBuilder landscape() {
-            this.orientation = Orientation.Landscape;
+            this.orientation = Orientation.LANDSCAPE;
             return this;
         }
 

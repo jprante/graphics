@@ -1,6 +1,7 @@
 package org.xbib.graphics.pdfbox.layout.text;
 
 import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.xbib.graphics.pdfbox.layout.font.Font;
 import org.xbib.graphics.pdfbox.layout.text.annotations.AnnotatedStyledText;
 import org.xbib.graphics.pdfbox.layout.text.annotations.Annotation;
 import org.xbib.graphics.pdfbox.layout.text.annotations.AnnotationCharacters;
@@ -16,40 +17,11 @@ import java.util.regex.Matcher;
 
 public class TextFlowUtil {
 
-    /**
-     * Creates a text flow from the given text. The text may contain line
-     * breaks.
-     *
-     * @param text     the text
-     * @param fontSize the font size to use.
-     * @param font     the font to use.
-     * @return the created text flow.
-     * @throws IOException by pdfbox
-     */
-    public static TextFlow createTextFlow(final String text,
-                                          final float fontSize, final PDFont font) throws IOException {
+    public static TextFlow createTextFlow(String text,
+                                          float fontSize,
+                                          Font baseFont) throws IOException {
         final Iterable<CharSequence> parts = fromPlainText(text);
-        return createTextFlow(parts, fontSize, font, font, font, font);
-    }
-
-    /**
-     * Convenience alternative to
-     * {@link #createTextFlowFromMarkup(String, float, PDFont, PDFont, PDFont, PDFont)}
-     * which allows to specifies the fonts to use by using the {@link BaseFont}
-     * enum.
-     *
-     * @param markup   the markup text.
-     * @param fontSize the font size to use.
-     * @param baseFont the base font describing the bundle of
-     *                 plain/blold/italic/bold-italic fonts.
-     * @return the created text flow.
-     * @throws IOException by pdfbox
-     */
-    public static TextFlow createTextFlowFromMarkup(final String markup,
-                                                    final float fontSize, final BaseFont baseFont) throws IOException {
-        return createTextFlowFromMarkup(markup, fontSize,
-                baseFont.getPlainFont(), baseFont.getBoldFont(),
-                baseFont.getItalicFont(), baseFont.getBoldItalicFont());
+        return createTextFlow(parts, fontSize,  baseFont);
     }
 
     /**
@@ -81,20 +53,15 @@ public class TextFlowUtil {
      *
      * @param markup         the markup text.
      * @param fontSize       the font size to use.
-     * @param plainFont      the plain font.
-     * @param boldFont       the bold font.
-     * @param italicFont     the italic font.
-     * @param boldItalicFont the bold-italic font.
+     * @param baseFont      the font.
      * @return the created text flow.
      * @throws IOException by pdfbox
      */
     public static TextFlow createTextFlowFromMarkup(final String markup,
-                                                    final float fontSize, final PDFont plainFont,
-                                                    final PDFont boldFont, final PDFont italicFont,
-                                                    final PDFont boldItalicFont) throws IOException {
+                                                    final float fontSize,
+                                                    Font baseFont) throws IOException {
         final Iterable<CharSequence> parts = fromMarkup(markup);
-        return createTextFlow(parts, fontSize, plainFont, boldFont, italicFont,
-                boldItalicFont);
+        return createTextFlow(parts, fontSize, baseFont);
     }
 
     /**
@@ -102,17 +69,11 @@ public class TextFlowUtil {
      *
      * @param parts          the parts to create the text flow from.
      * @param fontSize       the font size to use.
-     * @param plainFont      the plain font.
-     * @param boldFont       the bold font.
-     * @param italicFont     the italic font.
-     * @param boldItalicFont the bold-italic font.
      * @return the created text flow.
      * @throws IOException by pdfbox
      */
-    protected static TextFlow createTextFlow(
-            final Iterable<CharSequence> parts, final float fontSize,
-            final PDFont plainFont, final PDFont boldFont,
-            final PDFont italicFont, final PDFont boldItalicFont)
+    protected static TextFlow createTextFlow(final Iterable<CharSequence> parts,
+                                             final float fontSize, Font baseFont)
             throws IOException {
         final TextFlow result = new TextFlow();
         boolean bold = false;
@@ -175,12 +136,11 @@ public class TextFlowUtil {
                         }
                         indentStack.push(currentIndent);
                         result.add(currentIndent.createNewIndent(fontSize,
-                                plainFont, color));
+                                baseFont.getPlainFont(), color));
                     }
                 }
             } else {
-                PDFont font = getFont(bold, italic, plainFont, boldFont,
-                        italicFont, boldItalicFont);
+                PDFont font = getFont(bold, italic, baseFont);
                 float baselineOffset = 0;
                 float currentFontSize = fontSize;
                 if (metricsControl != null) {
@@ -193,7 +153,7 @@ public class TextFlowUtil {
                     result.add(styledText);
                 } else {
                     AnnotatedStyledText styledText = new AnnotatedStyledText(
-                            fragment.toString(), currentFontSize, font, color, baselineOffset,
+                            fragment.toString(), currentFontSize, baseFont, color, baselineOffset,
                             annotationMap.values());
                     result.add(styledText);
                 }
@@ -210,8 +170,21 @@ public class TextFlowUtil {
             font = boldFont;
         } else if (!bold && italic) {
             font = italicFont;
-        } else if (bold && italic) {
+        } else if (bold) {
             font = boldItalicFont;
+        }
+        return font;
+    }
+
+    protected static PDFont getFont(boolean bold, boolean italic,
+                                    Font baseFont) {
+        PDFont font = baseFont.getPlainFont();
+        if (bold && !italic) {
+            font = baseFont.getBoldFont();
+        } else if (!bold && italic) {
+            font = baseFont.getItalicFont();
+        } else if (bold) {
+            font = baseFont.getBoldItalicFont();
         }
         return font;
     }

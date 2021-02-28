@@ -3,14 +3,13 @@ package org.xbib.graphics.pdfbox.layout.test;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.junit.jupiter.api.Test;
+import org.xbib.graphics.pdfbox.layout.elements.PageFormat;
 import org.xbib.graphics.pdfbox.layout.shape.RoundRect;
 import org.xbib.graphics.pdfbox.layout.shape.Shape;
 import org.xbib.graphics.pdfbox.layout.shape.Stroke;
 import org.xbib.graphics.pdfbox.layout.text.Alignment;
-import org.xbib.graphics.pdfbox.layout.text.BaseFont;
-import org.xbib.graphics.pdfbox.layout.text.Constants;
+import org.xbib.graphics.pdfbox.layout.font.BaseFont;
 import org.xbib.graphics.pdfbox.layout.text.DrawContext;
 import org.xbib.graphics.pdfbox.layout.text.Position;
 import org.xbib.graphics.pdfbox.layout.text.TextFlow;
@@ -25,22 +24,19 @@ public class LowLevelText {
 
     @Test
     public void test() throws Exception {
-
-        final PDDocument test = new PDDocument();
-        final PDPage page = new PDPage(Constants.A4);
+        PDDocument pdDocument = new PDDocument();
+        PDPage page = new PDPage(PageFormat.A4);
         float pageWidth = page.getMediaBox().getWidth();
         float pageHeight = page.getMediaBox().getHeight();
-
-        test.addPage(page);
+        pdDocument.addPage(page);
         final PDPageContentStream contentStream =
-                new PDPageContentStream(test, page, PDPageContentStream.AppendMode.APPEND, true);
+                new PDPageContentStream(pdDocument, page, PDPageContentStream.AppendMode.APPEND, true);
 
-        // AnnotationDrawListener is only needed if you use annoation based stuff, e.g. hyperlinks
         AnnotationDrawListener annotationDrawListener = new AnnotationDrawListener(new DrawContext() {
 
             @Override
             public PDDocument getPdDocument() {
-                return test;
+                return pdDocument;
             }
 
             @Override
@@ -59,17 +55,17 @@ public class LowLevelText {
         TextFlow text = TextFlowUtil
                 .createTextFlowFromMarkup(
                         "Hello *bold _italic bold-end* italic-end_. Eirmod\ntempor invidunt ut \\*labore",
-                        11, BaseFont.Times);
+                        11, BaseFont.TIMES);
 
-        text.addText("Spongebob", 11, PDType1Font.COURIER);
-        text.addText(" is ", 20, PDType1Font.HELVETICA_BOLD_OBLIQUE);
-        text.addText("cool", 7, PDType1Font.HELVETICA);
+        text.addText("Spongebob", 11, BaseFont.COURIER);
+        text.addText(" is ", 20, BaseFont.HELVETICA);
+        text.addText("cool", 7, BaseFont.HELVETICA);
 
         text.setMaxWidth(100);
         float xOffset = TextSequenceUtil.getOffset(text, pageWidth,
-                Alignment.Right);
+                Alignment.RIGHT);
         text.drawText(contentStream, new Position(xOffset, pageHeight - 50),
-                Alignment.Right, annotationDrawListener);
+                Alignment.RIGHT, annotationDrawListener);
 
         String textBlock = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, "
                 + "{link[https://github.com/ralfstuckert/pdfbox-layout/]}pdfbox layout{link} "
@@ -83,11 +79,11 @@ public class LowLevelText {
                 + "gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.\n";
 
         text = new TextFlow();
-        text.addMarkup(textBlock, 8, BaseFont.Courier);
+        text.addMarkup(textBlock, 8, BaseFont.COURIER);
         text.setMaxWidth(200);
-        xOffset = TextSequenceUtil.getOffset(text, pageWidth, Alignment.Center);
+        xOffset = TextSequenceUtil.getOffset(text, pageWidth, Alignment.CENTER);
         text.drawText(contentStream, new Position(xOffset, pageHeight - 100),
-                Alignment.Justify, annotationDrawListener);
+                Alignment.JUSTIFY, annotationDrawListener);
 
         // draw a round rect box with text
         text.setMaxWidth(350);
@@ -99,13 +95,13 @@ public class LowLevelText {
         float boxHeight = text.getHeight() + 2 * paddingY;
 
         Shape shape = new RoundRect(20);
-        shape.fill(test, contentStream, new Position(x, y), boxWidth,
+        shape.fill(pdDocument, contentStream, new Position(x, y), boxWidth,
                 boxHeight, Color.pink, null);
-        shape.draw(test, contentStream, new Position(x, y), boxWidth,
+        shape.draw(pdDocument, contentStream, new Position(x, y), boxWidth,
                 boxHeight, Color.blue, new Stroke(3), null);
         // now the text
         text.drawText(contentStream, new Position(x + paddingX, y - paddingY),
-                Alignment.Center, annotationDrawListener);
+                Alignment.CENTER, annotationDrawListener);
 
         annotationDrawListener.afterPage(null);
         contentStream.close();
@@ -113,8 +109,7 @@ public class LowLevelText {
         annotationDrawListener.afterRender();
 
         final OutputStream outputStream = new FileOutputStream("build/lowleveltext.pdf");
-        test.save(outputStream);
-        test.close();
-
+        pdDocument.save(outputStream);
+        pdDocument.close();
     }
 }

@@ -1,6 +1,5 @@
 package org.xbib.graphics.pdfbox.layout.test;
 
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.junit.jupiter.api.Test;
 import org.xbib.graphics.pdfbox.layout.elements.Document;
 import org.xbib.graphics.pdfbox.layout.elements.Element;
@@ -14,7 +13,7 @@ import org.xbib.graphics.pdfbox.layout.elements.render.VerticalLayoutHint;
 import org.xbib.graphics.pdfbox.layout.shape.Stroke;
 import org.xbib.graphics.pdfbox.layout.shape.Stroke.CapStyle;
 import org.xbib.graphics.pdfbox.layout.text.Alignment;
-import org.xbib.graphics.pdfbox.layout.text.BaseFont;
+import org.xbib.graphics.pdfbox.layout.font.BaseFont;
 import org.xbib.graphics.pdfbox.layout.text.Position;
 import org.xbib.graphics.pdfbox.layout.text.TextFlow;
 import org.xbib.graphics.pdfbox.layout.text.TextFlowUtil;
@@ -52,9 +51,9 @@ public class CustomRenderer {
         document.addRenderListener(sectionRenderer);
 
         Paragraph paragraph = new Paragraph();
-        paragraph.addMarkup(text1, 11, BaseFont.Times);
-        paragraph.addMarkup(text2, 12, BaseFont.Helvetica);
-        paragraph.addMarkup(text1, 8, BaseFont.Courier);
+        paragraph.addMarkup(text1, 11, BaseFont.TIMES);
+        paragraph.addMarkup(text2, 12, BaseFont.HELVETICA);
+        paragraph.addMarkup(text1, 8, BaseFont.COURIER);
 
         document.add(new Section(1));
         document.add(paragraph);
@@ -108,29 +107,13 @@ public class CustomRenderer {
         public void afterPage(RenderContext renderContext) throws IOException {
             String content = String.format("Section %s, Page %s",
                     sectionNumber, renderContext.getPageIndex() + 1);
-            TextFlow text = TextFlowUtil.createTextFlow(content, 11,
-                    PDType1Font.TIMES_ROMAN);
-            float offset = renderContext.getPageFormat().getMarginLeft()
-                    + TextSequenceUtil.getOffset(text,
-                    renderContext.getWidth(), Alignment.Right);
+            TextFlow text = TextFlowUtil.createTextFlow(content, 11, BaseFont.TIMES);
+            float offset = renderContext.getPageFormat().getMarginLeft() +
+                    TextSequenceUtil.getOffset(text, renderContext.getWidth(), Alignment.RIGHT);
             text.drawText(renderContext.getContentStream(), new Position(
-                    offset, 30), Alignment.Right, null);
+                    offset, 30), Alignment.RIGHT, null);
         }
 
     }
 
-    public static class Section extends Paragraph {
-        private final int number;
-
-        public Section(int number) throws IOException {
-            super();
-            this.number = number;
-            addMarkup(String.format("*Section %d", number), 16, BaseFont.Times);
-        }
-
-        public int getNumber() {
-            return number;
-        }
-
-    }
 }

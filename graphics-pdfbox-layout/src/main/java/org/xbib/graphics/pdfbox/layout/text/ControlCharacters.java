@@ -179,8 +179,7 @@ public class ControlCharacters {
 
     }
 
-    private static class ColorControlCharacterFactory implements
-            ControlCharacterFactory {
+    private static class ColorControlCharacterFactory implements ControlCharacterFactory {
 
         private final static Pattern PATTERN = Pattern
                 .compile("(?<!\\\\)(\\\\\\\\)*\\{color:#(\\p{XDigit}{6})\\}");
@@ -279,5 +278,4 @@ public class ControlCharacters {
         }
 
     }
-
 }

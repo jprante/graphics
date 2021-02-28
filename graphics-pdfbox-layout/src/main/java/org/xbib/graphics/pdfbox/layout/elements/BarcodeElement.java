@@ -2,23 +2,20 @@ package org.xbib.graphics.pdfbox.layout.elements;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory;
-import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
+import org.apache.pdfbox.util.Matrix;
+import org.xbib.graphics.barcode.Symbol;
+import org.xbib.graphics.barcode.render.BarcodeGraphicsRenderer;
+import org.xbib.graphics.pdfbox.PdfBoxGraphics2D;
 import org.xbib.graphics.pdfbox.layout.text.DrawListener;
 import org.xbib.graphics.pdfbox.layout.text.Position;
 import org.xbib.graphics.pdfbox.layout.text.WidthRespecting;
-import java.awt.image.BufferedImage;
+import java.awt.Color;
 import java.io.IOException;
 
-public class ImageElement implements Element, Drawable, Dividable, WidthRespecting {
+public class BarcodeElement implements Element, Drawable, Dividable, WidthRespecting {
 
-    /**
-     * Set this to {@link #setWidth(float)} resp. {@link #setHeight(float)}
-     * (usually both) in order to respect the {@link WidthRespecting width}.
-     */
-    public final static float SCALE_TO_RESPECT_WIDTH = -1f;
-
-    private final BufferedImage image;
+    private final Symbol symbol;
 
     private float width;
 
@@ -28,10 +25,10 @@ public class ImageElement implements Element, Drawable, Dividable, WidthRespecti
 
     private Position absolutePosition;
 
-    public ImageElement(BufferedImage image) {
-        this.image = image;
-        this.width = image.getWidth();
-        this.height = image.getHeight();
+    public BarcodeElement(Symbol symbol) {
+        this.symbol = symbol;
+        this.width = symbol.getWidth();
+        this.height = symbol.getHeight();
     }
 
     public void setScale(float scale) {
@@ -41,46 +38,18 @@ public class ImageElement implements Element, Drawable, Dividable, WidthRespecti
 
     @Override
     public float getWidth() throws IOException {
-        if (width == SCALE_TO_RESPECT_WIDTH) {
-            if (getMaxWidth() > 0 && image.getWidth() > getMaxWidth()) {
-                return getMaxWidth();
-            }
-            return image.getWidth();
-        }
         return width;
     }
 
-    /**
-     * Sets the width. Default is the image width. Set to
-     * {@link #SCALE_TO_RESPECT_WIDTH} in order to let the image
-     * {@link WidthRespecting respect any given width}.
-     *
-     * @param width the width to use.
-     */
     public void setWidth(float width) {
         this.width = width;
     }
 
     @Override
     public float getHeight() throws IOException {
-        if (height == SCALE_TO_RESPECT_WIDTH) {
-            if (getMaxWidth() > 0 && image.getWidth() > getMaxWidth()) {
-                return getMaxWidth() / (float) image.getWidth()
-                        * (float) image.getHeight();
-            }
-            return image.getHeight();
-        }
         return height;
     }
 
-    /**
-     * Sets the height. Default is the image height. Set to
-     * {@link #SCALE_TO_RESPECT_WIDTH} in order to let the image
-     * {@link WidthRespecting respect any given width}. Usually this makes only
-     * sense if you also set the width to {@link #SCALE_TO_RESPECT_WIDTH}.
-     *
-     * @param height the height to use.
-     */
     public void setHeight(float height) {
         this.height = height;
     }
@@ -123,8 +92,18 @@ public class ImageElement implements Element, Drawable, Dividable, WidthRespecti
                      Position upperLeft, DrawListener drawListener) throws IOException {
         float x = upperLeft.getX();
         float y = upperLeft.getY() - height;
-        PDImageXObject imageXObject = LosslessFactory.createFromImage(pdDocument, image);
-        contentStream.drawImage(imageXObject, x, y, width, height);
+        PdfBoxGraphics2D pdfBoxGraphics2D = new PdfBoxGraphics2D(pdDocument, width, height);
+        BarcodeGraphicsRenderer renderer = new BarcodeGraphicsRenderer(pdfBoxGraphics2D, null, 1.0d,
+                Color.WHITE, Color.BLACK, false, false);
+        renderer.render(symbol);
+        renderer.close();
+        PDFormXObject xFormObject = pdfBoxGraphics2D.getXFormObject();
+        Matrix matrix = new Matrix();
+        matrix.translate(x, y);
+        contentStream.saveGraphicsState();
+        contentStream.transform(matrix);
+        contentStream.drawForm(xFormObject);
+        contentStream.restoreGraphicsState();
         if (drawListener != null) {
             drawListener.drawn(this, upperLeft, getWidth(), getHeight());
         }

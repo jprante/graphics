@@ -1,6 +1,7 @@
 package org.xbib.graphics.pdfbox.layout.text;
 
 import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.xbib.graphics.pdfbox.layout.font.FontDescriptor;
 import java.awt.Color;
 import java.io.IOException;
 
@@ -10,10 +11,15 @@ import java.io.IOException;
 public class StyledText implements TextFragment {
 
     private final String text;
+
     private final FontDescriptor fontDescriptor;
+
     private final Color color;
+
     private final float leftMargin;
+
     private final float rightMargin;
+
     private final float baselineOffset;
 
     /**

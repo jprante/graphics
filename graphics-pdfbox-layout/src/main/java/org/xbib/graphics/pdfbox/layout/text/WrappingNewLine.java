@@ -1,6 +1,8 @@
 package org.xbib.graphics.pdfbox.layout.text;
 
 
+import org.xbib.graphics.pdfbox.layout.font.FontDescriptor;
+
 /**
  * A NewLine introduced by wrapping. This interface is useful for detecting
  * new-lines not contained in the original text.

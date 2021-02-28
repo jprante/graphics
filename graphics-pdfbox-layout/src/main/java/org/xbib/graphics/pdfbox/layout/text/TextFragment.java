@@ -1,5 +1,6 @@
 package org.xbib.graphics.pdfbox.layout.text;
 
+import org.xbib.graphics.pdfbox.layout.font.FontDescriptor;
 import java.awt.Color;
 
 /**

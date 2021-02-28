@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * The central class for creating a document.
@@ -31,10 +30,13 @@ public class Document implements RenderListener {
     public final static PageFormat DEFAULT_PAGE_FORMAT = new PageFormat();
 
     private final List<Entry<Element, LayoutHint>> elements = new ArrayList<>();
-    private final List<Renderer> customRenderer = new CopyOnWriteArrayList<Renderer>();
-    private final List<RenderListener> renderListener = new CopyOnWriteArrayList<RenderListener>();
+
+    private final List<Renderer> customRenderer = new ArrayList<>();
+
+    private final List<RenderListener> renderListener = new ArrayList<>();
 
     private PDDocument pdDocument;
+
     private final PageFormat pageFormat;
 
     /**
@@ -58,36 +60,6 @@ public class Document implements RenderListener {
         this(PageFormat.with()
                 .margins(marginLeft, marginRight, marginTop, marginBottom)
                 .build());
-    }
-
-    /**
-     * Creates a Document based on the given media box. By default, a
-     * {@link VerticalLayout} is used.
-     *
-     * @param mediaBox the media box to use.
-     * @deprecated use {@link #Document(PageFormat)} instead.
-     */
-    @Deprecated
-    public Document(PDRectangle mediaBox) {
-        this(mediaBox, 0, 0, 0, 0);
-    }
-
-    /**
-     * Creates a Document based on the given media box and margins. By default,
-     * a {@link VerticalLayout} is used.
-     *
-     * @param mediaBox     the media box to use.
-     * @param marginLeft   the left margin
-     * @param marginRight  the right margin
-     * @param marginTop    the top margin
-     * @param marginBottom the bottom margin
-     * @deprecated use {@link #Document(PageFormat)} instead.
-     */
-    @Deprecated
-    public Document(PDRectangle mediaBox, float marginLeft, float marginRight,
-                    float marginTop, float marginBottom) {
-        this(new PageFormat(mediaBox, Orientation.Portrait, marginLeft,
-                marginRight, marginTop, marginBottom));
     }
 
     /**

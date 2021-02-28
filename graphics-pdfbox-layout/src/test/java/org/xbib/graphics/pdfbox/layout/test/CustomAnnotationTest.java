@@ -2,13 +2,12 @@ package org.xbib.graphics.pdfbox.layout.test;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationTextMarkup;
 import org.junit.jupiter.api.Test;
 import org.xbib.graphics.pdfbox.layout.elements.Document;
 import org.xbib.graphics.pdfbox.layout.elements.PageFormat;
 import org.xbib.graphics.pdfbox.layout.elements.Paragraph;
-import org.xbib.graphics.pdfbox.layout.text.BaseFont;
+import org.xbib.graphics.pdfbox.layout.font.BaseFont;
 import org.xbib.graphics.pdfbox.layout.text.DrawContext;
 import org.xbib.graphics.pdfbox.layout.text.Position;
 import org.xbib.graphics.pdfbox.layout.text.annotations.Annotated;
@@ -29,7 +28,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CustomAnnotation {
+public class CustomAnnotationTest {
 
     /**
      * Represents a highlight annotation that might be added to a
@@ -192,19 +191,19 @@ public class CustomAnnotation {
                 .margins(40, 60, 40, 60).portrait().build());
 
         Paragraph paragraph = new Paragraph();
-        paragraph.addText("Hello there, here is ", 10, PDType1Font.HELVETICA);
+        paragraph.addText("Hello there, here is ", 10, BaseFont.HELVETICA);
 
         // now add some annotated text using our custom highlight annotation
         HighlightAnnotation annotation = new HighlightAnnotation(Color.green);
         AnnotatedStyledText highlightedText = new AnnotatedStyledText(
-                "highlighted text", 10, PDType1Font.HELVETICA, Color.black, 0f,
+                "highlighted text", 10, BaseFont.HELVETICA, Color.black, 0f,
                 Collections.singleton(annotation));
         paragraph.add(highlightedText);
 
         paragraph
                 .addText(
                         ". Do whatever you want here...strike, squiggle, whatsoever\n\n",
-                        10, PDType1Font.HELVETICA);
+                        10, BaseFont.HELVETICA);
         paragraph.setMaxWidth(150);
         document.add(paragraph);
 
@@ -216,7 +215,7 @@ public class CustomAnnotation {
                 .addMarkup(
                         "Hello there, here is {hl:#ffff00}highlighted text{hl}. "
                                 + "Do whatever you want here...strike, squiggle, whatsoever\n\n",
-                        10, BaseFont.Helvetica);
+                        10, BaseFont.HELVETICA);
         paragraph.setMaxWidth(150);
         document.add(paragraph);
 

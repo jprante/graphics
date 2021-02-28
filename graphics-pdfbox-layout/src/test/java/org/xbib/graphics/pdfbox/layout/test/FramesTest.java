@@ -3,7 +3,7 @@ package org.xbib.graphics.pdfbox.layout.test;
 import org.junit.jupiter.api.Test;
 import org.xbib.graphics.pdfbox.layout.elements.Document;
 import org.xbib.graphics.pdfbox.layout.elements.Frame;
-import org.xbib.graphics.pdfbox.layout.elements.PageFormat;
+import org.xbib.graphics.pdfbox.layout.elements.PageFormats;
 import org.xbib.graphics.pdfbox.layout.elements.Paragraph;
 import org.xbib.graphics.pdfbox.layout.elements.render.VerticalLayoutHint;
 import org.xbib.graphics.pdfbox.layout.shape.Ellipse;
@@ -11,13 +11,12 @@ import org.xbib.graphics.pdfbox.layout.shape.Rect;
 import org.xbib.graphics.pdfbox.layout.shape.RoundRect;
 import org.xbib.graphics.pdfbox.layout.shape.Stroke;
 import org.xbib.graphics.pdfbox.layout.text.Alignment;
-import org.xbib.graphics.pdfbox.layout.text.BaseFont;
-import org.xbib.graphics.pdfbox.layout.text.Constants;
+import org.xbib.graphics.pdfbox.layout.font.BaseFont;
 import java.awt.Color;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
-public class Frames {
+public class FramesTest {
 
     @Test
     public void test() throws Exception {
@@ -39,10 +38,10 @@ public class Frames {
                 + "eos et _accusam et *justo* duo dolores_ et ea rebum. Stet clita kasd "
                 + "gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.\n";
 
-        Document document = new Document(new PageFormat(Constants.A5));
+        Document document = new Document(PageFormats.A5_PORTRAIT);
 
         Paragraph paragraph = new Paragraph();
-        paragraph.addMarkup("Am I living in a box?", 11, BaseFont.Times);
+        paragraph.addMarkup("Am I living in a box?", 11, BaseFont.TIMES);
         Frame frame = new Frame(paragraph);
         frame.setShape(new Rect());
         frame.setBorder(Color.black, new Stroke());
@@ -51,7 +50,7 @@ public class Frames {
         document.add(frame, VerticalLayoutHint.CENTER);
 
         paragraph = new Paragraph();
-        paragraph.addMarkup(text1, 11, BaseFont.Times);
+        paragraph.addMarkup(text1, 11, BaseFont.TIMES);
         frame = new Frame(paragraph, 200f, null);
         frame.setShape(new Rect());
         frame.setBackgroundColor(Color.black);
@@ -60,8 +59,8 @@ public class Frames {
         document.add(frame);
 
         paragraph = new Paragraph();
-        paragraph.addMarkup("{color:#aa00aa}*Ain't no rectangle*", 22, BaseFont.Helvetica);
-        paragraph.setAlignment(Alignment.Center);
+        paragraph.addMarkup("{color:#aa00aa}*Ain't no rectangle*", 22, BaseFont.HELVETICA);
+        paragraph.setAlignment(Alignment.CENTER);
         frame = new Frame(paragraph, 300f, 100f);
         frame.setShape(new Ellipse());
         frame.setBorder(Color.green, new Stroke(2));
@@ -71,9 +70,9 @@ public class Frames {
         document.add(frame);
 
         paragraph = new Paragraph();
-        paragraph.addMarkup("Frames also paginate, see here:\n\n", 13, BaseFont.Times);
-        paragraph.addMarkup(text2, 11, BaseFont.Times);
-        paragraph.addMarkup(text2, 11, BaseFont.Times);
+        paragraph.addMarkup("Frames also paginate, see here:\n\n", 13, BaseFont.TIMES);
+        paragraph.addMarkup(text2, 11, BaseFont.TIMES);
+        paragraph.addMarkup(text2, 11, BaseFont.TIMES);
         frame = new Frame(paragraph, null, null);
         frame.setShape(new RoundRect(10));
         frame.setBorder(Color.magenta, new Stroke(3));
@@ -82,8 +81,8 @@ public class Frames {
         frame.setMargin(50, 50, 20, 10);
 
         paragraph = new Paragraph();
-        paragraph.addMarkup(text2, 11, BaseFont.Times);
-        paragraph.addMarkup(text2, 11, BaseFont.Times);
+        paragraph.addMarkup(text2, 11, BaseFont.TIMES);
+        paragraph.addMarkup(text2, 11, BaseFont.TIMES);
         frame.add(paragraph);
 
         document.add(frame);

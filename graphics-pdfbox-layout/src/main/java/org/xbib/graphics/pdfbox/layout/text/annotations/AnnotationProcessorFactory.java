@@ -2,7 +2,6 @@ package org.xbib.graphics.pdfbox.layout.text.annotations;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Factory used to create all available {@link AnnotationProcessor}s. You may
@@ -11,7 +10,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class AnnotationProcessorFactory {
 
-    private final static List<Class<? extends AnnotationProcessor>> ANNOTATION_PROCESSORS = new CopyOnWriteArrayList<Class<? extends AnnotationProcessor>>();
+    private final static List<Class<? extends AnnotationProcessor>> ANNOTATION_PROCESSORS = new ArrayList<>();
 
     static {
         register(HyperlinkAnnotationProcessor.class);

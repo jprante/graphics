@@ -10,10 +10,11 @@ import java.util.regex.Pattern;
 public class ControlCharacter implements CharSequence {
 
     private final String description;
+
     private final String charaterToEscape;
 
-    protected ControlCharacter(final String description,
-                               final String charaterToEscape) {
+    protected ControlCharacter(String description,
+                               String charaterToEscape) {
         this.description = description;
         this.charaterToEscape = charaterToEscape;
     }

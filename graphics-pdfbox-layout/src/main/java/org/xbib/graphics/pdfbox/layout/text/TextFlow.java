@@ -1,7 +1,7 @@
 package org.xbib.graphics.pdfbox.layout.text;
 
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.xbib.graphics.pdfbox.layout.font.Font;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +13,7 @@ import java.util.Map;
  * A text flow is a text sequence that {@link WidthRespecting respects a given
  * width} by word wrapping the text. The text may contain line breaks ('\n').<br>
  * In order to ease creation of styled text, this class supports a kind of
- * {@link #addMarkup(String, float, BaseFont) markup}. The following raw text
+ * {@link #addMarkup(String, float, Font) markup}. The following raw text
  *
  * <pre>
  * Markup supports *bold*, _italic_, and *even _mixed* markup_.
@@ -40,14 +40,19 @@ import java.util.Map;
 public class TextFlow implements TextSequence, WidthRespecting {
 
     public static final float DEFAULT_LINE_SPACING = 1.2f;
+
     private static final String HEIGHT = "height";
+
     private static final String WIDTH = "width";
 
-    private final Map<String, Object> cache = new HashMap<String, Object>();
+    private final Map<String, Object> cache = new HashMap<>();
 
-    private final List<TextFragment> text = new ArrayList<TextFragment>();
+    private final List<TextFragment> text = new ArrayList<>();
+
     private float lineSpacing = DEFAULT_LINE_SPACING;
+
     private float maxWidth = -1;
+
     private boolean applyLineSpacingToFirstLine = true;
 
     private void clearCache() {
@@ -63,17 +68,8 @@ public class TextFlow implements TextSequence, WidthRespecting {
         return (T) cache.get(key);
     }
 
-    /**
-     * Adds some text associated with the font to draw. The text may contain
-     * line breaks ('\n').
-     *
-     * @param text     the text to add.
-     * @param fontSize the size of the font.
-     * @param font     the font to use to draw the text.
-     * @throws IOException by PDFBox
-     */
     public void addText(final String text, final float fontSize,
-                        final PDFont font) throws IOException {
+                        final Font font) throws IOException {
         add(TextFlowUtil.createTextFlow(text, fontSize, font));
     }
 
@@ -87,26 +83,8 @@ public class TextFlow implements TextSequence, WidthRespecting {
      * @throws IOException by PDFBox
      */
     public void addMarkup(final String markup, final float fontSize,
-                          final BaseFont baseFont) throws IOException {
+                          final Font baseFont) throws IOException {
         add(TextFlowUtil.createTextFlowFromMarkup(markup, fontSize, baseFont));
-    }
-
-    /**
-     * Adds some markup to the text flow.
-     *
-     * @param markup         the markup to add.
-     * @param fontSize       the font size to use.
-     * @param plainFont      the plain font to use.
-     * @param boldFont       the bold font to use.
-     * @param italicFont     the italic font to use.
-     * @param boldItalicFont the bold-italic font to use.
-     * @throws IOException by PDFBox
-     */
-    public void addMarkup(final String markup, final float fontSize,
-                          final PDFont plainFont, final PDFont boldFont,
-                          final PDFont italicFont, final PDFont boldItalicFont) throws IOException {
-        add(TextFlowUtil.createTextFlowFromMarkup(markup, fontSize, plainFont,
-                boldFont, italicFont, boldItalicFont));
     }
 
     /**
@@ -252,7 +230,7 @@ public class TextFlow implements TextSequence, WidthRespecting {
     public void drawTextRightAligned(PDPageContentStream contentStream,
                                      Position endOfFirstLine, DrawListener drawListener) throws IOException {
         drawText(contentStream, endOfFirstLine.add(-getWidth(), 0),
-                Alignment.Right, drawListener);
+                Alignment.RIGHT, drawListener);
     }
 
     /**

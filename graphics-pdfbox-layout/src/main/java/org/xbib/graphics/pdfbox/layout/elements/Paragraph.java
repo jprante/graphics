@@ -16,11 +16,11 @@ import java.io.IOException;
  * alignment}, and {@link WidthRespecting respects a given width} by applying
  * word-wrap.
  */
-public class Paragraph extends TextFlow implements Drawable, Element,
-        WidthRespecting, Dividable {
+public class Paragraph extends TextFlow implements Drawable, Element, WidthRespecting, Dividable {
 
     private Position absolutePosition;
-    private Alignment alignment = Alignment.Left;
+
+    private Alignment alignment = Alignment.LEFT;
 
     @Override
     public Position getAbsolutePosition() {

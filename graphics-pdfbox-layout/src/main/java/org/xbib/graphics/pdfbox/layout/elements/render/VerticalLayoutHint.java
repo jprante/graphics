@@ -14,11 +14,13 @@ import org.xbib.graphics.pdfbox.layout.text.Alignment;
 public class VerticalLayoutHint implements LayoutHint {
 
     public final static VerticalLayoutHint LEFT = new VerticalLayoutHint(
-            Alignment.Left);
+            Alignment.LEFT);
+
     public final static VerticalLayoutHint CENTER = new VerticalLayoutHint(
-            Alignment.Center);
+            Alignment.CENTER);
+
     public final static VerticalLayoutHint RIGHT = new VerticalLayoutHint(
-            Alignment.Right);
+            Alignment.RIGHT);
 
     private final Alignment alignment;
     private final float marginLeft;
@@ -28,10 +30,10 @@ public class VerticalLayoutHint implements LayoutHint {
     private final boolean resetY;
 
     /**
-     * Creates a layout hint with {@link Alignment#Left left alignment}.
+     * Creates a layout hint with {@link Alignment#LEFT left alignment}.
      */
     public VerticalLayoutHint() {
-        this(Alignment.Left);
+        this(Alignment.LEFT);
     }
 
     /**
@@ -124,7 +126,7 @@ public class VerticalLayoutHint implements LayoutHint {
      * {@link VerticalLayoutHint} using a fluent API.
      */
     public static class VerticalLayoutHintBuilder {
-        protected Alignment alignment = Alignment.Left;
+        protected Alignment alignment = Alignment.LEFT;
         protected float marginLeft = 0;
         protected float marginRight = 0;
         protected float marginTop = 0;

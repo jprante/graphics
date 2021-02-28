@@ -1,6 +1,5 @@
 package org.xbib.graphics.pdfbox.layout.text;
 
-
 /**
  * Called if an object has been drawn.
  */

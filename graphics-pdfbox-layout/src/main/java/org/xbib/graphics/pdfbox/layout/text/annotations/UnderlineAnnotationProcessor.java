@@ -18,17 +18,15 @@ import java.util.List;
  */
 public class UnderlineAnnotationProcessor implements AnnotationProcessor {
 
-    private final List<Line> linesOnPage = new ArrayList<Line>();
+    private final List<Line> linesOnPage = new ArrayList<>();
 
     @Override
     public void annotatedObjectDrawn(Annotated drawnObject,
                                      DrawContext drawContext, Position upperLeft, float width,
-                                     float height) throws IOException {
-
+                                     float height) {
         if (!(drawnObject instanceof StyledText)) {
             return;
         }
-
         StyledText drawnText = (StyledText) drawnObject;
         for (UnderlineAnnotation underlineAnnotation : drawnObject
                 .getAnnotationsOfType(UnderlineAnnotation.class)) {
@@ -36,11 +34,9 @@ public class UnderlineAnnotationProcessor implements AnnotationProcessor {
             float ascent = fontSize
                     * drawnText.getFontDescriptor().getFont()
                     .getFontDescriptor().getAscent() / 1000;
-
             float baselineOffset = fontSize * underlineAnnotation.getBaselineOffsetScale();
             float thickness = (0.01f + fontSize * 0.05f)
                     * underlineAnnotation.getLineWeight();
-
             Position start = new Position(upperLeft.getX(), upperLeft.getY()
                     - ascent + baselineOffset);
             Position end = new Position(start.getX() + width, start.getY());

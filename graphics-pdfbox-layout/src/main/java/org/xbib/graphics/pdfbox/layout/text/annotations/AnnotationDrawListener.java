@@ -23,6 +23,7 @@ import java.io.IOException;
 public class AnnotationDrawListener implements DrawListener, RenderListener {
 
     private final DrawContext drawContext;
+
     private final Iterable<AnnotationProcessor> annotationProcessors;
 
     /**
@@ -33,8 +34,7 @@ public class AnnotationDrawListener implements DrawListener, RenderListener {
      */
     public AnnotationDrawListener(final DrawContext drawContext) {
         this.drawContext = drawContext;
-        annotationProcessors = AnnotationProcessorFactory
-                .createAnnotationProcessors();
+        annotationProcessors = AnnotationProcessorFactory.createAnnotationProcessors();
     }
 
     @Override

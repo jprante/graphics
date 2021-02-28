@@ -1,6 +1,7 @@
 package org.xbib.graphics.pdfbox.layout.text;
 
 import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.xbib.graphics.pdfbox.layout.font.FontDescriptor;
 import java.awt.Color;
 import java.io.IOException;
 
@@ -14,9 +15,8 @@ public class Indent extends ControlFragment {
      */
     public final static Indent UNINDENT = new Indent(0);
 
-    protected float indentWidth = 4;
-    protected SpaceUnit indentUnit = SpaceUnit.em;
-    protected Alignment alignment = Alignment.Left;
+    protected Alignment alignment = Alignment.LEFT;
+
     protected StyledText styledText;
 
     /**
@@ -29,7 +29,7 @@ public class Indent extends ControlFragment {
     public Indent(final float indentWidth, final SpaceUnit indentUnit)
             throws IOException {
         this("", indentWidth, indentUnit, DEFAULT_FONT_DESCRIPTOR,
-                Alignment.Left, Color.black);
+                Alignment.LEFT, Color.black);
     }
 
     /**
@@ -48,7 +48,7 @@ public class Indent extends ControlFragment {
                   final SpaceUnit indentUnit, final float fontSize, final PDFont font)
             throws IOException {
 
-        this(label, indentWidth, indentUnit, fontSize, font, Alignment.Left,
+        this(label, indentWidth, indentUnit, fontSize, font, Alignment.LEFT,
                 Color.black);
     }
 
@@ -120,10 +120,10 @@ public class Indent extends ControlFragment {
         float marginRight = 0;
         if (textWidth < indent) {
             switch (alignment) {
-                case Left:
+                case LEFT:
                     marginRight = indent - textWidth;
                     break;
-                case Right:
+                case RIGHT:
                     marginLeft = indent - textWidth;
                     break;
                 default:

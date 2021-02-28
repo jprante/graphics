@@ -1,9 +1,12 @@
 package org.xbib.graphics.pdfbox.layout.text;
 
 /**
- * Enumeration for (vertical) alignment.
+ * Enumeration for alignment.
  */
 public enum Alignment {
 
-    Left, Center, Right, Justify
+    LEFT,
+    CENTER,
+    RIGHT,
+    JUSTIFY
 }

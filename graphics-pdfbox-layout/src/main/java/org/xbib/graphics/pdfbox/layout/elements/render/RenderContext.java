@@ -28,16 +28,25 @@ import java.io.IOException;
 public class RenderContext implements Renderer, Closeable, DrawContext, DrawListener {
 
     private final Document document;
+
     private final PDDocument pdDocument;
+
     private PDPage page;
+
     private int pageIndex = 0;
+
     private PDPageContentStream contentStream;
+
     private Position currentPosition;
+
     private Position markedPosition;
+
     private Position maxPositionOnPage;
+
     private Layout layout = new VerticalLayout();
 
     private PageFormat nextPageFormat;
+
     private PageFormat pageFormat;
 
     private final AnnotationDrawListener annotationDrawListener;
@@ -49,8 +58,7 @@ public class RenderContext implements Renderer, Closeable, DrawContext, DrawList
      * @param pdDocument the underlying pdfbox document.
      * @throws IOException by pdfbox.
      */
-    public RenderContext(Document document, PDDocument pdDocument)
-            throws IOException {
+    public RenderContext(Document document, PDDocument pdDocument) throws IOException {
         this.document = document;
         this.pdDocument = pdDocument;
         this.pageFormat = document.getPageFormat();
@@ -187,9 +195,9 @@ public class RenderContext implements Renderer, Closeable, DrawContext, DrawList
      */
     protected Orientation getPageOrientation() {
         if (getPageWidth() > getPageHeight()) {
-            return Orientation.Landscape;
+            return Orientation.LANDSCAPE;
         }
-        return Orientation.Portrait;
+        return Orientation.PORTRAIT;
     }
 
     /**
@@ -328,21 +336,22 @@ public class RenderContext implements Renderer, Closeable, DrawContext, DrawList
         if (positionControl instanceof SetPosition) {
             SetPosition setPosition = (SetPosition) positionControl;
             Float x = setPosition.getX();
-            if (x == PositionControl.MARKED_POSITION) {
-                x = getMarkedPosition().getX();
-            }
             if (x == null) {
                 x = getCurrentPosition().getX();
+            } else {
+                if (x.equals(PositionControl.MARKED_POSITION)) {
+                    x = getMarkedPosition().getX();
+                }
             }
             Float y = setPosition.getY();
-            if (y == PositionControl.MARKED_POSITION) {
-                y = getMarkedPosition().getY();
-            }
             if (y == null) {
                 y = getCurrentPosition().getY();
+            } else {
+                if (y.equals(PositionControl.MARKED_POSITION)) {
+                    y = getMarkedPosition().getY();
+                }
             }
-            Position newPosition = new Position(x, y);
-            currentPosition = newPosition;
+            currentPosition = new Position(x, y);
             return true;
         }
         if (positionControl instanceof MovePosition) {
@@ -379,12 +388,9 @@ public class RenderContext implements Renderer, Closeable, DrawContext, DrawList
                 page.setRotation(90);
             }
         }
-
         if (isPageTilted()) {
-            CompatibilityHelper.transform(contentStream, 0, 1, -1, 0,
-                    getPageHeight(), 0);
+            CompatibilityHelper.transform(contentStream, 0, 1, -1, 0, getPageHeight(), 0);
         }
-
         resetPositionToUpperLeft();
         resetMaxPositionOnPage();
         document.beforePage(this);

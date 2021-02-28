@@ -1,5 +1,7 @@
 package org.xbib.graphics.pdfbox.layout.text;
 
+import org.xbib.graphics.pdfbox.layout.font.FontDescriptor;
+
 /**
  * Acts as a replacement for whitespace that has been removed by word wrapping.
  */
