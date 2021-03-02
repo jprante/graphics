@@ -3,7 +3,6 @@ package org.xbib.graphics.pdfbox.layout.shape;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.xbib.graphics.pdfbox.layout.text.Position;
-import org.xbib.graphics.pdfbox.layout.util.CompatibilityHelper;
 import java.io.IOException;
 
 /**
@@ -14,6 +13,7 @@ public class RoundRect extends AbstractShape {
     private final static float BEZ = 0.551915024494f;
 
     private final float cornerRadiusX;
+
     private final float cornerRadiusY;
 
     /**
@@ -96,18 +96,16 @@ public class RoundRect extends AbstractShape {
 
         contentStream.moveTo(a.getX(), a.getY());
         addLine(contentStream, a.getX(), a.getY(), b.getX(), b.getY());
-        CompatibilityHelper.curveTo(contentStream, b.getX() + bezX, b.getY(), c.getX(),
+        contentStream.curveTo(b.getX() + bezX, b.getY(), c.getX(),
                 c.getY() + bezY, c.getX(), c.getY());
-        // contentStream.addLine(c.getX(), c.getY(), d.getX(), d.getY());
         addLine(contentStream, c.getX(), c.getY(), d.getX(), d.getY());
-        CompatibilityHelper.curveTo(contentStream, d.getX(), d.getY() - bezY, e.getX() + bezX,
+        contentStream.curveTo(d.getX(), d.getY() - bezY, e.getX() + bezX,
                 e.getY(), e.getX(), e.getY());
-        // contentStream.addLine(e.getX(), e.getY(), f.getX(), f.getY());
         addLine(contentStream, e.getX(), e.getY(), f.getX(), f.getY());
-        CompatibilityHelper.curveTo(contentStream, f.getX() - bezX, f.getY(), g.getX(),
+        contentStream.curveTo(f.getX() - bezX, f.getY(), g.getX(),
                 g.getY() - bezY, g.getX(), g.getY());
         addLine(contentStream, g.getX(), g.getY(), h.getX(), h.getY());
-        CompatibilityHelper.curveTo(contentStream, h.getX(), h.getY() + bezY, a.getX() - bezX,
+        contentStream.curveTo(h.getX(), h.getY() + bezY, a.getX() - bezX,
                 a.getY(), a.getX(), a.getY());
     }
 
@@ -120,7 +118,7 @@ public class RoundRect extends AbstractShape {
                          float y1, float x2, float y2) throws IOException {
         float xMid = (x1 + x2) / 2f;
         float yMid = (y1 + y2) / 2f;
-        CompatibilityHelper.curveTo1(contentStream, xMid, yMid, x2, y2);
+        contentStream.curveTo1(xMid, yMid, x2, y2);
     }
 
 }

@@ -2,8 +2,8 @@ package org.xbib.graphics.pdfbox.layout.util;
 
 import org.xbib.graphics.pdfbox.layout.util.WordBreakers.DefaultWordBreaker;
 import org.xbib.graphics.pdfbox.layout.util.WordBreakers.NonBreakingWordBreaker;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Factory for creating a {@link WordBreaker}. This may be used to define a
@@ -22,19 +22,14 @@ public class WordBreakerFactory {
     public final static String WORD_BREAKER_CLASS_PROPERTY = "pdfbox.layout.word.breaker";
 
     /**
-     * class name of the default word breaker.
-     */
-    public final static String DEFAULT_WORD_BREAKER_CLASS_NAME = DefaultWordBreaker.class
-            .getName();
-
-    /**
      * class name of the (legacy) non-breaking word breaker.
      */
     public final static String LEGACY_WORD_BREAKER_CLASS_NAME = NonBreakingWordBreaker.class
             .getName();
 
     private final static WordBreaker DEFAULT_WORD_BREAKER = new DefaultWordBreaker();
-    private final static Map<String, WordBreaker> WORD_BREAKERS = new ConcurrentHashMap<String, WordBreaker>();
+
+    private final static Map<String, WordBreaker> WORD_BREAKERS = new HashMap<>();
 
     /**
      * @return the word breaker instance to use.
@@ -59,8 +54,7 @@ public class WordBreakerFactory {
         try {
             return (WordBreaker) Class.forName(className).getDeclaredConstructor().newInstance();
         } catch (Exception e) {
-            throw new RuntimeException(String.format(
-                    "failed to create word breaker '%s'", className), e);
+            throw new RuntimeException(String.format("failed to create word breaker '%s'", className), e);
         }
     }
 }

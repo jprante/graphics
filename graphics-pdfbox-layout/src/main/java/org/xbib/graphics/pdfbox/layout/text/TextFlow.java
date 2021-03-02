@@ -2,7 +2,7 @@ package org.xbib.graphics.pdfbox.layout.text;
 
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.xbib.graphics.pdfbox.layout.font.Font;
-import java.io.IOException;
+import org.xbib.graphics.pdfbox.layout.font.FontDescriptor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -68,9 +68,8 @@ public class TextFlow implements TextSequence, WidthRespecting {
         return (T) cache.get(key);
     }
 
-    public void addText(final String text, final float fontSize,
-                        final Font font) throws IOException {
-        add(TextFlowUtil.createTextFlow(text, fontSize, font));
+    public void addText(String text, float fontSize, Font font) {
+        add(TextFlowUtil.createTextFlow(text, new FontDescriptor(font, fontSize)));
     }
 
     /**
@@ -78,13 +77,20 @@ public class TextFlow implements TextSequence, WidthRespecting {
      *
      * @param markup   the markup to add.
      * @param fontSize the font size to use.
-     * @param baseFont the base font describing the bundle of
-     *                 plain/blold/italic/bold-italic fonts.
-     * @throws IOException by PDFBox
+     * @param font the font
      */
-    public void addMarkup(final String markup, final float fontSize,
-                          final Font baseFont) throws IOException {
-        add(TextFlowUtil.createTextFlowFromMarkup(markup, fontSize, baseFont));
+    public void addMarkup(String markup, float fontSize, Font font) {
+        add(TextFlowUtil.createTextFlowFromMarkup(markup, new FontDescriptor(font, fontSize)));
+    }
+
+    public void addIndent(String label, float indentWidth, SpaceUnit indentUnit,
+                          float fontsize, Font font) {
+        add(new Indent(label, indentWidth, indentUnit, new FontDescriptor(font, fontsize)));
+    }
+
+    public void addIndent(String label, float indentWidth, SpaceUnit indentUnit,
+                          float fontsize, Font font, Alignment alignment) {
+        add(new Indent(label, indentWidth, indentUnit, new FontDescriptor(font, fontsize), alignment));
     }
 
     /**
@@ -92,7 +98,7 @@ public class TextFlow implements TextSequence, WidthRespecting {
      *
      * @param sequence the sequence to add.
      */
-    public void add(final TextSequence sequence) {
+    public void add(TextSequence sequence) {
         for (TextFragment fragment : sequence) {
             add(fragment);
         }
@@ -103,7 +109,7 @@ public class TextFlow implements TextSequence, WidthRespecting {
      *
      * @param fragment the fragment to add.
      */
-    public void add(final TextFragment fragment) {
+    public void add(TextFragment fragment) {
         text.add(fragment);
         clearCache();
     }
@@ -199,7 +205,7 @@ public class TextFlow implements TextSequence, WidthRespecting {
     }
 
     @Override
-    public float getWidth() throws IOException {
+    public float getWidth() {
         Float width = getCachedValue(WIDTH, Float.class);
         if (width == null) {
             width = TextSequenceUtil.getWidth(this, getMaxWidth());
@@ -209,7 +215,7 @@ public class TextFlow implements TextSequence, WidthRespecting {
     }
 
     @Override
-    public float getHeight() throws IOException {
+    public float getHeight() {
         Float height = getCachedValue(HEIGHT, Float.class);
         if (height == null) {
             height = TextSequenceUtil.getHeight(this, getMaxWidth(),
@@ -221,23 +227,22 @@ public class TextFlow implements TextSequence, WidthRespecting {
 
     @Override
     public void drawText(PDPageContentStream contentStream, Position upperLeft,
-                         Alignment alignment, DrawListener drawListener) throws IOException {
+                         Alignment alignment, DrawListener drawListener) {
         TextSequenceUtil.drawText(this, contentStream, upperLeft, drawListener, alignment,
                 getMaxWidth(), getLineSpacing(),
                 isApplyLineSpacingToFirstLine());
     }
 
     public void drawTextRightAligned(PDPageContentStream contentStream,
-                                     Position endOfFirstLine, DrawListener drawListener) throws IOException {
+                                     Position endOfFirstLine, DrawListener drawListener) {
         drawText(contentStream, endOfFirstLine.add(-getWidth(), 0),
                 Alignment.RIGHT, drawListener);
     }
 
     /**
      * @return a copy of this text flow where all leading {@link NewLine}s are removed.
-     * @throws IOException by pdfbox.
      */
-    public TextFlow removeLeadingEmptyLines() throws IOException {
+    public TextFlow removeLeadingEmptyLines() {
         if (text.size() == 0 || !(text.get(0) instanceof NewLine)) {
             return this;
         }

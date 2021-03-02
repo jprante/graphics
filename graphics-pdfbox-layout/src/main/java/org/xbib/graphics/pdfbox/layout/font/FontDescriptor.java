@@ -1,45 +1,54 @@
 package org.xbib.graphics.pdfbox.layout.font;
 
 import org.apache.pdfbox.pdmodel.font.PDFont;
+import java.util.Objects;
 
 /**
  * Container for a Font and size.
  */
 public class FontDescriptor {
 
-    /**
-     * the associated font.
-     */
-    private final PDFont font;
+    private final Font font;
 
-    /**
-     * the font size.
-     */
     private final float size;
 
-    /**
-     * Creates the descriptor the the given font and size.
-     *
-     * @param font the font.
-     * @param size the size.
-     */
-    public FontDescriptor(final PDFont font, final float size) {
-        this.font = font;
-        this.size = size;
+    private final boolean regular;
+
+    private final boolean bold;
+
+    private final boolean italic;
+
+    public FontDescriptor(Font font, float size) {
+        this(font, size, false, false);
     }
 
-    /**
-     * @return the font.
-     */
-    public PDFont getFont() {
+    public FontDescriptor(Font font, float size, boolean bold, boolean italic) {
+        this.font = font;
+        this.size = size;
+        this.regular = !bold && !italic;
+        this.bold = bold;
+        this.italic = italic;
+    }
+
+    public Font getFont() {
         return font;
     }
 
-    /**
-     * @return the size.
-     */
     public float getSize() {
         return size;
+    }
+
+    public PDFont getSelectedFont() {
+        if (regular) {
+            return font.getRegularFont();
+        }
+        if (italic) {
+            return bold ? font.getBoldItalicFont() : font.getItalicFont();
+        }
+        if (bold) {
+            return font.getBoldFont();
+        }
+        throw new IllegalStateException();
     }
 
     @Override
@@ -49,33 +58,14 @@ public class FontDescriptor {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((font == null) ? 0 : font.hashCode());
-        result = prime * result + Float.floatToIntBits(size);
-        return result;
+        return Objects.hash(font, size, regular, bold, italic);
     }
 
     @Override
     public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
+        if (!(obj instanceof FontDescriptor)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final FontDescriptor other = (FontDescriptor) obj;
-        if (font == null) {
-            if (other.font != null) {
-                return false;
-            }
-        } else if (!font.equals(other.font)) {
-            return false;
-        }
-        return Float.floatToIntBits(size) == Float.floatToIntBits(other.size);
+        return Objects.hashCode(obj) == Objects.hash(this);
     }
-
 }

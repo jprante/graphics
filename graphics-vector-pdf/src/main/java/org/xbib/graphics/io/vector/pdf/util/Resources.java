@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Resources extends PDFObject {
 
@@ -38,11 +37,11 @@ public class Resources extends PDFObject {
 
     private final Map<Double, String> transparencies;
 
-    private final AtomicInteger currentFontId = new AtomicInteger();
+    private int currentFontId;
 
-    private final AtomicInteger currentImageId = new AtomicInteger();
+    private int currentImageId;
 
-    private final AtomicInteger currentTransparencyId = new AtomicInteger();
+    private int currentTransparencyId;
 
     public Resources(int id, int version) {
         super(id, version, null, null);
@@ -53,13 +52,9 @@ public class Resources extends PDFObject {
     }
 
     private <T> String getResourceId(Map<T, String> resources, T resource,
-                                     String idPrefix, AtomicInteger idCounter) {
-        String id = resources.get(resource);
-        if (id == null) {
-            id = String.format("%s%d", idPrefix, idCounter.getAndIncrement());
-            resources.put(resource, id);
-        }
-        return id;
+                                     String idPrefix, int idCounter) {
+        return resources.computeIfAbsent(resource,
+                k -> String.format("%s%d", idPrefix, idCounter));
     }
 
     @SuppressWarnings("unchecked")
@@ -71,7 +66,7 @@ public class Resources extends PDFObject {
             dict.put(KEY_FONT, dictEntry);
         }
         font = getPhysicalFont(font);
-        String resourceId = getResourceId(fonts, font, PREFIX_FONT, currentFontId);
+        String resourceId = getResourceId(fonts, font, PREFIX_FONT, currentFontId++);
         String fontName = font.getPSName();
         String fontEncoding = "WinAnsiEncoding";
         Map<String, Object> map = new LinkedHashMap<>();
@@ -90,7 +85,7 @@ public class Resources extends PDFObject {
             dictEntry = new LinkedHashMap<>();
             dict.put(KEY_IMAGE, dictEntry);
         }
-        String resourceId = getResourceId(images, image, PREFIX_IMAGE, currentImageId);
+        String resourceId = getResourceId(images, image, PREFIX_IMAGE, currentImageId++);
         dictEntry.put(resourceId, image);
         return resourceId;
     }
@@ -103,7 +98,7 @@ public class Resources extends PDFObject {
             dictEntry = new LinkedHashMap<>();
             dict.put(KEY_TRANSPARENCY, dictEntry);
         }
-        String resourceId = getResourceId(transparencies, transparency, PREFIX_TRANSPARENCY, currentTransparencyId);
+        String resourceId = getResourceId(transparencies, transparency, PREFIX_TRANSPARENCY, currentTransparencyId++);
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("Type", "ExtGState");
         map.put("ca", transparency);

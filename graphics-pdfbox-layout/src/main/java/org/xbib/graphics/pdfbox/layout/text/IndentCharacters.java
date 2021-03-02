@@ -1,11 +1,9 @@
 package org.xbib.graphics.pdfbox.layout.text;
 
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.xbib.graphics.pdfbox.layout.util.CompatibilityHelper;
+import org.xbib.graphics.pdfbox.layout.font.FontDescriptor;
 import org.xbib.graphics.pdfbox.layout.util.Enumerator;
 import org.xbib.graphics.pdfbox.layout.util.EnumeratorFactory;
 import java.awt.Color;
-import java.io.IOException;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,8 +21,7 @@ public class IndentCharacters {
     /**
      * Represent un-indentation, means effectively indent of 0.
      */
-    public static IndentCharacter UNINDENT_CHARACTER = new IndentCharacter("0",
-            "0", "pt");
+    public static IndentCharacter UNINDENT_CHARACTER = new IndentCharacter("0", "0", "pt");
 
     /**
      * An <code>--{7em}</code> indicates an indentation of 7 characters in markup,
@@ -38,8 +35,9 @@ public class IndentCharacters {
         protected float indentWidth = 4;
         protected SpaceUnit indentUnit = SpaceUnit.em;
 
-        public IndentCharacter(final String level, final String indentWidth,
-                               final String indentUnit) {
+        public IndentCharacter(String level,
+                               String indentWidth,
+                               String indentUnit) {
             super("INDENT", IndentCharacterFactory.TO_ESCAPE);
             try {
                 this.level = level == null ? 0 : level.length() + 1;
@@ -78,16 +76,12 @@ public class IndentCharacters {
          * Creates the actual {@link Indent} fragment from this control
          * character.
          *
-         * @param fontSize the current font size.
-         * @param font     the current font.
+         * @param descriptor the current font size, the current font.
          * @param color    the color to use.
          * @return the new Indent.
-         * @throws IOException by pdfbox
          */
-        public Indent createNewIndent(final float fontSize, final PDFont font,
-                                      final Color color) throws IOException {
-            return new Indent(nextLabel(), level * indentWidth, indentUnit,
-                    fontSize, font, Alignment.RIGHT, color);
+        public Indent createNewIndent(FontDescriptor descriptor, Color color) {
+            return new Indent(nextLabel(), level * indentWidth, indentUnit, descriptor, Alignment.RIGHT, color);
         }
 
         @Override
@@ -130,7 +124,7 @@ public class IndentCharacters {
      * markup, using <code>--</code> as the bullet. The number, the unit, bullet
      * character and the brackets are optional. Default indentation is 4
      * characters, default unit is <code>em</code> and the default bullet
-     * depends on {@link CompatibilityHelper#getBulletCharacter(int)}. It can be
+     * depends on {@link #getBulletCharacter(int)}. It can be
      * escaped with a backslash ('\').
      */
     public static class ListCharacter extends IndentCharacter {
@@ -146,7 +140,7 @@ public class IndentCharacters {
                     label += " ";
                 }
             } else {
-                label = CompatibilityHelper.getBulletCharacter(getLevel()) + " ";
+                label = getBulletCharacter(getLevel()) + " ";
             }
         }
 
@@ -316,6 +310,17 @@ public class IndentCharacters {
         public boolean patternMatchesBeginOfLine() {
             return true;
         }
-
     }
+
+    private static String getBulletCharacter(final int level) {
+        if (level % 2 == 1) {
+            return System.getProperty("pdfbox.layout.bullet.odd", BULLET);
+        }
+        return System.getProperty("pdfbox.layout.bullet.even", DOUBLE_ANGLE);
+    }
+
+    private static final String BULLET = "\u2022";
+
+    private static final String DOUBLE_ANGLE = "\u00bb";
+
 }

@@ -1,9 +1,9 @@
 package org.xbib.graphics.pdfbox.layout.text;
 
-import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.xbib.graphics.pdfbox.layout.font.FontDescriptor;
 import java.awt.Color;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 
 /**
  * Base class representing drawable text styled with font, size, color etc.
@@ -30,48 +30,10 @@ public class StyledText implements TextFragment {
     /**
      * Creates a styled text.
      *
-     * @param text the text to draw. Must not contain line feeds ('\n').
-     * @param size the size of the font.
-     * @param font the font to use.
-     */
-    public StyledText(final String text, final float size, final PDFont font) {
-        this(text, size, font, Color.black);
-    }
-
-    /**
-     * Creates a styled text.
-     *
-     * @param text  the text to draw. Must not contain line feeds ('\n').
-     * @param size  the size of the font.
-     * @param font  the font to use.
-     * @param color the color to use.
-     */
-    public StyledText(final String text, final float size, final PDFont font,
-                      final Color color) {
-        this(text, new FontDescriptor(font, size), color);
-    }
-
-    /**
-     * Creates a styled text.
-     *
-     * @param text           the text to draw. Must not contain line feeds ('\n').
-     * @param size           the size of the font.
-     * @param font           the font to use.
-     * @param color          the color to use.
-     * @param baselineOffset the offset of the baseline.
-     */
-    public StyledText(final String text, final float size, final PDFont font,
-                      final Color color, final float baselineOffset) {
-        this(text, new FontDescriptor(font, size), color, baselineOffset, 0, 0);
-    }
-
-    /**
-     * Creates a styled text.
-     *
      * @param text           the text to draw. Must not contain line feeds ('\n').
      * @param fontDescriptor the font to use.
      */
-    public StyledText(final String text, final FontDescriptor fontDescriptor) {
+    public StyledText(String text, FontDescriptor fontDescriptor) {
         this(text, fontDescriptor, Color.black);
     }
 
@@ -82,8 +44,7 @@ public class StyledText implements TextFragment {
      * @param fontDescriptor the font to use.
      * @param color          the color to use.
      */
-    public StyledText(final String text, final FontDescriptor fontDescriptor,
-                      final Color color) {
+    public StyledText(String text, FontDescriptor fontDescriptor, Color color) {
         this(text, fontDescriptor, color, 0, 0, 0);
     }
 
@@ -97,12 +58,12 @@ public class StyledText implements TextFragment {
      * @param leftMargin     the margin left to the text.
      * @param rightMargin    the margin right to the text.
      */
-    public StyledText(final String text, final FontDescriptor fontDescriptor,
-                      final Color color, final float baselineOffset,
-                      final float leftMargin, final float rightMargin) {
+    public StyledText(String text,
+                      FontDescriptor fontDescriptor,
+                      Color color,
+                      float baselineOffset, float leftMargin, float rightMargin) {
         if (text.contains("\n")) {
-            throw new IllegalArgumentException(
-                    "StyledText must not contain line breaks, use TextFragment.LINEBREAK for that");
+            throw new IllegalArgumentException("StyledText must not contain line breaks, use TextFragment.LINEBREAK for that");
         }
         if (leftMargin < 0) {
             throw new IllegalArgumentException("leftMargin must be >= 0");
@@ -133,11 +94,9 @@ public class StyledText implements TextFragment {
     }
 
     @Override
-    public float getWidth() throws IOException {
+    public float getWidth() {
         if (width == null) {
-            width = getFontDescriptor().getSize()
-                    * getFontDescriptor().getFont().getStringWidth(getText())
-                    / 1000;
+            width = getWidth(getFontDescriptor(), getText());
             width += leftMargin;
             width += rightMargin;
         }
@@ -149,7 +108,7 @@ public class StyledText implements TextFragment {
     }
 
     @Override
-    public float getHeight() throws IOException {
+    public float getHeight() {
         return getFontDescriptor().getSize();
     }
 
@@ -158,9 +117,7 @@ public class StyledText implements TextFragment {
      * @throws IOException by pdfbox.
      */
     public float getAsent() throws IOException {
-        return getFontDescriptor().getSize()
-                * getFontDescriptor().getFont().getFontDescriptor().getAscent()
-                / 1000;
+        return getFontDescriptor().getSize() * getFontDescriptor().getSelectedFont().getFontDescriptor().getAscent() / 1000;
     }
 
     public float getBaselineOffset() {
@@ -206,10 +163,17 @@ public class StyledText implements TextFragment {
         return inheritAttributes(text, getLeftMargin(), getRightMargin());
     }
 
-    public StyledText inheritAttributes(String text, float leftMargin,
-                                        float rightMargin) {
+    public StyledText inheritAttributes(String text, float leftMargin, float rightMargin) {
         return new StyledText(text, getFontDescriptor(), getColor(),
                 getBaselineOffset(), leftMargin, rightMargin);
+    }
+
+    private static float getWidth(FontDescriptor fontDescriptor, String text) {
+        try {
+            return fontDescriptor.getSize() * fontDescriptor.getSelectedFont().getStringWidth(text) / 1000;
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     @Override
@@ -219,5 +183,4 @@ public class StyledText implements TextFragment {
                 + ", leftMargin=" + leftMargin + ", rightMargin=" + rightMargin
                 + ", baselineOffset=" + baselineOffset + "]";
     }
-
 }

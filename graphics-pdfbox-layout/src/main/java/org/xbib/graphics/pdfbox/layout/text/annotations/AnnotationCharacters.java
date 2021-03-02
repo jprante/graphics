@@ -6,8 +6,8 @@ import org.xbib.graphics.pdfbox.layout.text.annotations.Annotations.AnchorAnnota
 import org.xbib.graphics.pdfbox.layout.text.annotations.Annotations.HyperlinkAnnotation;
 import org.xbib.graphics.pdfbox.layout.text.annotations.Annotations.HyperlinkAnnotation.LinkStyle;
 import org.xbib.graphics.pdfbox.layout.text.annotations.Annotations.UnderlineAnnotation;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
  */
 public class AnnotationCharacters {
 
-    private final static List<AnnotationControlCharacterFactory<?>> FACTORIES = new CopyOnWriteArrayList<>();
+    private final static List<AnnotationControlCharacterFactory<?>> FACTORIES = new ArrayList<>();
 
     static {
         register(new HyperlinkControlCharacterFactory());
@@ -30,8 +30,7 @@ public class AnnotationCharacters {
      *
      * @param factory the factory to register.
      */
-    public static void register(
-            final AnnotationControlCharacterFactory<?> factory) {
+    public static void register(AnnotationControlCharacterFactory<?> factory) {
         FACTORIES.add(factory);
     }
 
@@ -97,8 +96,7 @@ public class AnnotationCharacters {
 
         @Override
         public String unescape(String text) {
-            return text
-                    .replaceAll("\\\\" + Pattern.quote(TO_ESCAPE), TO_ESCAPE);
+            return text.replaceAll("\\\\" + Pattern.quote(TO_ESCAPE), TO_ESCAPE);
         }
 
         @Override
@@ -119,8 +117,7 @@ public class AnnotationCharacters {
         @Override
         public UnderlineControlCharacter createControlCharacter(String text,
                                                                 Matcher matcher, final List<CharSequence> charactersSoFar) {
-            return new UnderlineControlCharacter(matcher.group(4),
-                    matcher.group(6));
+            return new UnderlineControlCharacter(matcher.group(4), matcher.group(6));
         }
 
         @Override
@@ -130,8 +127,7 @@ public class AnnotationCharacters {
 
         @Override
         public String unescape(String text) {
-            return text
-                    .replaceAll("\\\\" + Pattern.quote(TO_ESCAPE), TO_ESCAPE);
+            return text.replaceAll("\\\\" + Pattern.quote(TO_ESCAPE), TO_ESCAPE);
         }
 
         @Override
@@ -149,6 +145,7 @@ public class AnnotationCharacters {
      */
     public static class HyperlinkControlCharacter extends
             AnnotationControlCharacter<HyperlinkAnnotation> {
+
         private HyperlinkAnnotation hyperlink;
 
         protected HyperlinkControlCharacter(final String hyperlink,

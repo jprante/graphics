@@ -93,7 +93,7 @@ public class Document implements RenderListener {
 
     private Entry<Element, LayoutHint> createEntry(final Element element,
                                                    final LayoutHint layoutHint) {
-        return new SimpleEntry<Element, LayoutHint>(element, layoutHint);
+        return new SimpleEntry<>(element, layoutHint);
     }
 
     /**
@@ -237,31 +237,20 @@ public class Document implements RenderListener {
             Element element = entry.getKey();
             LayoutHint layoutHint = entry.getValue();
             boolean success = false;
-
-            // first ask custom renderer to render the element
-            Iterator<Renderer> customRendererIterator = customRenderer
-                    .iterator();
+            Iterator<Renderer> customRendererIterator = customRenderer.iterator();
             while (!success && customRendererIterator.hasNext()) {
-                success = customRendererIterator.next().render(renderContext,
-                        element, layoutHint);
+                success = customRendererIterator.next().render(renderContext, element, layoutHint);
             }
-
-            // if none of them felt responsible, let the default renderer do the job.
             if (!success) {
-                success = renderContext.render(renderContext, element,
-                        layoutHint);
+                success = renderContext.render(renderContext, element, layoutHint);
             }
-
             if (!success) {
-                throw new IllegalArgumentException(
-                        String.format(
+                throw new IllegalArgumentException(String.format(
                                 "neither layout %s nor the render context knows what to do with %s",
                                 renderContext.getLayout(), element));
-
             }
         }
         renderContext.close();
-
         resetPDDocument();
         return document;
     }

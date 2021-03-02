@@ -10,9 +10,9 @@ import org.xbib.graphics.pdfbox.layout.text.Position;
 import org.xbib.graphics.pdfbox.layout.text.WidthRespecting;
 import java.awt.Color;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * The frame is a container for a {@link Drawable}, that allows to add margin,
@@ -23,7 +23,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class Frame implements Element, Drawable, WidthRespecting, Dividable {
 
-    private final List<Drawable> innerList = new CopyOnWriteArrayList<>();
+    private final List<Drawable> innerList = new ArrayList<>();
 
     private float paddingLeft;
     private float paddingRight;

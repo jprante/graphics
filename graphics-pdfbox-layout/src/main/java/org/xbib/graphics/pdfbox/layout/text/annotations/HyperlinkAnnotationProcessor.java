@@ -3,16 +3,23 @@ package org.xbib.graphics.pdfbox.layout.text.annotations;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.graphics.color.PDColor;
+import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceRGB;
+import org.apache.pdfbox.pdmodel.interactive.action.PDActionGoTo;
+import org.apache.pdfbox.pdmodel.interactive.action.PDActionURI;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationLink;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDBorderStyleDictionary;
+import org.apache.pdfbox.pdmodel.interactive.documentnavigation.destination.PDDestination;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.destination.PDPageXYZDestination;
 import org.xbib.graphics.pdfbox.layout.text.DrawContext;
 import org.xbib.graphics.pdfbox.layout.text.Position;
 import org.xbib.graphics.pdfbox.layout.text.annotations.Annotations.AnchorAnnotation;
 import org.xbib.graphics.pdfbox.layout.text.annotations.Annotations.HyperlinkAnnotation;
 import org.xbib.graphics.pdfbox.layout.text.annotations.Annotations.HyperlinkAnnotation.LinkStyle;
-import org.xbib.graphics.pdfbox.layout.util.CompatibilityHelper;
 import java.awt.Color;
+import java.awt.geom.AffineTransform;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,13 +33,13 @@ import java.util.Map.Entry;
  */
 public class HyperlinkAnnotationProcessor implements AnnotationProcessor {
 
-    private final Map<String, PageAnchor> anchorMap = new HashMap<String, PageAnchor>();
-    private final Map<PDPage, List<Hyperlink>> linkMap = new HashMap<PDPage, List<Hyperlink>>();
+    private final Map<String, PageAnchor> anchorMap = new HashMap<>();
+    private final Map<PDPage, List<Hyperlink>> linkMap = new HashMap<>();
 
     @Override
     public void annotatedObjectDrawn(Annotated drawnObject,
                                      DrawContext drawContext, Position upperLeft, float width,
-                                     float height) throws IOException {
+                                     float height) {
 
         if (!(drawnObject instanceof AnnotatedStyledText)) {
             return;
@@ -85,24 +92,105 @@ public class HyperlinkAnnotationProcessor implements AnnotationProcessor {
     }
 
     @Override
-    public void afterRender(PDDocument document) throws IOException {
+    public void afterRender(PDDocument document) {
         for (Entry<PDPage, List<Hyperlink>> entry : linkMap.entrySet()) {
             PDPage page = entry.getKey();
             List<Hyperlink> links = entry.getValue();
             for (Hyperlink hyperlink : links) {
-                PDAnnotationLink pdLink = null;
+                PDAnnotationLink pdLink;
                 if (hyperlink.getHyperlinkURI().startsWith("#")) {
                     pdLink = createGotoLink(hyperlink);
                 } else {
-                    pdLink = CompatibilityHelper.createLink(page,
+                    pdLink = createLink(page,
                             hyperlink.getRect(), hyperlink.getColor(),
                             hyperlink.getLinkStyle(),
                             hyperlink.getHyperlinkURI());
                 }
-                page.getAnnotations().add(pdLink);
+                try {
+                    page.getAnnotations().add(pdLink);
+                } catch (IOException e) {
+                    throw new UncheckedIOException(e);
+                }
             }
 
         }
+    }
+
+    private static PDAnnotationLink createLink(PDPage page, PDRectangle rect, Color color,
+                                              LinkStyle linkStyle, final String uri) {
+        PDAnnotationLink pdLink = createLink(page, rect, color, linkStyle);
+        PDActionURI actionUri = new PDActionURI();
+        actionUri.setURI(uri);
+        pdLink.setAction(actionUri);
+        return pdLink;
+    }
+
+    private static PDBorderStyleDictionary noBorder;
+
+    private static PDAnnotationLink createLink(PDPage page, PDRectangle rect, Color color,
+                                               LinkStyle linkStyle) {
+        PDAnnotationLink pdLink = new PDAnnotationLink();
+        if (linkStyle == LinkStyle.none) {
+            if (noBorder == null) {
+                noBorder = new PDBorderStyleDictionary();
+                noBorder.setWidth(0);
+            }
+            return pdLink;
+        }
+        PDBorderStyleDictionary borderStyle = new PDBorderStyleDictionary();
+        borderStyle.setStyle(PDBorderStyleDictionary.STYLE_UNDERLINE);
+        pdLink.setBorderStyle(borderStyle);
+        PDRectangle rotatedRect = transformToPageRotation(rect, page);
+        pdLink.setRectangle(rotatedRect);
+        pdLink.setColor(toPDColor(color));
+        return pdLink;
+    }
+
+    private static PDAnnotationLink createLink(PDPage page, PDRectangle rect, Color color,
+                                              LinkStyle linkStyle, final PDDestination destination) {
+        PDAnnotationLink pdLink = createLink(page, rect, color, linkStyle);
+        PDActionGoTo gotoAction = new PDActionGoTo();
+        gotoAction.setDestination(destination);
+        pdLink.setAction(gotoAction);
+        return pdLink;
+    }
+
+    private static PDRectangle transformToPageRotation(final PDRectangle rect, final PDPage page) {
+        AffineTransform transform = transformToPageRotation(page);
+        if (transform == null) {
+            return rect;
+        }
+        float[] points = new float[]{rect.getLowerLeftX(), rect.getLowerLeftY(), rect.getUpperRightX(), rect.getUpperRightY()};
+        float[] rotatedPoints = new float[4];
+        transform.transform(points, 0, rotatedPoints, 0, 2);
+        PDRectangle rotated = new PDRectangle();
+        rotated.setLowerLeftX(rotatedPoints[0]);
+        rotated.setLowerLeftY(rotatedPoints[1]);
+        rotated.setUpperRightX(rotatedPoints[2]);
+        rotated.setUpperRightY(rotatedPoints[3]);
+        return rotated;
+    }
+
+    private static AffineTransform transformToPageRotation(final PDPage page) {
+        int pageRotation = page.getRotation();
+        if (pageRotation == 0) {
+            return null;
+        }
+        float pageWidth = page.getMediaBox().getHeight();
+        float pageHeight = page.getMediaBox().getWidth();
+        AffineTransform transform = new AffineTransform();
+        transform.rotate(pageRotation * Math.PI / 180, pageHeight / 2,
+                pageWidth / 2);
+        double offset = Math.abs(pageHeight - pageWidth) / 2;
+        transform.translate(-offset, offset);
+        return transform;
+    }
+
+    private static PDColor toPDColor(final Color color) {
+        float[] components = {
+                color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f
+        };
+        return new PDColor(components, PDDeviceRGB.INSTANCE);
     }
 
     private PDAnnotationLink createGotoLink(Hyperlink hyperlink) {
@@ -116,7 +204,7 @@ public class HyperlinkAnnotationProcessor implements AnnotationProcessor {
         xyzDestination.setPage(pageAnchor.getPage());
         xyzDestination.setLeft((int) pageAnchor.getX());
         xyzDestination.setTop((int) pageAnchor.getY());
-        return CompatibilityHelper.createLink(pageAnchor.getPage(), hyperlink.getRect(),
+        return createLink(pageAnchor.getPage(), hyperlink.getRect(),
                 hyperlink.getColor(), hyperlink.getLinkStyle(), xyzDestination);
     }
 
@@ -147,7 +235,6 @@ public class HyperlinkAnnotationProcessor implements AnnotationProcessor {
         public String toString() {
             return "PageAnchor [page=" + page + ", x=" + x + ", y=" + y + "]";
         }
-
     }
 
     private static class Hyperlink {
@@ -186,7 +273,5 @@ public class HyperlinkAnnotationProcessor implements AnnotationProcessor {
                     + ", hyperlinkUri=" + hyperlinkUri + ", linkStyle="
                     + linkStyle + "]";
         }
-
     }
-
 }

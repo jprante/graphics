@@ -1,7 +1,5 @@
 package org.xbib.graphics.pdfbox.layout.text;
 
-import java.io.IOException;
-
 /**
  * Defines an area with a width and height.
  */
@@ -9,13 +7,11 @@ public interface Area {
 
     /**
      * @return the width of the area.
-     * @throws IOException by pdfbox
      */
-    float getWidth() throws IOException;
+    float getWidth();
 
     /**
      * @return the height of the area.
-     * @throws IOException by pdfbox
      */
-    float getHeight() throws IOException;
+    float getHeight();
 }

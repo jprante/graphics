@@ -25,10 +25,9 @@ public enum SpaceUnit {
      * @return the size in pt.
      * @throws IOException by pdfbox
      */
-    public float toPt(final float size, final FontDescriptor fontDescriptor) throws IOException {
+    public float toPt(float size, FontDescriptor fontDescriptor) throws IOException {
         if (this == em) {
-            return fontDescriptor.getSize()
-                    * fontDescriptor.getFont().getAverageFontWidth() / 1000 * size;
+            return fontDescriptor.getSize() * fontDescriptor.getSelectedFont().getAverageFontWidth() / 1000 * size;
         }
         return size;
     }

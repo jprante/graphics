@@ -1,12 +1,10 @@
 package org.xbib.graphics.pdfbox.layout.text;
 
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.xbib.graphics.pdfbox.layout.font.Font;
+import org.xbib.graphics.pdfbox.layout.font.FontDescriptor;
 import org.xbib.graphics.pdfbox.layout.text.annotations.AnnotatedStyledText;
 import org.xbib.graphics.pdfbox.layout.text.annotations.Annotation;
 import org.xbib.graphics.pdfbox.layout.text.annotations.AnnotationCharacters;
 import java.awt.Color;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,11 +15,9 @@ import java.util.regex.Matcher;
 
 public class TextFlowUtil {
 
-    public static TextFlow createTextFlow(String text,
-                                          float fontSize,
-                                          Font baseFont) throws IOException {
+    public static TextFlow createTextFlow(String text, FontDescriptor descriptor) {
         final Iterable<CharSequence> parts = fromPlainText(text);
-        return createTextFlow(parts, fontSize,  baseFont);
+        return createTextFlow(parts, descriptor);
     }
 
     /**
@@ -52,41 +48,33 @@ public class TextFlowUtil {
      * </pre>
      *
      * @param markup         the markup text.
-     * @param fontSize       the font size to use.
-     * @param baseFont      the font.
+     * @param descriptor       the font size to use, and the font.
      * @return the created text flow.
-     * @throws IOException by pdfbox
      */
-    public static TextFlow createTextFlowFromMarkup(final String markup,
-                                                    final float fontSize,
-                                                    Font baseFont) throws IOException {
+    public static TextFlow createTextFlowFromMarkup(String markup, FontDescriptor descriptor) {
         final Iterable<CharSequence> parts = fromMarkup(markup);
-        return createTextFlow(parts, fontSize, baseFont);
+        return createTextFlow(parts, descriptor);
     }
 
     /**
      * Actually creates the text flow from the given (markup) text.
      *
      * @param parts          the parts to create the text flow from.
-     * @param fontSize       the font size to use.
+     * @param descriptor       the font size to use.
      * @return the created text flow.
-     * @throws IOException by pdfbox
      */
-    protected static TextFlow createTextFlow(final Iterable<CharSequence> parts,
-                                             final float fontSize, Font baseFont)
-            throws IOException {
+    protected static TextFlow createTextFlow(Iterable<CharSequence> parts, FontDescriptor descriptor) {
         final TextFlow result = new TextFlow();
         boolean bold = false;
         boolean italic = false;
         Color color = Color.black;
         ControlCharacters.MetricsControlCharacter metricsControl = null;
-        Map<Class<? extends Annotation>, Annotation> annotationMap = new HashMap<Class<? extends Annotation>, Annotation>();
-        Stack<IndentCharacters.IndentCharacter> indentStack = new Stack<IndentCharacters.IndentCharacter>();
+        Map<Class<? extends Annotation>, Annotation> annotationMap = new HashMap<>();
+        Stack<IndentCharacters.IndentCharacter> indentStack = new Stack<>();
         for (final CharSequence fragment : parts) {
-
             if (fragment instanceof ControlCharacter) {
                 if (fragment instanceof ControlCharacters.NewLineControlCharacter) {
-                    result.add(new NewLine(fontSize));
+                    result.add(new NewLine(descriptor));
                 }
                 if (fragment instanceof ControlCharacters.BoldControlCharacter) {
                     bold = !bold;
@@ -110,7 +98,6 @@ public class TextFlowUtil {
                 }
                 if (fragment instanceof ControlCharacters.MetricsControlCharacter) {
                     if (metricsControl != null && metricsControl.toString().equals(fragment.toString())) {
-                        // end marker
                         metricsControl = null;
                     } else {
                         metricsControl = (ControlCharacters.MetricsControlCharacter) fragment;
@@ -119,10 +106,8 @@ public class TextFlowUtil {
                 if (fragment instanceof IndentCharacters.IndentCharacter) {
                     IndentCharacters.IndentCharacter currentIndent = (IndentCharacters.IndentCharacter) fragment;
                     if (currentIndent.getLevel() == 0) {
-                        // indentation of 0 resets indent
                         indentStack.clear();
                         result.add(Indent.UNINDENT);
-                        continue;
                     } else {
                         IndentCharacters.IndentCharacter last = null;
                         while (!indentStack.isEmpty()
@@ -135,58 +120,32 @@ public class TextFlowUtil {
                             currentIndent = last;
                         }
                         indentStack.push(currentIndent);
-                        result.add(currentIndent.createNewIndent(fontSize,
-                                baseFont.getPlainFont(), color));
+                        FontDescriptor fontDescriptor =
+                                new FontDescriptor(descriptor.getFont(), descriptor.getSize(), bold, italic);
+                        result.add(currentIndent.createNewIndent(fontDescriptor, color));
                     }
                 }
             } else {
-                PDFont font = getFont(bold, italic, baseFont);
                 float baselineOffset = 0;
-                float currentFontSize = fontSize;
+                float currentFontSize = descriptor.getSize();
                 if (metricsControl != null) {
-                    baselineOffset = metricsControl.getBaselineOffsetScale() * fontSize;
+                    baselineOffset = metricsControl.getBaselineOffsetScale() * descriptor.getSize();
                     currentFontSize *= metricsControl.getFontScale();
                 }
+                FontDescriptor fontDescriptor = new FontDescriptor(descriptor.getFont(), currentFontSize, bold, italic);
                 if (annotationMap.isEmpty()) {
-                    StyledText styledText = new StyledText(fragment.toString(),
-                            currentFontSize, font, color, baselineOffset);
+                    StyledText styledText = new StyledText(fragment.toString(), fontDescriptor,
+                            color, baselineOffset, 0, 0);
                     result.add(styledText);
                 } else {
-                    AnnotatedStyledText styledText = new AnnotatedStyledText(
-                            fragment.toString(), currentFontSize, baseFont, color, baselineOffset,
-                            annotationMap.values());
+                    AnnotatedStyledText styledText =
+                            new AnnotatedStyledText(fragment.toString(), fontDescriptor,
+                                    color, baselineOffset, 0, 0, annotationMap.values());
                     result.add(styledText);
                 }
             }
         }
         return result;
-    }
-
-    protected static PDFont getFont(boolean bold, boolean italic,
-                                    final PDFont plainFont, final PDFont boldFont,
-                                    final PDFont italicFont, final PDFont boldItalicFont) {
-        PDFont font = plainFont;
-        if (bold && !italic) {
-            font = boldFont;
-        } else if (!bold && italic) {
-            font = italicFont;
-        } else if (bold) {
-            font = boldItalicFont;
-        }
-        return font;
-    }
-
-    protected static PDFont getFont(boolean bold, boolean italic,
-                                    Font baseFont) {
-        PDFont font = baseFont.getPlainFont();
-        if (bold && !italic) {
-            font = baseFont.getBoldFont();
-        } else if (!bold && italic) {
-            font = baseFont.getItalicFont();
-        } else if (bold) {
-            font = baseFont.getBoldItalicFont();
-        }
-        return font;
     }
 
     /**
@@ -233,25 +192,19 @@ public class TextFlowUtil {
      * @param markup the markup.
      * @return the create char sequence.
      */
-    public static Iterable<CharSequence> fromMarkup(
-            final Iterable<CharSequence> markup) {
+    public static Iterable<CharSequence> fromMarkup(Iterable<CharSequence> markup) {
         Iterable<CharSequence> text = markup;
         text = splitByControlCharacter(ControlCharacters.NEWLINE_FACTORY, text);
         text = splitByControlCharacter(ControlCharacters.METRICS_FACTORY, text);
         text = splitByControlCharacter(ControlCharacters.BOLD_FACTORY, text);
         text = splitByControlCharacter(ControlCharacters.ITALIC_FACTORY, text);
         text = splitByControlCharacter(ControlCharacters.COLOR_FACTORY, text);
-
         for (AnnotationCharacters.AnnotationControlCharacterFactory<?> annotationControlCharacterFactory : AnnotationCharacters
                 .getFactories()) {
-            text = splitByControlCharacter(annotationControlCharacterFactory,
-                    text);
+            text = splitByControlCharacter(annotationControlCharacterFactory, text);
         }
-
         text = splitByControlCharacter(IndentCharacters.INDENT_FACTORY, text);
-
         text = unescapeBackslash(text);
-
         return text;
     }
 
@@ -266,13 +219,12 @@ public class TextFlowUtil {
     protected static Iterable<CharSequence> splitByControlCharacter(
             ControlCharacters.ControlCharacterFactory controlCharacterFactory,
             final Iterable<CharSequence> markup) {
-        List<CharSequence> result = new ArrayList<CharSequence>();
+        List<CharSequence> result = new ArrayList<>();
         boolean beginOfLine = true;
         for (CharSequence current : markup) {
             if (current instanceof String) {
                 String string = (String) current;
                 int begin = 0;
-
                 if (!controlCharacterFactory.patternMatchesBeginOfLine()
                         || beginOfLine) {
                     Matcher matcher = controlCharacterFactory.getPattern()
@@ -280,24 +232,18 @@ public class TextFlowUtil {
                     while (matcher.find()) {
                         String part = string.substring(begin, matcher.start());
                         begin = matcher.end();
-
                         if (!part.isEmpty()) {
-                            String unescaped = controlCharacterFactory
-                                    .unescape(part);
+                            String unescaped = controlCharacterFactory.unescape(part);
                             result.add(unescaped);
                         }
-
-                        result.add(controlCharacterFactory
-                                .createControlCharacter(string, matcher, result));
+                        result.add(controlCharacterFactory.createControlCharacter(string, matcher, result));
                     }
                 }
-
                 if (begin < string.length()) {
                     String part = string.substring(begin);
                     String unescaped = controlCharacterFactory.unescape(part);
                     result.add(unescaped);
                 }
-
                 beginOfLine = false;
             } else {
                 if (current instanceof ControlCharacters.NewLineControlCharacter) {
@@ -305,23 +251,19 @@ public class TextFlowUtil {
                 }
                 result.add(current);
             }
-
         }
         return result;
     }
 
-    private static Iterable<CharSequence> unescapeBackslash(
-            final Iterable<CharSequence> chars) {
-        List<CharSequence> result = new ArrayList<CharSequence>();
+    private static Iterable<CharSequence> unescapeBackslash(Iterable<CharSequence> chars) {
+        List<CharSequence> result = new ArrayList<>();
         for (CharSequence current : chars) {
             if (current instanceof String) {
-                result.add(ControlCharacters
-                        .unescapeBackslash((String) current));
+                result.add(ControlCharacters.unescapeBackslash((String) current));
             } else {
                 result.add(current);
             }
         }
         return result;
     }
-
 }

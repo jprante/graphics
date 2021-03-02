@@ -5,8 +5,8 @@ import org.xbib.graphics.pdfbox.layout.util.Enumerators.ArabicEnumerator;
 import org.xbib.graphics.pdfbox.layout.util.Enumerators.LowerCaseAlphabeticEnumerator;
 import org.xbib.graphics.pdfbox.layout.util.Enumerators.LowerCaseRomanEnumerator;
 import org.xbib.graphics.pdfbox.layout.util.Enumerators.RomanEnumerator;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Enumerators are created using this factory. It allows you to register and use
@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class EnumeratorFactory {
 
-    private final static Map<String, Class<? extends Enumerator>> ENUMERATORS = new ConcurrentHashMap<String, Class<? extends Enumerator>>();
+    private final static Map<String, Class<? extends Enumerator>> ENUMERATORS = new HashMap<>();
 
     static {
         register("1", ArabicEnumerator.class);

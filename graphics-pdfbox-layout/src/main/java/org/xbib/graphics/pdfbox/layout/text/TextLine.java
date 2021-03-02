@@ -5,6 +5,7 @@ import org.apache.pdfbox.util.Matrix;
 import org.xbib.graphics.pdfbox.layout.font.FontDescriptor;
 import java.awt.Color;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -109,7 +110,7 @@ public class TextLine implements TextSequence {
     }
 
     @Override
-    public float getWidth() throws IOException {
+    public float getWidth() {
         Float width = getCachedValue(WIDTH, Float.class);
         if (width == null) {
             width = 0f;
@@ -122,7 +123,7 @@ public class TextLine implements TextSequence {
     }
 
     @Override
-    public float getHeight() throws IOException {
+    public float getHeight() {
         Float height = getCachedValue(HEIGHT, Float.class);
         if (height == null) {
             height = 0f;
@@ -136,16 +137,14 @@ public class TextLine implements TextSequence {
 
     /**
      * @return the (max) ascent of this line.
-     * @throws IOException by pdfbox.
      */
-    protected float getAscent() throws IOException {
+    protected float getAscent() {
         Float ascent = getCachedValue(ASCENT, Float.class);
         if (ascent == null) {
             ascent = 0f;
             for (TextFragment fragment : this) {
-                float currentAscent = fragment.getFontDescriptor().getSize()
-                        * fragment.getFontDescriptor().getFont()
-                        .getFontDescriptor().getAscent() / 1000;
+                FontDescriptor fontDescriptor = fragment.getFontDescriptor();
+                float currentAscent = fontDescriptor.getSize() * fontDescriptor.getSelectedFont().getFontDescriptor().getAscent() / 1000;
                 ascent = Math.max(ascent, currentAscent);
             }
             setCachedValue(ASCENT, ascent);
@@ -155,66 +154,71 @@ public class TextLine implements TextSequence {
 
     @Override
     public void drawText(PDPageContentStream contentStream, Position upperLeft,
-                         Alignment alignment, DrawListener drawListener) throws IOException {
+                         Alignment alignment, DrawListener drawListener) {
         drawAligned(contentStream, upperLeft, alignment, getWidth(), drawListener);
     }
 
-    public void drawAligned(PDPageContentStream contentStream, Position upperLeft,
-                            Alignment alignment, float availableLineWidth,
-                            DrawListener drawListener) throws IOException {
-        contentStream.saveGraphicsState();
-        float x = upperLeft.getX();
-        float y = upperLeft.getY() - getAscent();
-        FontDescriptor lastFontDesc = null;
-        float lastBaselineOffset = 0;
-        Color lastColor = null;
-        float gap = 0;
-        float extraWordSpacing = 0;
-        if (alignment == Alignment.JUSTIFY && (getNewLine() instanceof WrappingNewLine)) {
-            extraWordSpacing = (availableLineWidth - getWidth()) / (styledTextList.size() - 1);
+    public void drawAligned(PDPageContentStream contentStream,
+                            Position upperLeft,
+                            Alignment alignment,
+                            float availableLineWidth,
+                            DrawListener drawListener) {
+        try {
+            contentStream.saveGraphicsState();
+            float x = upperLeft.getX();
+            float y = upperLeft.getY() - getAscent();
+            FontDescriptor lastFontDesc = null;
+            float lastBaselineOffset = 0;
+            Color lastColor = null;
+            float gap = 0;
+            float extraWordSpacing = 0;
+            if (alignment == Alignment.JUSTIFY && (getNewLine() instanceof WrappingNewLine)) {
+                extraWordSpacing = (availableLineWidth - getWidth()) / (styledTextList.size() - 1);
+            }
+            float offset = TextSequenceUtil.getOffset(this, availableLineWidth, alignment);
+            x += offset;
+            for (StyledText styledText : styledTextList) {
+                Matrix matrix = Matrix.getTranslateInstance(x, y);
+                if (styledText.getLeftMargin() > 0) {
+                    gap += styledText.getLeftMargin();
+                }
+                boolean moveBaseline = styledText.getBaselineOffset() != lastBaselineOffset;
+                if (moveBaseline || gap > 0) {
+                    float baselineDelta = lastBaselineOffset - styledText.getBaselineOffset();
+                    lastBaselineOffset = styledText.getBaselineOffset();
+                    matrix = matrix.multiply(new Matrix(1, 0, 0, 1, gap, baselineDelta));
+                    x += gap;
+                }
+                contentStream.beginText();
+                contentStream.setTextMatrix(matrix);
+                if (!styledText.getFontDescriptor().equals(lastFontDesc)) {
+                    lastFontDesc = styledText.getFontDescriptor();
+                    contentStream.setFont(lastFontDesc.getSelectedFont(), lastFontDesc.getSize());
+                }
+                if (!styledText.getColor().equals(lastColor)) {
+                    lastColor = styledText.getColor();
+                    contentStream.setNonStrokingColor(lastColor);
+                }
+                if (styledText.getText().length() > 0) {
+                    contentStream.showText(styledText.getText());
+                }
+                contentStream.endText();
+                if (drawListener != null) {
+                    drawListener.drawn(styledText,
+                            new Position(x, y + styledText.getAsent()),
+                            styledText.getWidthWithoutMargin(),
+                            styledText.getHeight());
+                }
+                x += styledText.getWidthWithoutMargin();
+                gap = extraWordSpacing;
+                if (styledText.getRightMargin() > 0) {
+                    gap += styledText.getRightMargin();
+                }
+            }
+            contentStream.restoreGraphicsState();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
         }
-        float offset = TextSequenceUtil.getOffset(this, availableLineWidth, alignment);
-        x += offset;
-        for (StyledText styledText : styledTextList) {
-            Matrix matrix = Matrix.getTranslateInstance(x, y);
-            if (styledText.getLeftMargin() > 0) {
-                gap += styledText.getLeftMargin();
-            }
-            boolean moveBaseline = styledText.getBaselineOffset() != lastBaselineOffset;
-            if (moveBaseline || gap > 0) {
-                float baselineDelta = lastBaselineOffset - styledText.getBaselineOffset();
-                lastBaselineOffset = styledText.getBaselineOffset();
-                matrix = matrix.multiply(new Matrix(1, 0, 0, 1, gap, baselineDelta));
-                x += gap;
-            }
-            contentStream.beginText();
-            contentStream.setTextMatrix(matrix);
-            if (!styledText.getFontDescriptor().equals(lastFontDesc)) {
-                lastFontDesc = styledText.getFontDescriptor();
-                contentStream.setFont(lastFontDesc.getFont(), lastFontDesc.getSize());
-            }
-            if (!styledText.getColor().equals(lastColor)) {
-                lastColor = styledText.getColor();
-                contentStream.setNonStrokingColor(lastColor);
-            }
-            if (styledText.getText().length() > 0) {
-                contentStream.showText(styledText.getText());
-            }
-            contentStream.endText();
-            if (drawListener != null) {
-                float currentUpperLeft = y + styledText.getAsent();
-                drawListener.drawn(styledText,
-                        new Position(x, currentUpperLeft),
-                        styledText.getWidthWithoutMargin(),
-                        styledText.getHeight());
-            }
-            x += styledText.getWidthWithoutMargin();
-            gap = extraWordSpacing;
-            if (styledText.getRightMargin() > 0) {
-                gap += styledText.getRightMargin();
-            }
-        }
-        contentStream.restoreGraphicsState();
     }
 
     @Override

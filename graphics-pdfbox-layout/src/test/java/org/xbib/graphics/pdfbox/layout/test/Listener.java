@@ -5,6 +5,7 @@ import org.xbib.graphics.pdfbox.layout.elements.Document;
 import org.xbib.graphics.pdfbox.layout.elements.Paragraph;
 import org.xbib.graphics.pdfbox.layout.elements.render.RenderContext;
 import org.xbib.graphics.pdfbox.layout.elements.render.RenderListener;
+import org.xbib.graphics.pdfbox.layout.font.FontDescriptor;
 import org.xbib.graphics.pdfbox.layout.text.Alignment;
 import org.xbib.graphics.pdfbox.layout.font.BaseFont;
 import org.xbib.graphics.pdfbox.layout.text.Position;
@@ -12,7 +13,6 @@ import org.xbib.graphics.pdfbox.layout.text.TextFlow;
 import org.xbib.graphics.pdfbox.layout.text.TextFlowUtil;
 import org.xbib.graphics.pdfbox.layout.text.TextSequenceUtil;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 
 public class Listener {
@@ -43,15 +43,13 @@ public class Listener {
 
             @Override
             public void beforePage(RenderContext renderContext) {
-
             }
 
             @Override
-            public void afterPage(RenderContext renderContext)
-                    throws IOException {
-                String content = String.format("Page %s",
-                        renderContext.getPageIndex() + 1);
-                TextFlow text = TextFlowUtil.createTextFlow(content, 11, BaseFont.HELVETICA);
+            public void afterPage(RenderContext renderContext) {
+                String content = String.format("Page %s", renderContext.getPageIndex() + 1);
+                FontDescriptor fontDescriptor = new FontDescriptor(BaseFont.HELVETICA, 11);
+                TextFlow text = TextFlowUtil.createTextFlow(content, fontDescriptor);
                 float offset = renderContext.getPageFormat().getMarginLeft()
                         + TextSequenceUtil.getOffset(text,
                         renderContext.getWidth(), Alignment.RIGHT);

@@ -2,6 +2,8 @@ package org.xbib.graphics.pdfbox.layout.shape;
 
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.logging.Logger;
 
 /**
  * This is a container for all information needed to perform a stroke.
@@ -51,6 +53,7 @@ public class Stroke {
     public static class DashPattern {
 
         private final float[] pattern;
+
         private final float phase;
 
         /**
@@ -106,8 +109,11 @@ public class Stroke {
     }
 
     private final CapStyle capStyle;
+
     private final JoinStyle joinStyle;
+
     private final DashPattern dashPattern;
+
     private final float lineWidth;
 
     /**
@@ -168,18 +174,20 @@ public class Stroke {
      * @param contentStream the content stream to apply this stroke to.
      * @throws IOException by PDFBox.
      */
-    public void applyTo(final PDPageContentStream contentStream)
-            throws IOException {
+    public void applyTo(PDPageContentStream contentStream) throws IOException {
         if (getCapStyle() != null) {
+            Logger.getLogger("").info(" cap style = " + getCapStyle().value());
             contentStream.setLineCapStyle(getCapStyle().value());
         }
         if (getJoinStyle() != null) {
+            Logger.getLogger("").info(" join style = " + getJoinStyle().value());
             contentStream.setLineJoinStyle(getJoinStyle().value());
         }
         if (getDashPattern() != null) {
-            contentStream.setLineDashPattern(getDashPattern().getPattern(),
-                    getDashPattern().getPhase());
+            Logger.getLogger("").info(" dash pattern = " + Arrays.asList(getDashPattern().getPattern()));
+            contentStream.setLineDashPattern(getDashPattern().getPattern(), getDashPattern().getPhase());
         }
+        Logger.getLogger("").info(" line width = " + getLineWidth());
         contentStream.setLineWidth(getLineWidth());
     }
 
@@ -196,10 +204,14 @@ public class Stroke {
      * A builder providing a fluent interface for creating a stroke.
      */
     public static class StrokeBuilder {
+
         private CapStyle capStyle = CapStyle.Cap;
+
         private JoinStyle joinStyle = JoinStyle.Miter;
+
         private DashPattern dashPattern;
-        float lineWidth = 1f;
+
+        private float lineWidth = 1f;
 
         public StrokeBuilder capStyle(CapStyle capStyle) {
             this.capStyle = capStyle;

@@ -5,6 +5,7 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.junit.jupiter.api.Test;
 import org.xbib.graphics.pdfbox.layout.elements.PageFormat;
+import org.xbib.graphics.pdfbox.layout.font.FontDescriptor;
 import org.xbib.graphics.pdfbox.layout.shape.RoundRect;
 import org.xbib.graphics.pdfbox.layout.shape.Shape;
 import org.xbib.graphics.pdfbox.layout.shape.Stroke;
@@ -52,15 +53,12 @@ public class LowLevelText {
         });
         annotationDrawListener.beforePage(null);
 
-        TextFlow text = TextFlowUtil
-                .createTextFlowFromMarkup(
+        TextFlow text = TextFlowUtil.createTextFlowFromMarkup(
                         "Hello *bold _italic bold-end* italic-end_. Eirmod\ntempor invidunt ut \\*labore",
-                        11, BaseFont.TIMES);
-
+                        new FontDescriptor(BaseFont.TIMES, 11));
         text.addText("Spongebob", 11, BaseFont.COURIER);
         text.addText(" is ", 20, BaseFont.HELVETICA);
         text.addText("cool", 7, BaseFont.HELVETICA);
-
         text.setMaxWidth(100);
         float xOffset = TextSequenceUtil.getOffset(text, pageWidth,
                 Alignment.RIGHT);

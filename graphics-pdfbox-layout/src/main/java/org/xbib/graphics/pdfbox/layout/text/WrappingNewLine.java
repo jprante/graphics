@@ -1,6 +1,5 @@
 package org.xbib.graphics.pdfbox.layout.text;
 
-
 import org.xbib.graphics.pdfbox.layout.font.FontDescriptor;
 
 /**
@@ -10,13 +9,6 @@ import org.xbib.graphics.pdfbox.layout.font.FontDescriptor;
 public class WrappingNewLine extends NewLine {
 
     /**
-     * See {@link NewLine#NewLine()}.
-     */
-    public WrappingNewLine() {
-        super();
-    }
-
-    /**
      * See {@link NewLine#NewLine(FontDescriptor)}.
      *
      * @param fontDescriptor the font and size associated with this new line.
@@ -24,15 +16,4 @@ public class WrappingNewLine extends NewLine {
     public WrappingNewLine(FontDescriptor fontDescriptor) {
         super(fontDescriptor);
     }
-
-    /**
-     * See {@link NewLine#NewLine(float)}.
-     *
-     * @param fontSize the font size, resp. the height of the new line.
-     */
-    public WrappingNewLine(float fontSize) {
-        super(fontSize);
-    }
-
-
 }

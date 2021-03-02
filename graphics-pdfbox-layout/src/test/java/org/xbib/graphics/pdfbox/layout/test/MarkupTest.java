@@ -27,31 +27,19 @@ public class MarkupTest {
         Paragraph paragraph = new Paragraph();
         paragraph.addMarkup(text1, 11, BaseFont.TIMES);
         document.add(paragraph);
-
         paragraph = new Paragraph();
-        paragraph
-                .addMarkup(
-                        "Markup supports *bold*, _italic_, and *even _mixed* markup_.\n\n",
-                        11, BaseFont.TIMES);
-        paragraph.addMarkup(
-                "Escape \\* with \\\\\\* and \\_ with \\\\\\_ in markup.\n\n",
+        paragraph.addMarkup("Markup supports *bold*, _italic_, and *even _mixed* markup_.\n\n",
                 11, BaseFont.TIMES);
-
-        paragraph
-                .addMarkup(
-                        "And now also {color:#ff0000}c{color:#00ff00}o{color:#0000ff}l{color:#00cccc}o{color:#cc00cc}r{color:#000000}",
-                        11, BaseFont.TIMES);
+        paragraph.addMarkup("Escape \\* with \\\\\\* and \\_ with \\\\\\_ in markup.\n\n",
+                11, BaseFont.TIMES);
+        paragraph.addMarkup("And now also {color:#ff0000}c{color:#00ff00}o{color:#0000ff}l{color:#00cccc}o{color:#cc00cc}r{color:#000000}",
+                11, BaseFont.TIMES);
         paragraph.addMarkup(" , {_}subscript{_} and {^}superscript{^}.\n\n",
                 11, BaseFont.TIMES);
-
-        paragraph
-                .addMarkup(
-                        "You can alternate the position and thickness of an __underline__, "
+        paragraph.addMarkup("You can alternate the position and thickness of an __underline__, "
                                 + "so you may also use this to __{0.25:}strike through__ or blacken __{0.25:20}things__ out\n\n",
                         11, BaseFont.TIMES);
-
-        document.add(paragraph, new VerticalLayoutHint(Alignment.LEFT, 0, 0,
-                30, 0));
+        document.add(paragraph, new VerticalLayoutHint(Alignment.LEFT, 0, 0, 30, 0));
 
         paragraph = new Paragraph();
         text1 = "\nAlso, you can do all that indentation stuff much easier with markup, e.g. simple indentation\n"

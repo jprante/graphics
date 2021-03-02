@@ -12,10 +12,10 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 public enum BaseFont implements Font {
 
     TIMES(PDType1Font.TIMES_ROMAN, PDType1Font.TIMES_BOLD,
-            PDType1Font.TIMES_ITALIC, PDType1Font.TIMES_BOLD_ITALIC), //
+            PDType1Font.TIMES_ITALIC, PDType1Font.TIMES_BOLD_ITALIC),
 
     COURIER(PDType1Font.COURIER, PDType1Font.COURIER_BOLD,
-            PDType1Font.COURIER_OBLIQUE, PDType1Font.COURIER_BOLD_OBLIQUE), //
+            PDType1Font.COURIER_OBLIQUE, PDType1Font.COURIER_BOLD_OBLIQUE),
 
     HELVETICA(PDType1Font.HELVETICA, PDType1Font.HELVETICA_BOLD,
             PDType1Font.HELVETICA_OBLIQUE, PDType1Font.HELVETICA_BOLD_OBLIQUE);
@@ -28,8 +28,7 @@ public enum BaseFont implements Font {
 
     private final PDFont boldItalicFont;
 
-    BaseFont(PDFont plainFont, PDFont boldFont, PDFont italicFont,
-             PDFont boldItalicFont) {
+    BaseFont(PDFont plainFont, PDFont boldFont, PDFont italicFont, PDFont boldItalicFont) {
         this.plainFont = plainFont;
         this.boldFont = boldFont;
         this.italicFont = italicFont;
@@ -37,7 +36,7 @@ public enum BaseFont implements Font {
     }
 
     @Override
-    public PDFont getPlainFont() {
+    public PDFont getRegularFont() {
         return plainFont;
     }
 

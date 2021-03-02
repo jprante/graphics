@@ -3,7 +3,6 @@ package org.xbib.graphics.pdfbox.layout.text.annotations;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.xbib.graphics.pdfbox.layout.text.DrawContext;
 import org.xbib.graphics.pdfbox.layout.text.Position;
-import java.io.IOException;
 
 /**
  * Processes an annotation.
@@ -18,34 +17,30 @@ public interface AnnotationProcessor {
      * @param upperLeft   the upper left position the object has been drawn to.
      * @param width       the width of the drawn object.
      * @param height      the height of the drawn object.
-     * @throws IOException by pdfbox.
      */
     void annotatedObjectDrawn(final Annotated drawnObject,
                               final DrawContext drawContext, Position upperLeft, float width,
-                              float height) throws IOException;
+                              float height);
 
     /**
      * Called before a page is drawn.
      *
      * @param drawContext the drawing context.
-     * @throws IOException by pdfbox.
      */
-    void beforePage(final DrawContext drawContext) throws IOException;
+    void beforePage(final DrawContext drawContext);
 
     /**
      * Called after a page is drawn.
      *
      * @param drawContext the drawing context.
-     * @throws IOException by pdfbox.
      */
-    void afterPage(final DrawContext drawContext) throws IOException;
+    void afterPage(final DrawContext drawContext);
 
     /**
      * Called after all rendering has been performed.
      *
      * @param document the document.
-     * @throws IOException by pdfbox.
      */
-    void afterRender(final PDDocument document) throws IOException;
+    void afterRender(final PDDocument document);
 
 }

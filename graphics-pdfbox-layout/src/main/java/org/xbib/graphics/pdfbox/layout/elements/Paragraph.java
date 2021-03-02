@@ -8,7 +8,6 @@ import org.xbib.graphics.pdfbox.layout.text.Position;
 import org.xbib.graphics.pdfbox.layout.text.TextFlow;
 import org.xbib.graphics.pdfbox.layout.text.TextSequenceUtil;
 import org.xbib.graphics.pdfbox.layout.text.WidthRespecting;
-import java.io.IOException;
 
 /**
  * A paragraph is used as a container for {@link TextFlow text} that is drawn as
@@ -54,23 +53,22 @@ public class Paragraph extends TextFlow implements Drawable, Element, WidthRespe
 
     @Override
     public void draw(PDDocument pdDocument, PDPageContentStream contentStream,
-                     Position upperLeft, DrawListener drawListener) throws IOException {
+                     Position upperLeft, DrawListener drawListener) {
         drawText(contentStream, upperLeft, getAlignment(), drawListener);
     }
 
     @Override
-    public Divided divide(float remainingHeight, final float pageHeight)
-            throws IOException {
+    public Divided divide(float remainingHeight, final float pageHeight) {
         return TextSequenceUtil.divide(this, getMaxWidth(), remainingHeight);
     }
 
     @Override
-    public Paragraph removeLeadingEmptyVerticalSpace() throws IOException {
+    public Paragraph removeLeadingEmptyVerticalSpace() {
         return removeLeadingEmptyLines();
     }
 
     @Override
-    public Paragraph removeLeadingEmptyLines() throws IOException {
+    public Paragraph removeLeadingEmptyLines() {
         Paragraph result = (Paragraph) super.removeLeadingEmptyLines();
         result.setAbsolutePosition(this.getAbsolutePosition());
         result.setAlignment(this.getAlignment());

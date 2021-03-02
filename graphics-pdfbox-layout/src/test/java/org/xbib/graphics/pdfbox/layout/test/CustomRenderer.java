@@ -10,6 +10,7 @@ import org.xbib.graphics.pdfbox.layout.elements.render.RenderContext;
 import org.xbib.graphics.pdfbox.layout.elements.render.RenderListener;
 import org.xbib.graphics.pdfbox.layout.elements.render.Renderer;
 import org.xbib.graphics.pdfbox.layout.elements.render.VerticalLayoutHint;
+import org.xbib.graphics.pdfbox.layout.font.FontDescriptor;
 import org.xbib.graphics.pdfbox.layout.shape.Stroke;
 import org.xbib.graphics.pdfbox.layout.shape.Stroke.CapStyle;
 import org.xbib.graphics.pdfbox.layout.text.Alignment;
@@ -80,19 +81,14 @@ public class CustomRenderer {
         public boolean render(RenderContext renderContext, Element element,
                               LayoutHint layoutHint) throws IOException {
             if (element instanceof Section) {
-
                 if (renderContext.getPageIndex() > 0) {
-                    // no new page on first page ;-)
                     renderContext.newPage();
                 }
                 sectionNumber = ((Section) element).getNumber();
-
                 renderContext.render(renderContext, element, layoutHint);
-
                 Element ruler = new HorizontalRuler(Stroke.builder().lineWidth(2)
                         .capStyle(CapStyle.RoundCap).build(), Color.black);
                 renderContext.render(renderContext, ruler, VerticalLayoutHint.builder().marginBottom(10).build());
-
                 return true;
             }
             return false;
@@ -100,20 +96,17 @@ public class CustomRenderer {
 
         @Override
         public void beforePage(RenderContext renderContext) {
-
         }
 
         @Override
-        public void afterPage(RenderContext renderContext) throws IOException {
-            String content = String.format("Section %s, Page %s",
-                    sectionNumber, renderContext.getPageIndex() + 1);
-            TextFlow text = TextFlowUtil.createTextFlow(content, 11, BaseFont.TIMES);
+        public void afterPage(RenderContext renderContext) {
+            String content = String.format("Section %s, Page %s", sectionNumber, renderContext.getPageIndex() + 1);
+            FontDescriptor fontDescriptor = new FontDescriptor(BaseFont.TIMES, 11);
+            TextFlow text = TextFlowUtil.createTextFlow(content, fontDescriptor);
             float offset = renderContext.getPageFormat().getMarginLeft() +
                     TextSequenceUtil.getOffset(text, renderContext.getWidth(), Alignment.RIGHT);
             text.drawText(renderContext.getContentStream(), new Position(
                     offset, 30), Alignment.RIGHT, null);
         }
-
     }
-
 }

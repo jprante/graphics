@@ -1,9 +1,8 @@
 package org.xbib.graphics.pdfbox.layout.text;
 
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.xbib.graphics.pdfbox.layout.font.BaseFont;
 import org.xbib.graphics.pdfbox.layout.font.FontDescriptor;
 import java.awt.Color;
-import java.io.IOException;
 
 /**
  * A control fragment has no drawable representation but is meant to control the
@@ -11,21 +10,23 @@ import java.io.IOException;
  */
 public class ControlFragment implements TextFragment {
 
-    protected final static FontDescriptor DEFAULT_FONT_DESCRIPTOR = new FontDescriptor(
-            PDType1Font.HELVETICA, 11);
+    protected final static FontDescriptor DEFAULT_FONT_DESCRIPTOR =
+            new FontDescriptor(BaseFont.HELVETICA, 11);
 
     private String name;
+
     private final String text;
+
     private final FontDescriptor fontDescriptor;
+
     private final Color color;
 
-    protected ControlFragment(final String text,
-                              final FontDescriptor fontDescriptor) {
+    protected ControlFragment(String text, FontDescriptor fontDescriptor) {
         this(null, text, fontDescriptor, Color.black);
     }
 
-    protected ControlFragment(final String name, final String text,
-                              final FontDescriptor fontDescriptor, final Color color) {
+    protected ControlFragment(String name, final String text,
+                              FontDescriptor fontDescriptor, final Color color) {
         this.name = name;
         if (this.name == null) {
             this.name = getClass().getSimpleName();
@@ -36,12 +37,12 @@ public class ControlFragment implements TextFragment {
     }
 
     @Override
-    public float getWidth() throws IOException {
+    public float getWidth() {
         return 0;
     }
 
     @Override
-    public float getHeight() throws IOException {
+    public float getHeight() {
         return getFontDescriptor() == null ? 0 : getFontDescriptor().getSize();
     }
 

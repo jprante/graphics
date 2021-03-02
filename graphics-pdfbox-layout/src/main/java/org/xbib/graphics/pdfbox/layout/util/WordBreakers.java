@@ -2,7 +2,6 @@ package org.xbib.graphics.pdfbox.layout.util;
 
 import org.xbib.graphics.pdfbox.layout.font.FontDescriptor;
 import org.xbib.graphics.pdfbox.layout.text.TextSequenceUtil;
-import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,7 +18,7 @@ public class WordBreakers {
         @Override
         public Pair<String> breakWord(String word,
                                       FontDescriptor fontDescriptor, float maxWidth,
-                                      boolean breakHardIfNecessary) throws IOException {
+                                      boolean breakHardIfNecessary) {
             return null;
         }
 
@@ -36,7 +35,7 @@ public class WordBreakers {
         @Override
         public Pair<String> breakWord(final String word,
                                       final FontDescriptor fontDescriptor, final float maxWidth,
-                                      final boolean breakHardIfNecessary) throws IOException {
+                                      final boolean breakHardIfNecessary) {
 
             Pair<String> brokenWord = breakWordSoft(word, fontDescriptor,
                     maxWidth);
@@ -54,11 +53,9 @@ public class WordBreakers {
          * @param fontDescriptor describing the font's type and size.
          * @param maxWidth       the maximum width to obey.
          * @return the broken word, or <code>null</code> if it cannot be broken.
-         * @throws IOException by pdfbox
          */
-        abstract protected Pair<String> breakWordSoft(final String word,
-                                                      final FontDescriptor fontDescriptor, final float maxWidth)
-                throws IOException;
+        abstract protected Pair<String> breakWordSoft(String word,
+                                                      FontDescriptor fontDescriptor, final float maxWidth);
 
         /**
          * Breaks the word hard at the outermost position that fits the given
@@ -68,11 +65,9 @@ public class WordBreakers {
          * @param fontDescriptor describing the font's type and size.
          * @param maxWidth       the maximum width to obey.
          * @return the broken word, or <code>null</code> if it cannot be broken.
-         * @throws IOException by pdfbox
          */
         protected Pair<String> breakWordHard(final String word,
-                                             final FontDescriptor fontDescriptor, final float maxWidth)
-                throws IOException {
+                                             final FontDescriptor fontDescriptor, final float maxWidth) {
             int cutIndex = (int) (maxWidth / TextSequenceUtil.getEmWidth(fontDescriptor));
             float currentWidth = TextSequenceUtil.getStringWidth(word.substring(0, cutIndex),
                     fontDescriptor);
@@ -114,13 +109,12 @@ public class WordBreakers {
          * A letter followed by either <code>-</code>, <code>.</code>,
          * <code>,</code> or <code>/</code>.
          */
-        private final Pattern breakPattern = Pattern
-                .compile("[A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF]([\\-\\.\\,/])");
+        private final Pattern breakPattern =
+                Pattern.compile("[A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF]([\\-\\.\\,/])");
 
         @Override
         protected Pair<String> breakWordSoft(final String word,
-                                             final FontDescriptor fontDescriptor, final float maxWidth)
-                throws IOException {
+                                             final FontDescriptor fontDescriptor, final float maxWidth) {
             Matcher matcher = breakPattern.matcher(word);
             int breakIndex = -1;
             boolean maxWidthExceeded = false;
@@ -139,7 +133,7 @@ public class WordBreakers {
             if (breakIndex < 0) {
                 return null;
             }
-            return new Pair<String>(word.substring(0, breakIndex),
+            return new Pair<>(word.substring(0, breakIndex),
                     word.substring(breakIndex));
         }
 

@@ -11,7 +11,6 @@ import org.xbib.graphics.pdfbox.layout.elements.VerticalSpacer;
 import org.xbib.graphics.pdfbox.layout.text.Alignment;
 import org.xbib.graphics.pdfbox.layout.text.Position;
 import org.xbib.graphics.pdfbox.layout.text.WidthRespecting;
-import org.xbib.graphics.pdfbox.layout.util.CompatibilityHelper;
 import java.io.IOException;
 
 /**
@@ -246,17 +245,13 @@ public class VerticalLayout implements Layout {
                     break;
             }
         }
-
         contentStream.saveGraphicsState();
         contentStream.addRect(0, pageFormat.getMarginBottom(), renderContext.getPageWidth(),
                 renderContext.getHeight());
-        CompatibilityHelper.clip(contentStream);
-
+        contentStream.clip();
         drawable.draw(renderContext.getPdDocument(), contentStream,
                 renderContext.getCurrentPosition().add(offsetX, 0), renderContext);
-
         contentStream.restoreGraphicsState();
-
         if (movePosition) {
             renderContext.movePositionBy(0, -drawable.getHeight());
         }

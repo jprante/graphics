@@ -4,6 +4,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.util.Matrix;
 import org.xbib.graphics.pdfbox.layout.elements.ControlElement;
 import org.xbib.graphics.pdfbox.layout.elements.Document;
 import org.xbib.graphics.pdfbox.layout.elements.Element;
@@ -17,7 +18,6 @@ import org.xbib.graphics.pdfbox.layout.text.DrawContext;
 import org.xbib.graphics.pdfbox.layout.text.DrawListener;
 import org.xbib.graphics.pdfbox.layout.text.Position;
 import org.xbib.graphics.pdfbox.layout.text.annotations.AnnotationDrawListener;
-import org.xbib.graphics.pdfbox.layout.util.CompatibilityHelper;
 import java.io.Closeable;
 import java.io.IOException;
 
@@ -204,8 +204,7 @@ public class RenderContext implements Renderer, Closeable, DrawContext, DrawList
      * @return <code>true</code> if the page is rotated by 90/270 degrees.
      */
     public boolean isPageTilted() {
-        return CompatibilityHelper.getPageRotation(page) == 90
-                || CompatibilityHelper.getPageRotation(page) == 270;
+        return page.getRotation() == 90 || page.getRotation() == 270;
     }
 
     /**
@@ -374,12 +373,9 @@ public class RenderContext implements Renderer, Closeable, DrawContext, DrawList
         if (nextPageFormat != null) {
             setPageFormat(nextPageFormat);
         }
-
         this.page = new PDPage(getPageFormat().getMediaBox());
         this.pdDocument.addPage(page);
-        this.contentStream = CompatibilityHelper
-                .createAppendablePDPageContentStream(pdDocument, page);
-
+        this.contentStream = new PDPageContentStream(pdDocument, page, PDPageContentStream.AppendMode.APPEND, true);
         // fix orientation
         if (getPageOrientation() != getPageFormat().getOrientation()) {
             if (isPageTilted()) {
@@ -389,7 +385,7 @@ public class RenderContext implements Renderer, Closeable, DrawContext, DrawList
             }
         }
         if (isPageTilted()) {
-            CompatibilityHelper.transform(contentStream, 0, 1, -1, 0, getPageHeight(), 0);
+            contentStream.transform(new Matrix(0, 1, -1, 0, getPageHeight(), 0));
         }
         resetPositionToUpperLeft();
         resetMaxPositionOnPage();
@@ -410,8 +406,7 @@ public class RenderContext implements Renderer, Closeable, DrawContext, DrawList
             document.afterPage(this);
 
             if (getPageFormat().getRotation() != 0) {
-                int currentRotation = CompatibilityHelper
-                        .getPageRotation(getCurrentPage());
+                int currentRotation = getCurrentPage().getRotation();
                 getCurrentPage().setRotation(
                         currentRotation + getPageFormat().getRotation());
             }

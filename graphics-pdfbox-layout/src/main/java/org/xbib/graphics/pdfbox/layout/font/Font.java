@@ -4,7 +4,7 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 
 public interface Font {
 
-    PDFont getPlainFont();
+    PDFont getRegularFont();
 
     PDFont getBoldFont();
 

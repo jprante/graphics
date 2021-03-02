@@ -228,7 +228,7 @@ abstract class BaseBuilderSpec extends Specification {
         builder.create {
             document {
                 paragraph {
-                    barcode(height: 150.px, width: 500.px, value: '12345678')
+                    barcode(height: 150.px, width: 500.px, value: '12345678', type: 'CODE39')
                 }
             }
         }

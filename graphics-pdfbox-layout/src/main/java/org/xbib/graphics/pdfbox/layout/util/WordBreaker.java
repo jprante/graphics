@@ -23,6 +23,6 @@ public interface WordBreaker {
      */
     Pair<String> breakWord(String word,
                            FontDescriptor fontDescriptor, float maxWidth,
-                           boolean breakHardIfNecessary) throws IOException;
+                           boolean breakHardIfNecessary);
 
 }
