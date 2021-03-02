@@ -33,14 +33,43 @@ public class PDFRasterizerTest {
         pdfRasterizer.close();
     }
 
+    @Test
+    public void testPDFColorImage() throws IOException {
+        String creator = "Xbib PDF";
+        String author = "Jörg Prante";
+        String subject = "Test";
+        Path sourceDir = Paths.get("src/test/resources/org/xbib/graphics/ghostscript/test/images");
+        Path targetFile = Paths.get("build/color.pdf");
+        PDFRasterizer pdfRasterizer = new PDFRasterizer(creator, author, subject);
+        int pagecount = pdfRasterizer.mergeImagesToPDF(sourceDir, targetFile);
+        logger.info("pagecount = " + pagecount);
+        pdfRasterizer.close();
+    }
+
+    @Test
+    public void testPDFUnpackRasterAndScale() throws IOException {
+        Path source = Paths.get("src/test/resources/org/xbib/graphics/ghostscript/test/20200024360.pdf");
+        Path target = Paths.get("build/20200024360-new.pdf");
+        Path tmp = Files.createTempDirectory("graphics-test");
+        try {
+            PDFRasterizer pdfRasterizer = new PDFRasterizer("xbib", "Jörg Prante", "Test");
+            pdfRasterizer.pdfToImage(source, tmp, null, null);
+            Path tmpTarget = tmp.resolve(target.getFileName());
+            int pagecount = pdfRasterizer.mergeImagesToPDF(tmp, tmpTarget);
+            logger.info("pagecount = " + pagecount);
+            pdfRasterizer.scalePDF(tmpTarget, target);
+            pdfRasterizer.close();
+        } finally {
+            delete(tmp);
+        }
+    }
 
     @Test
     public void testPDFRasterizerToImage() throws Exception {
         Path path = Paths.get("build/resources/test");
         try (Stream<Path> stream = Files.list(path)) {
             stream.forEach(p -> {
-                if (p.toString().endsWith(".pdf")) {
-                    logger.info("found " + p.toString());
+                if (p.toString().endsWith("cjk.pdf")) {
                     Path target = Paths.get("build/image-" + p.getFileName());
                     try {
                         delete(target);

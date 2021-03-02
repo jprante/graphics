@@ -4,6 +4,7 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageReadParam;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
+import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -203,7 +204,7 @@ public class PDFRasterizer implements Closeable {
         int pagecount = 0;
         List<PDDocument> coverPageDocs = new ArrayList<>();
         try (Stream<Path> files = Files.list(sourceDir);
-             PDDocument pdDocument = new PDDocument();
+             PDDocument pdDocument = new PDDocument(MemoryUsageSetting.setupTempFileOnly());
              OutputStream outputStream = new BufferedOutputStream(Files.newOutputStream(targetFile))) {
             List<Path> entries = files.sorted()
                     .filter(PDFRasterizer::checkForRealFile)
@@ -371,27 +372,23 @@ public class PDFRasterizer implements Closeable {
         Map<String, ImageReader> map = new LinkedHashMap<>();
         ImageReader pngReader = getImageReader("png");
         if (pngReader != null) {
-            ImageReadParam param = pngReader.getDefaultReadParam();
-            logger.log(Level.FINE, "PNG reader: " + pngReader.getClass().getName() + " param: " + param);
+            logger.log(Level.FINE, "PNG reader: " + pngReader.getClass().getName());
             map.put("png", pngReader);
         }
         ImageReader pnmReader = getImageReader("pnm");
         if (pnmReader != null) {
-            ImageReadParam param = pnmReader.getDefaultReadParam();
-            logger.log(Level.FINE, "PNM reader: " + pnmReader.getClass().getName() + " param: " + param);
+            logger.log(Level.FINE, "PNM reader: " + pnmReader.getClass().getName());
             map.put("pnm", pnmReader);
         }
         ImageReader jpegReader = getImageReader("jpeg");
         if (jpegReader != null) {
-            ImageReadParam param = jpegReader.getDefaultReadParam();
-            logger.log(Level.FINE, "JPEG reader: " + jpegReader.getClass().getName() + " param: " + param);
+            logger.log(Level.FINE, "JPEG reader: " + jpegReader.getClass().getName());
             map.put("jpg", jpegReader);
             map.put("jpeg", jpegReader);
         }
         ImageReader tiffReader = getImageReader("tiff");
         if (tiffReader != null) {
-            ImageReadParam param = tiffReader.getDefaultReadParam();
-            logger.log(Level.FINE, "TIFF reader: " + tiffReader.getClass().getName() + " param: " + param);
+            logger.log(Level.FINE, "TIFF reader: " + tiffReader.getClass().getName());
             map.put("tif", tiffReader);
             map.put("tiff", tiffReader);
         }
@@ -425,7 +422,11 @@ public class PDFRasterizer implements Closeable {
             ImageReader imageReader = imageReaders.get(suffix);
             if (imageReader != null) {
                 imageReader.setInput(imageInputStream);
-                BufferedImage bufferedImage = imageReader.read(0);
+                ImageReadParam param = imageReader.getDefaultReadParam();
+                BufferedImage bufferedImage = imageReader.read(0, param);
+                logger.log(Level.FINE, "path = " + path + "loaded: width = " + bufferedImage.getWidth() +
+                        " height = " + bufferedImage.getHeight() +
+                        " color model = " + bufferedImage.getColorModel());
                 imageInputStream.close();
                 return bufferedImage;
             } else {

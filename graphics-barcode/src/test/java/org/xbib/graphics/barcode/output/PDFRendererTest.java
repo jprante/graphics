@@ -24,7 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Locale;
 
-@DisabledOnOs(OS.MAC)
+@DisabledOnOs({OS.MAC, OS.LINUX})
 public class PDFRendererTest {
 
     private Locale originalDefaultLocale;
@@ -98,6 +98,7 @@ public class PDFRendererTest {
         int height = (int) (symbol.getHeight() * magnification);
         Rectangle rectangle = new Rectangle(0, 0, width, height);
         PDFGraphics2D pdfGraphics2D = new PDFGraphics2D(rectangle);
+        // we need a trick here to generate HELVETICA font statements
         pdfGraphics2D.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         BarcodeGraphicsRenderer barcodeGraphicsRenderer = new BarcodeGraphicsRenderer(pdfGraphics2D,
                 rectangle, magnification, paper, ink, false, false);

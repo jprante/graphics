@@ -83,7 +83,8 @@ public class PDFConverter {
                         int processColorModel,
                         int pdfsettings,
                         String compatibilityLevel,
-                        boolean pdfx, PaperSize paperSize) {
+                        boolean pdfx,
+                        PaperSize paperSize) {
         this.autoRotatePages = autoRotatePages;
         this.processColorModel = processColorModel;
         this.pdfsettings = pdfsettings;
