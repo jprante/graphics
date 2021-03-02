@@ -88,11 +88,9 @@ public class TextFlowUtil {
                 if (fragment instanceof AnnotationCharacters.AnnotationControlCharacter) {
                     AnnotationCharacters.AnnotationControlCharacter<?> annotationControlCharacter = (AnnotationCharacters.AnnotationControlCharacter<?>) fragment;
                     if (annotationMap.containsKey(annotationControlCharacter.getAnnotationType())) {
-                        annotationMap.remove(annotationControlCharacter
-                                .getAnnotationType());
+                        annotationMap.remove(annotationControlCharacter.getAnnotationType());
                     } else {
-                        annotationMap.put(
-                                annotationControlCharacter.getAnnotationType(),
+                        annotationMap.put(annotationControlCharacter.getAnnotationType(),
                                 annotationControlCharacter.getAnnotation());
                     }
                 }

@@ -10,8 +10,9 @@ public class Annotations {
      */
     public static class UnderlineAnnotation implements Annotation {
 
-        private float baselineOffsetScale = 0f;
-        private float lineWeight = 1f;
+        private final float baselineOffsetScale;
+
+        private final float lineWeight;
 
         public UnderlineAnnotation(float baselineOffsetScale, float lineWeight) {
             this.baselineOffsetScale = baselineOffsetScale;
@@ -31,7 +32,6 @@ public class Annotations {
             return "UnderlineAnnotation [baselineOffsetScale="
                     + baselineOffsetScale + ", lineWeight=" + lineWeight + "]";
         }
-
     }
 
     /**
@@ -51,6 +51,7 @@ public class Annotations {
         }
 
         private final String hyperlinkUri;
+
         private final LinkStyle linkStyle;
 
         /**

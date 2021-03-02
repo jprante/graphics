@@ -3,7 +3,6 @@ package org.xbib.graphics.pdfbox.layout.shape;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.logging.Logger;
 
 /**
  * This is a container for all information needed to perform a stroke.
@@ -176,18 +175,14 @@ public class Stroke {
      */
     public void applyTo(PDPageContentStream contentStream) throws IOException {
         if (getCapStyle() != null) {
-            Logger.getLogger("").info(" cap style = " + getCapStyle().value());
             contentStream.setLineCapStyle(getCapStyle().value());
         }
         if (getJoinStyle() != null) {
-            Logger.getLogger("").info(" join style = " + getJoinStyle().value());
             contentStream.setLineJoinStyle(getJoinStyle().value());
         }
         if (getDashPattern() != null) {
-            Logger.getLogger("").info(" dash pattern = " + Arrays.asList(getDashPattern().getPattern()));
             contentStream.setLineDashPattern(getDashPattern().getPattern(), getDashPattern().getPhase());
         }
-        Logger.getLogger("").info(" line width = " + getLineWidth());
         contentStream.setLineWidth(getLineWidth());
     }
 

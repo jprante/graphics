@@ -4,8 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledOnOs;
-import org.junit.jupiter.api.condition.OS;
 import org.xbib.graphics.barcode.Code93;
 import org.xbib.graphics.barcode.MaxiCode;
 import org.xbib.graphics.barcode.AbstractSymbol;
@@ -24,7 +22,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Locale;
 
-@DisabledOnOs({OS.MAC, OS.LINUX})
 public class PDFRendererTest {
 
     private Locale originalDefaultLocale;
@@ -98,8 +95,7 @@ public class PDFRendererTest {
         int height = (int) (symbol.getHeight() * magnification);
         Rectangle rectangle = new Rectangle(0, 0, width, height);
         PDFGraphics2D pdfGraphics2D = new PDFGraphics2D(rectangle);
-        // we need a trick here to generate HELVETICA font statements
-        pdfGraphics2D.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        pdfGraphics2D.setFont(Font.decode("Dialog")); // Helvetica
         BarcodeGraphicsRenderer barcodeGraphicsRenderer = new BarcodeGraphicsRenderer(pdfGraphics2D,
                 rectangle, magnification, paper, ink, false, false);
         barcodeGraphicsRenderer.render(symbol);

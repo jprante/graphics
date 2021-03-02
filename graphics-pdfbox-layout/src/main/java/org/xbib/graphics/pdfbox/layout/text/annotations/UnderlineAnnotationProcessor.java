@@ -90,9 +90,20 @@ public class UnderlineAnnotationProcessor implements AnnotationProcessor {
                 }
                 contentStream.moveTo(start.getX(), start.getY());
                 contentStream.lineTo(end.getX(), end.getY());
+                contentStream.stroke();
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
             }
+        }
+
+        @Override
+        public String toString() {
+            return "Line{" +
+                    "start=" + start +
+                    ", end=" + end +
+                    ", stroke=" + stroke +
+                    ", color=" + color +
+                    '}';
         }
     }
 }

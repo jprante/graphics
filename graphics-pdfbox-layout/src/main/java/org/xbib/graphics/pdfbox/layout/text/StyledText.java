@@ -116,7 +116,7 @@ public class StyledText implements TextFragment {
      * @return the ascent of the associated font.
      * @throws IOException by pdfbox.
      */
-    public float getAsent() throws IOException {
+    public float getAscent() throws IOException {
         return getFontDescriptor().getSize() * getFontDescriptor().getSelectedFont().getFontDescriptor().getAscent() / 1000;
     }
 

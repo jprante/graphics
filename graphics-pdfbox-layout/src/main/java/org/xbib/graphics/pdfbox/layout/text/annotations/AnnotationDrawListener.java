@@ -14,7 +14,7 @@ import org.xbib.graphics.pdfbox.layout.text.Position;
  * This listener has to be passed to all
  * {@link DrawableText#drawText(org.apache.pdfbox.pdmodel.PDPageContentStream, Position, Alignment, DrawListener)
  * draw()} methods, in order collect all annotation metadata. After all drawing
- * is done, you have to call {@link #finalizeAnnotations()} which creates all
+ * is done, you have to call {@link #afterRender()} which creates all
  * necessary annotations and sets them to the corresponding pages. This listener
  * is used by the the rendering API, but you may also use it with the low-level
  * text API.
@@ -49,11 +49,6 @@ public class AnnotationDrawListener implements DrawListener, RenderListener {
         }
     }
 
-    @Deprecated
-    public void finalizeAnnotations() {
-        afterRender();
-    }
-
     @Override
     public void beforePage(RenderContext renderContext) {
         for (AnnotationProcessor annotationProcessor : annotationProcessors) {
@@ -68,11 +63,9 @@ public class AnnotationDrawListener implements DrawListener, RenderListener {
         }
     }
 
-
     public void afterRender() {
         for (AnnotationProcessor annotationProcessor : annotationProcessors) {
             annotationProcessor.afterRender(drawContext.getPdDocument());
         }
     }
-
 }

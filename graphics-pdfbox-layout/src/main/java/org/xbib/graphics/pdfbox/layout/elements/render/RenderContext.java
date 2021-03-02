@@ -3,7 +3,6 @@ package org.xbib.graphics.pdfbox.layout.elements.render;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.util.Matrix;
 import org.xbib.graphics.pdfbox.layout.elements.ControlElement;
 import org.xbib.graphics.pdfbox.layout.elements.Document;
@@ -81,28 +80,6 @@ public class RenderContext implements Renderer, Closeable, DrawContext, DrawList
     public void setLayout(Layout layout) {
         this.layout = layout;
         resetPositionToLeftEndOfPage();
-    }
-
-    /**
-     * @return the orientation to use for the page. If no special
-     * {@link #setPageFormat(PageFormat) page format} is set, the
-     * {@link Document#getOrientation() document orientation} is used.
-     * @deprecated use {@link #getPageFormat()} instead.
-     */
-    @Deprecated
-    public Orientation getOrientation() {
-        return getPageFormat().getOrientation();
-    }
-
-    /**
-     * @return the media box to use for the page. If no special
-     * {@link #setPageFormat(PageFormat) page format} is set, the
-     * {@link Document#getMediaBox() document media box} is used.
-     * @deprecated use {@link #getPageFormat()} instead.
-     */
-    @Deprecated
-    public PDRectangle getMediaBox() {
-        return getPageFormat().getMediaBox();
     }
 
     public void setPageFormat(final PageFormat pageFormat) {
@@ -280,14 +257,6 @@ public class RenderContext implements Renderer, Closeable, DrawContext, DrawList
     }
 
     /**
-     * @return the current PDPage.
-     */
-    @Deprecated
-    public PDPage getPage() {
-        return getCurrentPage();
-    }
-
-    /**
      * @return the current PDPageContentStream.
      */
     public PDPageContentStream getContentStream() {
@@ -302,10 +271,10 @@ public class RenderContext implements Renderer, Closeable, DrawContext, DrawList
     }
 
     @Override
-    public boolean render(RenderContext renderContext, Element element,
+    public boolean render(RenderContext renderContext,
+                          Element element,
                           LayoutHint layoutHint) throws IOException {
-        boolean success = getLayout()
-                .render(renderContext, element, layoutHint);
+        boolean success = getLayout().render(renderContext, element, layoutHint);
         if (success) {
             return true;
         }
@@ -327,7 +296,7 @@ public class RenderContext implements Renderer, Closeable, DrawContext, DrawList
         return false;
     }
 
-    protected boolean render(final PositionControl positionControl) {
+    protected boolean render(PositionControl positionControl) {
         if (positionControl instanceof MarkPosition) {
             setMarkedPosition(getCurrentPosition());
             return true;
@@ -401,16 +370,12 @@ public class RenderContext implements Renderer, Closeable, DrawContext, DrawList
      */
     public boolean closePage() throws IOException {
         if (contentStream != null) {
-
             annotationDrawListener.afterPage(this);
             document.afterPage(this);
-
             if (getPageFormat().getRotation() != 0) {
                 int currentRotation = getCurrentPage().getRotation();
-                getCurrentPage().setRotation(
-                        currentRotation + getPageFormat().getRotation());
+                getCurrentPage().setRotation(currentRotation + getPageFormat().getRotation());
             }
-
             contentStream.close();
             contentStream = null;
             return true;

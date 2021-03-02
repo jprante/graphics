@@ -24,9 +24,11 @@ public class MarkupTest {
                 + "gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.\n\n";
 
         Document document = new Document(40, 60, 40, 60);
+
         Paragraph paragraph = new Paragraph();
         paragraph.addMarkup(text1, 11, BaseFont.TIMES);
         document.add(paragraph);
+
         paragraph = new Paragraph();
         paragraph.addMarkup("Markup supports *bold*, _italic_, and *even _mixed* markup_.\n\n",
                 11, BaseFont.TIMES);
@@ -40,6 +42,11 @@ public class MarkupTest {
                                 + "so you may also use this to __{0.25:}strike through__ or blacken __{0.25:20}things__ out\n\n",
                         11, BaseFont.TIMES);
         document.add(paragraph, new VerticalLayoutHint(Alignment.LEFT, 0, 0, 30, 0));
+
+        paragraph = new Paragraph();
+        paragraph.addMarkup("And here comes a link to an internal anchor name {color:#ff5000}{link[#hello]}hello{link}{color:#000000}.\n\n", 11, BaseFont.TIMES);
+        paragraph.addMarkup("\n\n{anchor:hello}Here{anchor} comes the internal anchor named *hello*\n\n", 11, BaseFont.COURIER);
+        document.add(paragraph);
 
         paragraph = new Paragraph();
         text1 = "\nAlso, you can do all that indentation stuff much easier with markup, e.g. simple indentation\n"

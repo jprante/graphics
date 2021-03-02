@@ -1,7 +1,6 @@
 package org.xbib.graphics.pdfbox.layout.elements;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.xbib.graphics.pdfbox.layout.elements.render.Layout;
 import org.xbib.graphics.pdfbox.layout.elements.render.LayoutHint;
 import org.xbib.graphics.pdfbox.layout.elements.render.RenderContext;
@@ -55,11 +54,11 @@ public class Document implements RenderListener {
      * @param marginTop    the top margin
      * @param marginBottom the bottom margin
      */
-    public Document(float marginLeft, float marginRight, float marginTop,
+    public Document(float marginLeft,
+                    float marginRight,
+                    float marginTop,
                     float marginBottom) {
-        this(PageFormat.with()
-                .margins(marginLeft, marginRight, marginTop, marginBottom)
-                .build());
+        this(PageFormat.with().margins(marginLeft, marginRight, marginTop, marginBottom).build());
     }
 
     /**
@@ -68,7 +67,7 @@ public class Document implements RenderListener {
      *
      * @param pageFormat the page format box to use.
      */
-    public Document(final PageFormat pageFormat) {
+    public Document(PageFormat pageFormat) {
         this.pageFormat = pageFormat;
     }
 
@@ -77,7 +76,7 @@ public class Document implements RenderListener {
      *
      * @param element the element to add
      */
-    public void add(final Element element) {
+    public void add(Element element) {
         add(element, new VerticalLayoutHint());
     }
 
@@ -87,22 +86,13 @@ public class Document implements RenderListener {
      * @param element    the element to add
      * @param layoutHint the hint for the {@link Layout}.
      */
-    public void add(final Element element, final LayoutHint layoutHint) {
+    public void add(Element element, LayoutHint layoutHint) {
         elements.add(createEntry(element, layoutHint));
     }
 
-    private Entry<Element, LayoutHint> createEntry(final Element element,
-                                                   final LayoutHint layoutHint) {
+    private Entry<Element, LayoutHint> createEntry(Element element,
+                                                   LayoutHint layoutHint) {
         return new SimpleEntry<>(element, layoutHint);
-    }
-
-    /**
-     * Removes the given element.
-     *
-     * @param element the element to remove.
-     */
-    public void remove(final Element element) {
-        elements.remove(element);
     }
 
     /**
@@ -113,71 +103,19 @@ public class Document implements RenderListener {
     }
 
     /**
-     * @return the left document margin.
-     * @deprecated use {@link #getPageFormat()} instead.
-     */
-    @Deprecated
-    public float getMarginLeft() {
-        return getPageFormat().getMarginLeft();
-    }
-
-    /**
-     * @return the right document margin.
-     * @deprecated use {@link #getPageFormat()} instead.
-     */
-    @Deprecated
-    public float getMarginRight() {
-        return getPageFormat().getMarginRight();
-    }
-
-    /**
-     * @return the top document margin.
-     * @deprecated use {@link #getPageFormat()} instead.
-     */
-    @Deprecated
-    public float getMarginTop() {
-        return getPageFormat().getMarginTop();
-    }
-
-    /**
-     * @return the bottom document margin.
-     * @deprecated use {@link #getPageFormat()} instead.
-     */
-    @Deprecated
-    public float getMarginBottom() {
-        return getPageFormat().getMarginBottom();
-    }
-
-    /**
-     * @return the media box to use.
-     * @deprecated use {@link #getPageFormat()} instead.
-     */
-    @Deprecated
-    public PDRectangle getMediaBox() {
-        return getPageFormat().getMediaBox();
-    }
-
-    /**
-     * @return the orientation to use.
-     * @deprecated use {@link #getPageFormat()} instead.
-     */
-    @Deprecated
-    public Orientation getOrientation() {
-        return getPageFormat().getOrientation();
-    }
-
-    /**
      * @return the media box width minus margins.
      */
     public float getPageWidth() {
-        return getMediaBox().getWidth() - getMarginLeft() - getMarginRight();
+        return pageFormat.getMediaBox().getWidth() -
+                pageFormat.getMarginLeft() - pageFormat.getMarginRight();
     }
 
     /**
      * @return the media box height minus margins.
      */
     public float getPageHeight() {
-        return getMediaBox().getHeight() - getMarginTop() - getMarginBottom();
+        return pageFormat.getMediaBox().getHeight() -
+                pageFormat.getMarginTop() - pageFormat.getMarginBottom();
     }
 
     /**
@@ -213,15 +151,6 @@ public class Document implements RenderListener {
         if (renderer != null) {
             customRenderer.add(renderer);
         }
-    }
-
-    /**
-     * Removes a {@link Renderer} .
-     *
-     * @param renderer the renderer to remove.
-     */
-    public void removeRenderer(final Renderer renderer) {
-        customRenderer.remove(renderer);
     }
 
     /**
@@ -298,17 +227,8 @@ public class Document implements RenderListener {
         }
     }
 
-    /**
-     * Removes a {@link RenderListener} .
-     *
-     * @param listener the listener to remove.
-     */
-    public void removeRenderListener(final RenderListener listener) {
-        renderListener.remove(listener);
-    }
-
     @Override
-    public void beforePage(final RenderContext renderContext)
+    public void beforePage(RenderContext renderContext)
             throws IOException {
         for (RenderListener listener : renderListener) {
             listener.beforePage(renderContext);
@@ -316,10 +236,9 @@ public class Document implements RenderListener {
     }
 
     @Override
-    public void afterPage(final RenderContext renderContext) throws IOException {
+    public void afterPage(RenderContext renderContext) throws IOException {
         for (RenderListener listener : renderListener) {
             listener.afterPage(renderContext);
         }
     }
-
 }

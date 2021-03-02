@@ -361,7 +361,7 @@ public abstract class Chart<ST extends Styler, S extends Series> {
     }
 
     public BufferedImage getBufferedImage() {
-        BufferedImage bufferedImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+        BufferedImage bufferedImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphics2D = bufferedImage.createGraphics();
         paint(graphics2D, getWidth(), getHeight());
         return bufferedImage;

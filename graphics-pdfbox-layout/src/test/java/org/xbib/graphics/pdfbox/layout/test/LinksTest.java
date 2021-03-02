@@ -7,10 +7,10 @@ import org.xbib.graphics.pdfbox.layout.font.BaseFont;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
-public class Links {
+public class LinksTest {
 
     @Test
-    public void main() throws Exception {
+    public void test() throws Exception {
         String text1 = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, "
                 + "sed diam nonumy eirmod tempor invidunt ut labore et dolore magna "
                 + "aliquyam erat, _sed diam_ voluptua. At vero eos et *accusam et justo* "
@@ -30,7 +30,6 @@ public class Links {
                 + "gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.\n";
 
         Document document = new Document(40, 60, 40, 60);
-
 
         Paragraph paragraph0 = new Paragraph();
         paragraph0.addMarkup("This is a link to {link[https://github.com/ralfstuckert/pdfbox-layout]}PDFBox-Layout{link}.\n\n", 11, BaseFont.TIMES);

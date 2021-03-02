@@ -4,8 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledOnOs;
-import org.junit.jupiter.api.condition.OS;
 import org.xbib.graphics.barcode.Code93;
 import org.xbib.graphics.barcode.render.BarcodeGraphicsRenderer;
 import org.xbib.graphics.barcode.MaxiCode;
@@ -24,7 +22,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Locale;
 
-@DisabledOnOs(OS.MAC)
 public class EPSRendererTest {
 
     private Locale originalDefaultLocale;
@@ -98,7 +95,7 @@ public class EPSRendererTest {
         int height = (int) (symbol.getHeight() * magnification);
         Rectangle rectangle = new Rectangle(0, 0, width, height);
         EPSGraphics2D epsGraphics2D = new EPSGraphics2D(rectangle);
-        epsGraphics2D.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        epsGraphics2D.setFont(Font.decode("Dialog"));
         BarcodeGraphicsRenderer barcodeGraphicsRenderer = new BarcodeGraphicsRenderer(epsGraphics2D, rectangle,
                 magnification, paper, ink, false, false);
         barcodeGraphicsRenderer.render(symbol);

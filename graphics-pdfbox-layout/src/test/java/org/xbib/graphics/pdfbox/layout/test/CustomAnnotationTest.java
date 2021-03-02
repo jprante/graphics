@@ -243,8 +243,7 @@ public class CustomAnnotationTest {
         float pageWidth = page.getMediaBox().getHeight();
         float pageHeight = page.getMediaBox().getWidth();
         AffineTransform transform = new AffineTransform();
-        transform.rotate(pageRotation * Math.PI / 180, pageHeight / 2,
-                pageWidth / 2);
+        transform.rotate(pageRotation * Math.PI / 180, pageHeight / 2, pageWidth / 2);
         double offset = Math.abs(pageHeight - pageWidth) / 2;
         transform.translate(-offset, offset);
         return transform;

@@ -210,7 +210,8 @@ public class AnnotationCharacters {
          * constant for the system property
          * <code>pdfbox.layout.underline.baseline.offset.scale.default</code>.
          */
-        public final static String UNDERLINE_DEFAULT_BASELINE_OFFSET_SCALE_PROPERTY = "pdfbox.layout.underline.baseline.offset.scale.default";
+        public final static String UNDERLINE_DEFAULT_BASELINE_OFFSET_SCALE_PROPERTY =
+                "pdfbox.layout.underline.baseline.offset.scale.default";
 
         private static Float defaultBaselineOffsetScale;
         private final UnderlineAnnotation line;
@@ -218,7 +219,6 @@ public class AnnotationCharacters {
         protected UnderlineControlCharacter(String baselineOffsetScaleValue,
                                             String lineWeightValue) {
             super("UNDERLINE", UnderlineControlCharacterFactory.TO_ESCAPE);
-
             float baselineOffsetScale = parseFloat(baselineOffsetScaleValue,
                     getdefaultBaselineOffsetScale());
             float lineWeight = parseFloat(lineWeightValue, 1f);
@@ -248,15 +248,11 @@ public class AnnotationCharacters {
 
         private static float getdefaultBaselineOffsetScale() {
             if (defaultBaselineOffsetScale == null) {
-                defaultBaselineOffsetScale = Float
-                        .parseFloat(System
-                                .getProperty(
-                                        UNDERLINE_DEFAULT_BASELINE_OFFSET_SCALE_PROPERTY,
-                                        "-0.1"));
+                defaultBaselineOffsetScale =
+                        Float.parseFloat(System.getProperty(UNDERLINE_DEFAULT_BASELINE_OFFSET_SCALE_PROPERTY, "-0.1"));
             }
             return defaultBaselineOffsetScale;
         }
-
     }
 
     /**
@@ -267,7 +263,7 @@ public class AnnotationCharacters {
     public interface AnnotationControlCharacterFactory<T extends AnnotationControlCharacter<? extends Annotation>>
             extends ControlCharacterFactory {
         T createControlCharacter(String text, Matcher matcher,
-                                 final List<CharSequence> charactersSoFar);
+                                 List<CharSequence> charactersSoFar);
 
     }
 
@@ -277,8 +273,8 @@ public class AnnotationCharacters {
     public static abstract class AnnotationControlCharacter<T extends Annotation>
             extends ControlCharacter {
 
-        protected AnnotationControlCharacter(final String description,
-                                             final String characterToEscape) {
+        protected AnnotationControlCharacter(String description,
+                                             String characterToEscape) {
             super(description, characterToEscape);
         }
 

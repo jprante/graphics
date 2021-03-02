@@ -19,7 +19,8 @@ public class FontDrawerTest {
         Font anyFontItalic = anyFont.deriveFont(Font.ITALIC);
         Font anyFontBoldItalic = anyFont.deriveFont(Font.BOLD | Font.ITALIC);
 
-        Assertions.assertEquals(PDType1Font.COURIER, CoreFontDrawer.chooseMatchingCourier(anyFont));
+        Assertions.assertEquals(PDType1Font.COURIER,
+                CoreFontDrawer.chooseMatchingCourier(anyFont));
         assertEquals(PDType1Font.COURIER_BOLD,
                 CoreFontDrawer.chooseMatchingCourier(anyFontBold));
         assertEquals(PDType1Font.COURIER_OBLIQUE,
@@ -36,7 +37,8 @@ public class FontDrawerTest {
         assertEquals(PDType1Font.HELVETICA_BOLD_OBLIQUE,
                 CoreFontDrawer.chooseMatchingHelvetica(anyFontBoldItalic));
 
-        assertEquals(PDType1Font.TIMES_ROMAN, CoreFontDrawer.chooseMatchingTimes(anyFont));
+        assertEquals(PDType1Font.TIMES_ROMAN,
+                CoreFontDrawer.chooseMatchingTimes(anyFont));
         assertEquals(PDType1Font.TIMES_BOLD,
                 CoreFontDrawer.chooseMatchingTimes(anyFontBold));
         assertEquals(PDType1Font.TIMES_ITALIC,
