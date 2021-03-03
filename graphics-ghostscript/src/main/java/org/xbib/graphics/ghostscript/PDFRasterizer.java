@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
@@ -46,26 +47,31 @@ public class PDFRasterizer implements Closeable {
 
     private static final Logger logger = Logger.getLogger(PDFRasterizer.class.getName());
 
-    private final String creator;
+    private String creator;
 
-    private final String author;
+    private String author;
 
-    private final String subject;
+    private String subject;
 
     private final Map<String, ImageReader> imageReaders;
 
     private final Path tmpPath;
 
-    public PDFRasterizer(String subject) {
-        this("org.xbib.graphics.ghostscript/4.0.1", "Jörg Prante", subject);
+    public PDFRasterizer() {
+        this.imageReaders = createImageReaders();
+        this.tmpPath = Paths.get(System.getProperty("java.io.tmpdir", "/var/tmp")).resolve(toString());
     }
 
-    public PDFRasterizer(String creator, String author, String subject) {
+    public void setCreator(String creator) {
         this.creator = creator;
+    }
+
+    public void setAuthor(String author) {
         this.author = author;
+    }
+
+    public void setSubject(String subject) {
         this.subject = subject;
-        this.imageReaders = createImageReaders();
-        this.tmpPath = Paths.get("/var/tmp/" + this);
     }
 
     @Override
@@ -199,21 +205,33 @@ public class PDFRasterizer implements Closeable {
         }
     }
 
-    public synchronized int mergeImagesToPDF(Path sourceDir, Path targetFile) throws IOException {
-        logger.info("mergeImagesToPDF: source=" + sourceDir + " target=" + targetFile);
+    public int mergeImagesToPDF(Path sourceDir, Path targetFile) throws IOException {
+        return mergeImagesToPDF(sourceDir, targetFile, "**/*");
+    }
+
+    public synchronized int mergeImagesToPDF(Path sourceDir, Path targetFile, String globPattern) throws IOException {
+        logger.info("mergeImagesToPDF: source=" + sourceDir + " target=" + targetFile + " glob =" + globPattern);
         int pagecount = 0;
+        PathMatcher pathMatcher = sourceDir.getFileSystem().getPathMatcher("glob:" + globPattern);
         List<PDDocument> coverPageDocs = new ArrayList<>();
         try (Stream<Path> files = Files.list(sourceDir);
              PDDocument pdDocument = new PDDocument(MemoryUsageSetting.setupTempFileOnly());
              OutputStream outputStream = new BufferedOutputStream(Files.newOutputStream(targetFile))) {
             List<Path> entries = files.sorted()
                     .filter(PDFRasterizer::checkForRealFile)
+                    .filter(pathMatcher::matches)
                     .collect(Collectors.toList());
             pdDocument.getDocumentInformation().setTitle(targetFile.getFileName().toString());
             pdDocument.getDocumentInformation().setCreationDate(Calendar.getInstance());
-            pdDocument.getDocumentInformation().setCreator(creator);
-            pdDocument.getDocumentInformation().setSubject(subject);
-            pdDocument.getDocumentInformation().setAuthor(author);
+            if (creator != null) {
+                pdDocument.getDocumentInformation().setCreator(creator);
+            }
+            if (subject != null) {
+                pdDocument.getDocumentInformation().setSubject(subject);
+            }
+            if (author != null) {
+                pdDocument.getDocumentInformation().setAuthor(author);
+            }
             for (Path path : entries) {
                 if (path.getFileName().toString().toLowerCase(Locale.ROOT).endsWith(".pdf")) {
                     logger.info("found pdf " + path);
@@ -237,26 +255,21 @@ public class PDFRasterizer implements Closeable {
                         logger.log(Level.WARNING, "skipping image because too large: " + path + " size = " + size);
                     } else {
                         BufferedImage bufferedImage = readImage(path);
-                        if (bufferedImage != null) {
-                            PDPage page = new PDPage(new PDRectangle(bufferedImage.getWidth(), bufferedImage.getHeight()));
-                            pdDocument.addPage(page);
-                            PDImageXObject pdImageXObject = LosslessFactory.createFromImage(pdDocument, bufferedImage);
-                            if (pdImageXObject != null) {
-                                // true = use FlateDecode to compress
-                                PDPageContentStream pdPageContentStream =
-                                        new PDPageContentStream(pdDocument, page, PDPageContentStream.AppendMode.APPEND, true);
-                                pdPageContentStream.drawImage(pdImageXObject, 0, 0);
-                                pdPageContentStream.close();
-                                pagecount++;
-                            } else {
-                                logger.log(Level.WARNING, "unable to create PDImageXObject from buffered image from " + path);
-                                throw new IOException("unable to create PDImageXObject from buffered image");
-                            }
-                            bufferedImage.flush();
+                        PDPage page = new PDPage(new PDRectangle(bufferedImage.getWidth(), bufferedImage.getHeight()));
+                        pdDocument.addPage(page);
+                        PDImageXObject pdImageXObject = LosslessFactory.createFromImage(pdDocument, bufferedImage);
+                        if (pdImageXObject != null) {
+                            // true = use FlateDecode to compress
+                            PDPageContentStream pdPageContentStream =
+                                    new PDPageContentStream(pdDocument, page, PDPageContentStream.AppendMode.APPEND, true);
+                            pdPageContentStream.drawImage(pdImageXObject, 0, 0);
+                            pdPageContentStream.close();
+                            pagecount++;
                         } else {
-                            logger.log(Level.WARNING, "unable to read into a buffered image frmo " + path);
-                            throw new IOException("unable to read into a buffered image");
+                            logger.log(Level.WARNING, "unable to create PDImageXObject from buffered image from " + path);
+                            throw new IOException("unable to create PDImageXObject from buffered image");
                         }
+                        bufferedImage.flush();
                     }
                 }
             }
@@ -424,7 +437,7 @@ public class PDFRasterizer implements Closeable {
                 imageReader.setInput(imageInputStream);
                 ImageReadParam param = imageReader.getDefaultReadParam();
                 BufferedImage bufferedImage = imageReader.read(0, param);
-                logger.log(Level.FINE, "path = " + path + "loaded: width = " + bufferedImage.getWidth() +
+                logger.log(Level.FINE, "path = " + path + " loaded, width = " + bufferedImage.getWidth() +
                         " height = " + bufferedImage.getHeight() +
                         " color model = " + bufferedImage.getColorModel());
                 imageInputStream.close();

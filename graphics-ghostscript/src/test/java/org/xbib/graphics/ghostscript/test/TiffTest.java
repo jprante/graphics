@@ -32,14 +32,11 @@ public class TiffTest {
 
     @Test
     public void mergeTiff() throws IOException {
-        String creator = "Malva PDF";
-        String author = "Jörg Prante";
-        String subject = "Test";
         Path sourceDir = Paths.get("src/test/resources/org/xbib/graphics/ghostscript/test/");
         Path targetFile = Paths.get("build/tmp.pdf");
-        PDFRasterizer pdfRasterizer = new PDFRasterizer(creator, author, subject);
-        int pagecount = pdfRasterizer.mergeImagesToPDF(sourceDir, targetFile);
+        PDFRasterizer pdfRasterizer = new PDFRasterizer();
+        int pagecount = pdfRasterizer.mergeImagesToPDF(sourceDir, targetFile, "**/*.tif");
         logger.info("pagecount = " + pagecount);
-        assertEquals(3, pagecount);
+        assertEquals(2, pagecount);
     }
 }

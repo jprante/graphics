@@ -22,12 +22,9 @@ public class PDFRasterizerTest {
 
     @Test
     public void testPDFCreation() throws IOException {
-        String creator = "Xbib PDF";
-        String author = "Jörg Prante";
-        String subject = "Test";
         Path sourceDir = Paths.get("src/test/resources/org/xbib/graphics/ghostscript/test/images-3656573");
         Path targetFile = Paths.get("build/3656573.pdf");
-        PDFRasterizer pdfRasterizer = new PDFRasterizer(creator, author, subject);
+        PDFRasterizer pdfRasterizer = new PDFRasterizer();
         int pagecount = pdfRasterizer.mergeImagesToPDF(sourceDir, targetFile);
         logger.info("pagecount = " + pagecount);
         pdfRasterizer.close();
@@ -35,12 +32,9 @@ public class PDFRasterizerTest {
 
     @Test
     public void testPDFColorImage() throws IOException {
-        String creator = "Xbib PDF";
-        String author = "Jörg Prante";
-        String subject = "Test";
         Path sourceDir = Paths.get("src/test/resources/org/xbib/graphics/ghostscript/test/images");
         Path targetFile = Paths.get("build/color.pdf");
-        PDFRasterizer pdfRasterizer = new PDFRasterizer(creator, author, subject);
+        PDFRasterizer pdfRasterizer = new PDFRasterizer();
         int pagecount = pdfRasterizer.mergeImagesToPDF(sourceDir, targetFile);
         logger.info("pagecount = " + pagecount);
         pdfRasterizer.close();
@@ -52,7 +46,7 @@ public class PDFRasterizerTest {
         Path target = Paths.get("build/20200024360-new.pdf");
         Path tmp = Files.createTempDirectory("graphics-test");
         try {
-            PDFRasterizer pdfRasterizer = new PDFRasterizer("xbib", "Jörg Prante", "Test");
+            PDFRasterizer pdfRasterizer = new PDFRasterizer();
             pdfRasterizer.pdfToImage(source, tmp, null, null);
             Path tmpTarget = tmp.resolve(target.getFileName());
             int pagecount = pdfRasterizer.mergeImagesToPDF(tmp, tmpTarget);
@@ -74,9 +68,7 @@ public class PDFRasterizerTest {
                     try {
                         delete(target);
                         Files.createDirectories(target);
-                        PDFRasterizer rasterizer = new PDFRasterizer(
-                                "org.xbib.graphics.ghostscript", "Jörg Prante",
-                                "converted from " + p);
+                        PDFRasterizer rasterizer = new PDFRasterizer();
                         rasterizer.pdfToImage(p, target, "pdf-", "1-");
                         rasterizer.close();
                     } catch (IOException e) {
@@ -90,7 +82,6 @@ public class PDFRasterizerTest {
 
     @Test
     public void testPDFRasterizerConvert() throws Exception {
-        logger.log(Level.INFO, "testing java.io.tmpdir = " + System.getProperty("java.io.tmpdir"));
         Path path = Paths.get("build/resources/test");
         try (Stream<Path> stream = Files.list(path)) {
             stream.forEach(p -> {
@@ -100,9 +91,7 @@ public class PDFRasterizerTest {
                    try {
                        delete(target);
                        Files.createDirectories(target.getParent());
-                       PDFRasterizer rasterizer = new PDFRasterizer(
-                           "org.xbib.graphics.ghostscript", "Jörg Prante",
-                           "converted from " + p);
+                       PDFRasterizer rasterizer = new PDFRasterizer();
                        rasterizer.convert(p, target);
                        rasterizer.close();
                    } catch (IOException e) {

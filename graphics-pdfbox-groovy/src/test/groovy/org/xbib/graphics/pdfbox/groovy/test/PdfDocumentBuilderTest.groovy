@@ -9,6 +9,8 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.regex.Pattern
 
+import static org.junit.Assert.assertTrue
+
 @Log4j2
 class PdfDocumentBuilderTest {
 
@@ -48,7 +50,7 @@ class PdfDocumentBuilderTest {
             PdfDocumentBuilder builder = new PdfDocumentBuilder(outputStream)
             List layout = [
                     [key: 'Typ', value: 'Online', 'bold': true],
-                    [key: 'Medea-Nummer', value: 'test'],
+                    [key: 'Nummer', value: 'test'],
                     [key: 'Bestelldatum', value: 'test'],
                     [key: 'Eingangsdatum', value: 'test'],
                     [key: 'Besteller', value: 'test', line: true],
@@ -147,7 +149,7 @@ class PdfDocumentBuilderTest {
 
     @Test
     void testPdfWithImage() {
-        byte[] logo = getClass().getResourceAsStream('/img/logo-print.png').bytes
+        byte[] logo = getClass().getResourceAsStream('/img/img.png').bytes
         OutputStream outputStream = Files.newOutputStream(Paths.get("build/testimage.pdf"))
         outputStream.withCloseable {
             PdfDocumentBuilder builder = new PdfDocumentBuilder(outputStream)
@@ -159,7 +161,7 @@ class PdfDocumentBuilderTest {
             builder.create {
                 document(font: [family: 'Helvetica'], margin: [top: 1.cm]) {
                     paragraph(margin: [left: 7.mm]) {
-                        image(data: logo, name: 'logo-print.png', width: 125.px, height: 45.px)
+                        image(data: logo, name: 'img.png', width: 125.px, height: 45.px)
                     }
                     paragraph(margin: [left: 6.cm, right: 1.cm, top: 0.cm]) {
                         font.size = 24.pt
@@ -229,11 +231,12 @@ class PdfDocumentBuilderTest {
         Pattern detectHan = Pattern.compile('.*\\p{script=Han}.*')
         Pattern detectLatin = Pattern.compile('.*\\p{script=Latin}.*')
         String chinese = "北京 東京大学"
-        String caron = "Hey Jörg, this is Latin Small Letter C with Caron \u010d"
+        String caron = "Hey, this is Latin Small Letter C with Caron \u010d"
         log.info("chinese = ${detectHan.matcher(chinese).matches()}")
+        assertTrue(detectHan.matcher(chinese).matches())
         log.info("caron = ${detectLatin.matcher(caron).matches()}")
+        assertTrue(detectLatin.matcher(caron).matches())
         String normalized = caron.replaceAll("\\P{IsLatin}","")
         log.info("normalized=${normalized}")
-
     }
 }

@@ -370,7 +370,7 @@ abstract class BaseBuilderSpec extends Specification {
         when:
         List layout = [
                 [ key: 'Typ', value: 'Online', 'bold':true],
-                [ key: 'Medea-Nummer', value: 'test'],
+                [ key: 'Nummer', value: 'test'],
                 [ key: 'Bestelldatum', value: 'test'],
                 [ key: 'Eingangsdatum', value: 'test'],
                 [ key: 'Besteller', value: 'test', line: true],
@@ -399,7 +399,7 @@ abstract class BaseBuilderSpec extends Specification {
                 paragraph(margin:[left: 6.cm, right: 1.cm, top: -1.5.cm]) {
                     font.size = 24.pt
                     font.bold = true
-                    text 'Aufsatzbestellung Lieferschein'
+                    text 'Lieferschein'
                 }
                 paragraph {
                     table(margin:[left: 1.cm, top: 2.cm], width: 19.cm, padding: 0.pt, border:[size:0.pt]) {
