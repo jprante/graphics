@@ -76,59 +76,5 @@ public class ParagraphCell extends AbstractCell {
         public org.xbib.graphics.pdfbox.layout.elements.Paragraph getWrappedParagraph() {
             return wrappedParagraph;
         }
-
-        /*public static class ParagraphBuilder {
-
-            private final List<ParagraphProcessable> processables = new LinkedList<>();
-
-            private ParagraphBuilder() {
-            }
-
-            public ParagraphBuilder append(StyledText styledText) {
-                processables.add(styledText);
-                return this;
-            }
-
-            public ParagraphBuilder append(Hyperlink hyperlink) {
-                processables.add(hyperlink);
-                return this;
-            }
-
-            public ParagraphBuilder append(Markup markup) {
-                processables.add(markup);
-                return this;
-            }
-
-            public ParagraphBuilder appendNewLine(Font font, float fontSize) {
-                processables.add(new NewLine(font, fontSize));
-                return this;
-            }
-
-            public Paragraph build() {
-                return new Paragraph(processables);
-            }
-        }
-
-        public static ParagraphBuilder builder() {
-            return new ParagraphBuilder();
-        }*/
     }
-
-    /*public abstract static class ParagraphCellBuilder<C extends ParagraphCell, B extends ParagraphCell.ParagraphCellBuilder<C, B>> extends AbstractCellBuilder<C, B> {
-
-        public B font(final Font font) {
-            settings.setFont(font);
-            return (B) this;
-        }
-
-        public B fontSize(final Integer fontSize) {
-            settings.setFontSize(fontSize);
-            return (B) this;
-        }
-
-        public B textColor(final Color textColor) {
-            settings.setTextColor(textColor);
-            return (B) this;
-        }
-    }*/
 }

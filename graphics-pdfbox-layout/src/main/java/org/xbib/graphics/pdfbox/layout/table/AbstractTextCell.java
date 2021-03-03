@@ -78,23 +78,4 @@ public abstract class AbstractTextCell extends AbstractCell {
     public float getMaxWidth() {
         return getMaxWidthOfText() - getHorizontalPadding();
     }
-
-    /*public abstract static class AbstractTextCellBuilder<C extends AbstractTextCell, B extends AbstractTextCell.AbstractTextCellBuilder<C, B>> extends AbstractCellBuilder<C, B> {
-
-        public B font(final Font font) {
-            settings.setFont(font);
-            return (B) this;
-        }
-
-        public B fontSize(final Integer fontSize) {
-            settings.setFontSize(fontSize);
-            return (B) this;
-        }
-
-        public B textColor(final Color textColor) {
-            settings.setTextColor(textColor);
-            return (B) this;
-        }
-
-    }*/
 }

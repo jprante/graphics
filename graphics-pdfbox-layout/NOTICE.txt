@@ -5,3 +5,19 @@ https://github.com/ralfstuckert/pdfbox-layout
 (MIT License)
 
 as of October, 2020
+
+and extended by "easytable"
+
+https://github.com/vandeseer/easytable
+
+(MIT License)
+
+as of March, 2021
+
+and extended by "boxable"
+
+https://github.com/dhorions/boxable
+
+(Apache 2.0 License)
+
+as of March, 2021
