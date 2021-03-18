@@ -1,5 +1,8 @@
 package org.xbib.graphics.pdfbox.print;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.printing.PDFPageable;
+
 import javax.print.Doc;
 import javax.print.DocFlavor;
 import javax.print.DocPrintJob;
@@ -18,6 +21,7 @@ import javax.print.attribute.standard.PrinterMakeAndModel;
 import javax.print.attribute.standard.SheetCollate;
 import javax.print.attribute.standard.Sides;
 
+import java.awt.print.PrinterJob;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +85,14 @@ public class PrintUtility {
         DocPrintJob job = service.createPrintJob();
         Doc doc = new SimpleDoc(inputStream, docFlavor, null);
         job.print(doc, pas);
+    }
+
+    public static void print(InputStream inputStream, Printer printer) throws Exception {
+        PDDocument document = PDDocument.load(inputStream);
+        PrinterJob job = PrinterJob.getPrinterJob();
+        job.setPageable(new PDFPageable(document));
+        job.setPrintService(printer.getService());
+        job.print();
     }
 
     public static Printer getPrinter(String printerName, DocFlavor docFlavor) {

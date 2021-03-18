@@ -14,15 +14,14 @@ public class PrinterTest {
 
     @Test
     public void testPrinterSelection() {
-        logger.log(Level.INFO, "printer = " + PrintUtility.findPrinters(DocFlavor.INPUT_STREAM.PDF));
+        logger.log(Level.INFO, "printer = " + PrintUtility.findPrinters(DocFlavor.INPUT_STREAM.AUTOSENSE));
     }
 
     @Test
     public void print() throws Exception {
-        Printer printer = PrintUtility.getPrinter("Samsung_ML-1610", DocFlavor.INPUT_STREAM.PDF);
+        Printer printer = PrintUtility.getPrinter("Samsung ML-1610 (USB001)", DocFlavor.INPUT_STREAM.AUTOSENSE);
         if (printer != null) {
-            PrintUtility.print(getClass().getResourceAsStream("/test.pdf"), DocFlavor.INPUT_STREAM.PDF, printer);
+            PrintUtility.print(getClass().getResourceAsStream("/test.pdf"), printer);
         }
     }
-
 }
