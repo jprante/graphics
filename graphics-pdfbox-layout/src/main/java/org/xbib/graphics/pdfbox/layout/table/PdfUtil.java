@@ -26,7 +26,7 @@ public final class PdfUtil {
      * @param fontSize FontSize of String
      * @return Width (in points)
      */
-    public static float getStringWidth(final String text, final Font font, final int fontSize) {
+    public static float getStringWidth(String text, Font font, int fontSize) {
         return Arrays.stream(text.split(NEW_LINE_REGEX))
                 .max(Comparator.comparing(String::length))
                 .map(x -> {
@@ -40,24 +40,19 @@ public final class PdfUtil {
     }
 
     private static float getWidthOfStringWithoutNewlines(String text, Font font, int fontSize) throws IOException {
-
-        final List<String> codePointsAsString = text.codePoints()
+        List<String> codePointsAsString = text.codePoints()
                 .mapToObj(codePoint -> new String(new int[]{codePoint}, 0, 1))
                 .collect(Collectors.toList());
-
         List<Float> widths = new ArrayList<>();
-
-        for (final String codepoint : codePointsAsString) {
+        for (String codepoint : codePointsAsString) {
             try {
                 widths.add(font.getRegularFont().getStringWidth(codepoint) * fontSize / 1000F);
             } catch (final IllegalArgumentException | IOException e) {
                 widths.add(font.getRegularFont().getStringWidth("–") * fontSize / 1000F);
             }
         }
-
         return widths.stream().reduce(0.0f, Float::sum);
     }
-
 
     /**
      * Computes the height of a font.
@@ -66,7 +61,7 @@ public final class PdfUtil {
      * @param fontSize FontSize
      * @return Height of font
      */
-    public static float getFontHeight(Font font, final int fontSize) {
+    public static float getFontHeight(Font font, int fontSize) {
         return font.getRegularFont().getFontDescriptor().getCapHeight() * fontSize / 1000F;
     }
 
@@ -79,21 +74,20 @@ public final class PdfUtil {
      * @param maxWidth Maximal width of resulting text-lines
      * @return A list of lines, where all are smaller than maxWidth
      */
-    public static List<String> getOptimalTextBreakLines(final String text, final Font font, final int fontSize, final float maxWidth) {
+    public static List<String> getOptimalTextBreakLines(String text, Font font, int fontSize, float maxWidth) {
         List<String> result = new ArrayList<>();
-        for (final String line : text.split(NEW_LINE_REGEX)) {
+        for (String line : text.split(NEW_LINE_REGEX)) {
             if (PdfUtil.doesTextLineFit(line, font, fontSize, maxWidth)) {
                 result.add(line);
             } else {
                 result.addAll(PdfUtil.wrapLine(line, font, fontSize, maxWidth));
             }
         }
-
         return result;
     }
 
-    private static List<String> wrapLine(final String line, final Font font, final int fontSize, final float maxWidth) {
-        if (PdfUtil.doesTextLineFit(line, font, fontSize, maxWidth)) {
+    private static List<String> wrapLine(String line, Font font, int fontSize, float maxWidth) {
+        if (doesTextLineFit(line, font, fontSize, maxWidth)) {
             return Collections.singletonList(line);
         }
         List<String> goodLines = new ArrayList<>();
@@ -106,7 +100,7 @@ public final class PdfUtil {
         return goodLines;
     }
 
-    private static List<String> splitBySize(final String line, final Font font, final int fontSize, final float maxWidth) {
+    private static List<String> splitBySize(String line, Font font, int fontSize, float maxWidth) {
         List<String> returnList = new ArrayList<>();
         for (int i = line.length() - 1; i > 0; i--) {
             String fittedNewLine = line.substring(0, i) + "-";
@@ -120,11 +114,10 @@ public final class PdfUtil {
         return returnList;
     }
 
-
-    private static String buildALine(final Stack<String> words,
-                                     final Font font,
-                                     final int fontSize,
-                                     final float maxWidth) {
+    private static String buildALine(Stack<String> words,
+                                     Font font,
+                                     int fontSize,
+                                     float maxWidth) {
         StringBuilder line = new StringBuilder();
         float width = 0;
         while (!words.empty()) {

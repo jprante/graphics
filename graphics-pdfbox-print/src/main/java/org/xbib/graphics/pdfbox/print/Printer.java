@@ -1,4 +1,4 @@
-package org.xbib.graphics.printer;
+package org.xbib.graphics.pdfbox.print;
 
 import javax.print.PrintService;
 import javax.print.attribute.standard.Media;
@@ -29,7 +29,7 @@ public class Printer {
     private int duplex;
     private boolean mediaSupported;
     private String mediaSize;
-    private Map<String, Media> mediaSizeNames = new HashMap<>();
+    private final Map<String, Media> mediaSizeNames = new HashMap<>();
     private int pageSize;
     private String pageRange;
     private PrintService service;

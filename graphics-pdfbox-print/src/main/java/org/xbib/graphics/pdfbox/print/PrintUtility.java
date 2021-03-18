@@ -1,4 +1,7 @@
-package org.xbib.graphics.printer;
+package org.xbib.graphics.pdfbox.print;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.printing.PDFPageable;
 
 import javax.print.Doc;
 import javax.print.DocFlavor;
@@ -18,6 +21,7 @@ import javax.print.attribute.standard.PrinterMakeAndModel;
 import javax.print.attribute.standard.SheetCollate;
 import javax.print.attribute.standard.Sides;
 
+import java.awt.print.PrinterJob;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +31,12 @@ import java.util.List;
  */
 public class PrintUtility {
 
-    public static void print(InputStream inputStream, Printer printer)
+    public static void print(InputStream inputStream, DocFlavor docFlavor)
+            throws Exception {
+        print(inputStream, docFlavor, findDefaultPrinter(docFlavor));
+    }
+
+    public static void print(InputStream inputStream, DocFlavor docFlavor, Printer printer)
             throws Exception {
         if (inputStream == null || printer == null) {
             return;
@@ -51,7 +60,7 @@ public class PrintUtility {
                     pas.add(Sides.TUMBLE);
                     break;
                 default:
-                    pas.add(Sides.ONE_SIDED);
+                    break;
             }
         }
         if (printer.isModeSupported()) {
@@ -63,7 +72,7 @@ public class PrintUtility {
                     pas.add(Chromaticity.COLOR);
                     break;
                 default:
-                    pas.add(Chromaticity.MONOCHROME);
+                    break;
             }
         }
         if (printer.isMediaSupported() && printer.getMediaSize() != null) {
@@ -74,15 +83,22 @@ public class PrintUtility {
         }
         PrintService service = printer.getService();
         DocPrintJob job = service.createPrintJob();
-        Doc doc = new SimpleDoc(inputStream,
-                DocFlavor.INPUT_STREAM.POSTSCRIPT, null);
+        Doc doc = new SimpleDoc(inputStream, docFlavor, null);
         job.print(doc, pas);
     }
 
-    public static Printer getPrinter(String printerName) {
+    public static void print(InputStream inputStream, Printer printer) throws Exception {
+        PDDocument document = PDDocument.load(inputStream);
+        PrinterJob job = PrinterJob.getPrinterJob();
+        job.setPageable(new PDFPageable(document));
+        job.setPrintService(printer.getService());
+        job.print();
+    }
+
+    public static Printer getPrinter(String printerName, DocFlavor docFlavor) {
         Printer printer = null;
         if (printerName != null) {
-            List<Printer> printers = findPrinters();
+            List<Printer> printers = findPrinters(docFlavor);
             for (Printer p : printers) {
                 if (printerName.equalsIgnoreCase(p.getName())) {
                     printer = p;
@@ -94,21 +110,18 @@ public class PrintUtility {
             PrintService service = PrintServiceLookup.lookupDefaultPrintService();
             printer = createPrinter(service);
         }
-        if (printer != null) {
-            printer.setCopies(1);
-            printer.setCollate(false);
-            printer.setDuplex(Printer.DUPLEX_SIMPLEX);
-            printer.setMode(Printer.STATUS_ACCEPTING_JOBS);
-            printer.setMediaSize("A4");
-        }
         return printer;
     }
 
-    public static List<Printer> findPrinters() {
+    public static Printer findDefaultPrinter(DocFlavor docFlavor) {
+        List<Printer> printers = findPrinters(docFlavor);
+        return printers.isEmpty() ? null : printers.get(0);
+    }
+
+    public static List<Printer> findPrinters(DocFlavor docFlavor) {
         List<Printer> printers = new ArrayList<>();
-        PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
-        DocFlavor flavor = DocFlavor.INPUT_STREAM.POSTSCRIPT;
-        PrintService[] printServices = PrintServiceLookup.lookupPrintServices(flavor, pras);
+        PrintRequestAttributeSet printRequestAttributeSet = new HashPrintRequestAttributeSet();
+        PrintService[] printServices = PrintServiceLookup.lookupPrintServices(docFlavor, printRequestAttributeSet);
         if (printServices != null) {
             for (PrintService service : printServices) {
                 printers.add(createPrinter(service));
@@ -150,11 +163,7 @@ public class PrintUtility {
             if (collate == null) {
                 collate = SheetCollate.UNCOLLATED;
             }
-            if (collate == SheetCollate.COLLATED) {
-                printer.setCollate(true);
-            } else {
-                printer.setCollate(false);
-            }
+            printer.setCollate(collate == SheetCollate.COLLATED);
         }
         boolean modeSupported = service.isAttributeCategorySupported(Chromaticity.class);
         printer.setModeSupported(modeSupported);
@@ -189,7 +198,7 @@ public class PrintUtility {
         printer.setMediaSupported(mediaSupported);
         if (mediaSupported) {
             Object obj = service.getSupportedAttributeValues(Media.class, null, null);
-            if (obj != null && obj instanceof Media[]) {
+            if (obj instanceof Media[]) {
                 Media[] medias = (Media[]) obj;
                 for (Media media : medias) {
                     if (media instanceof MediaSizeName) {

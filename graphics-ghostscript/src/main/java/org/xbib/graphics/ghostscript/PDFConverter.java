@@ -91,7 +91,7 @@ public class PDFConverter {
         this.compatibilityLevel = compatibilityLevel;
         this.pdfx = pdfx;
         this.paperSize = paperSize;
-        this.tmpPath = Paths.get("/var/tmp/" + this);
+        this.tmpPath = Paths.get(System.getProperty("java.io.tmpdir", "/var/tmp")).resolve(toString());
     }
 
     /**

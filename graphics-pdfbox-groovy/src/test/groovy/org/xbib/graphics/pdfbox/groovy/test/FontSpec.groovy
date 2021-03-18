@@ -28,13 +28,13 @@ class FontSpec extends Specification {
     }
 
     def "printable characters"() {
-        String s = "\u0098 Hello Jörg"
+        String s = "\u0098 Hello World"
 
         when:
         s = s.replaceAll("\\p{C}", "")
 
         then:
-        s == " Hello Jörg"
+        s == " Hello World"
     }
 
     def "glyph exists"() {

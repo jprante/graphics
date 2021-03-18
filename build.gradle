@@ -25,6 +25,9 @@ ext {
 
 subprojects {
     apply plugin: 'java-library'
+    repositories {
+        mavenCentral()
+    }
     apply from: rootProject.file('gradle/ide/idea.gradle')
     apply from: rootProject.file('gradle/compile/java.gradle')
     apply from: rootProject.file('gradle/test/junit5.gradle')
