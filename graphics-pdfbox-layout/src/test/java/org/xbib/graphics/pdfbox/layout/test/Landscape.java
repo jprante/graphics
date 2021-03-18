@@ -11,7 +11,6 @@ import org.xbib.graphics.pdfbox.layout.elements.render.VerticalLayout;
 import org.xbib.graphics.pdfbox.layout.elements.render.VerticalLayoutHint;
 import org.xbib.graphics.pdfbox.layout.font.BaseFont;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
 
 public class Landscape {
 
@@ -104,8 +103,6 @@ public class Landscape {
         document.add(paragraph2);
         document.add(paragraph3);
 
-        final OutputStream outputStream = new FileOutputStream("build/landscape.pdf");
-        document.save(outputStream);
-
+        document.render().save(new FileOutputStream("build/landscape.pdf"));
     }
 }

@@ -66,7 +66,7 @@ public class LinksTest {
         document.add(paragraph1);
 
         final OutputStream outputStream = new FileOutputStream("build/links.pdf");
-        document.save(outputStream);
+        document.render().save(outputStream);
 
     }
 }

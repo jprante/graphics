@@ -129,8 +129,7 @@ public class IndentationTest {
         paragraph.addMarkup(text1, 11, BaseFont.TIMES);
         document.add(paragraph);
 
-        final OutputStream outputStream = new FileOutputStream("build/indentation.pdf");
-        document.save(outputStream);
+        document.render().save(new FileOutputStream("build/indentation.pdf"));
     }
 
     private static String getBulletCharacter(final int level) {

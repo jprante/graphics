@@ -17,7 +17,7 @@ public class HelloDoc {
         paragraph.addText("Hello Document", 20, BaseFont.HELVETICA);
         document.add(paragraph);
         final OutputStream outputStream = new FileOutputStream("build/hellodoc.pdf");
-        document.save(outputStream);
+        document.render().save(outputStream);
 
     }
 }

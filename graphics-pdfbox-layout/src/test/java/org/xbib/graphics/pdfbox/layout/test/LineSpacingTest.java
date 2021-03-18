@@ -45,7 +45,7 @@ public class LineSpacingTest {
         document.add(right);
 
         final OutputStream outputStream = new FileOutputStream("build/linespacing.pdf");
-        document.save(outputStream);
+        document.render().save(outputStream);
 
     }
 }

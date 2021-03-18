@@ -69,7 +69,7 @@ public class CustomRenderer {
         document.add(paragraph);
 
         final OutputStream outputStream = new FileOutputStream("build/customrenderer.pdf");
-        document.save(outputStream);
+        document.render().save(outputStream);
 
     }
 

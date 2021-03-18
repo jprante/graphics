@@ -215,7 +215,7 @@ public class CustomAnnotationTest {
         paragraph.setMaxWidth(150);
         document.add(paragraph);
         final OutputStream outputStream = new FileOutputStream("build/customannotation.pdf");
-        document.save(outputStream);
+        document.render().save(outputStream);
     }
 
     private static PDColor toPDColor(final Color color) {

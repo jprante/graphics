@@ -14,7 +14,6 @@ import org.xbib.graphics.pdfbox.layout.text.Alignment;
 import org.xbib.graphics.pdfbox.layout.font.BaseFont;
 import java.awt.Color;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
 
 public class FramesTest {
 
@@ -66,7 +65,6 @@ public class FramesTest {
         frame.setBorder(Color.green, new Stroke(2));
         frame.setBackgroundColor(Color.pink);
         frame.setPadding(50, 0, 35, 0);
-//	frame.setMargin(30, 30, 20, 10);
         document.add(frame);
 
         paragraph = new Paragraph();
@@ -87,9 +85,6 @@ public class FramesTest {
 
         document.add(frame);
 
-        final OutputStream outputStream = new FileOutputStream("build/frames.pdf");
-        document.save(outputStream);
-
+        document.render().save(new FileOutputStream("build/frames.pdf"));
     }
-
 }
