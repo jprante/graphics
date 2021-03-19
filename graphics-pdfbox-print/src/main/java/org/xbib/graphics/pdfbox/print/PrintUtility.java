@@ -111,13 +111,6 @@ public class PrintUtility {
             PrintService service = PrintServiceLookup.lookupDefaultPrintService();
             printer = createPrinter(service);
         }
-        /*if (printer != null) {
-            printer.setCopies(1);
-            printer.setCollate(false);
-            printer.setDuplex(Printer.DUPLEX_SIMPLEX);
-            printer.setMode(Printer.STATUS_ACCEPTING_JOBS);
-            printer.setMediaSize("A4");
-        }*/
         return printer;
     }
 
