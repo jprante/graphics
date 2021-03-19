@@ -1,5 +1,6 @@
 package org.xbib.graphics.pdfbox.print;
 
+import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.printing.PDFPageable;
 
@@ -88,7 +89,7 @@ public class PrintUtility {
     }
 
     public static void print(InputStream inputStream, Printer printer) throws Exception {
-        PDDocument document = PDDocument.load(inputStream);
+        PDDocument document = PDDocument.load(inputStream, MemoryUsageSetting.setupTempFileOnly());
         PrinterJob job = PrinterJob.getPrinterJob();
         job.setPageable(new PDFPageable(document));
         job.setPrintService(printer.getService());
