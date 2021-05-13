@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.xbib.graphics.barcode.Code93;
 import org.xbib.graphics.barcode.MaxiCode;
 import org.xbib.graphics.barcode.AbstractSymbol;
@@ -22,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Locale;
 
+@DisabledOnOs(OS.MAC)
 public class SVGRendererTest {
 
     private Locale originalDefaultLocale;
