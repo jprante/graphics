@@ -80,8 +80,6 @@ public class Letter {
         paragraph.setAbsolutePosition(new Position(hMargin, vMargin));
         document.add(paragraph);
 
-        final OutputStream outputStream = new FileOutputStream("build/letter.pdf");
-        document.save(outputStream);
-
+        document.render().save(new FileOutputStream("build/letter.pdf"));
     }
 }

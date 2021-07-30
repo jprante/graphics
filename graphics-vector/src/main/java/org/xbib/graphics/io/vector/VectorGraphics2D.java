@@ -42,14 +42,12 @@ import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
-import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
-import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.AffineTransformOp;
@@ -834,31 +832,6 @@ public class VectorGraphics2D extends Graphics2D implements Cloneable {
         BufferedImage bufferedImage = toBufferedImage(image);
         return op.filter(bufferedImage, null);
     }
-
-    /*private static boolean notEquals(Shape shapeA, Shape shapeB) {
-        PathIterator pathAIterator = shapeA.getPathIterator(null);
-        PathIterator pathBIterator = shapeB.getPathIterator(null);
-        if (pathAIterator.getWindingRule() != pathBIterator.getWindingRule()) {
-            return true;
-        }
-        double[] pathASegment = new double[6];
-        double[] pathBSegment = new double[6];
-        while (!pathAIterator.isDone()) {
-            int pathASegmentType = pathAIterator.currentSegment(pathASegment);
-            int pathBSegmentType = pathBIterator.currentSegment(pathBSegment);
-            if (pathASegmentType != pathBSegmentType) {
-                return true;
-            }
-            for (int segmentIndex = 0; segmentIndex < pathASegment.length; segmentIndex++) {
-                if (pathASegment[segmentIndex] != pathBSegment[segmentIndex]) {
-                    return true;
-                }
-            }
-            pathAIterator.next();
-            pathBIterator.next();
-        }
-        return !pathBIterator.isDone();
-    }*/
 
     private static Shape intersectShapes(Shape s1, Shape s2) {
         if (s1 instanceof Rectangle2D && s2 instanceof Rectangle2D) {

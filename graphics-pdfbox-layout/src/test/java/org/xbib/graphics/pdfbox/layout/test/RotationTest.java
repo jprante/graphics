@@ -11,7 +11,6 @@ import org.xbib.graphics.pdfbox.layout.elements.render.VerticalLayout;
 import org.xbib.graphics.pdfbox.layout.elements.render.VerticalLayoutHint;
 import org.xbib.graphics.pdfbox.layout.font.BaseFont;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
 
 public class RotationTest {
 
@@ -109,8 +108,6 @@ public class RotationTest {
         document.add(paragraph2);
         document.add(paragraph3);
 
-        final OutputStream outputStream = new FileOutputStream("build/rotation.pdf");
-        document.save(outputStream);
-
+        document.render().save(new FileOutputStream("build/rotation.pdf"));
     }
 }

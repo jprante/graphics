@@ -7,7 +7,6 @@ import org.xbib.graphics.pdfbox.layout.elements.render.VerticalLayoutHint;
 import org.xbib.graphics.pdfbox.layout.text.Alignment;
 import org.xbib.graphics.pdfbox.layout.font.BaseFont;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
 
 public class MarkupTest {
 
@@ -69,8 +68,6 @@ public class MarkupTest {
         paragraph.addMarkup(text1, 11, BaseFont.TIMES);
         document.add(paragraph);
 
-        final OutputStream outputStream = new FileOutputStream("build/markup.pdf");
-        document.save(outputStream);
-
+        document.render().save( new FileOutputStream("build/markup.pdf"));
     }
 }

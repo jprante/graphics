@@ -3,13 +3,14 @@ package org.xbib.graphics.pdfbox.layout.font;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
+import org.xbib.graphics.pdfbox.layout.elements.Document;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.Objects;
 
 public class NotoSansFont implements Font {
 
-    private final PDDocument document;
+    private final PDDocument pdDocument;
 
     private static PDType0Font regular;
 
@@ -19,14 +20,14 @@ public class NotoSansFont implements Font {
 
     private static PDType0Font bolditalic;
 
-    public NotoSansFont(PDDocument document) {
-        this.document = document;
+    public NotoSansFont(Document document) {
+        this.pdDocument = document.getPdDocument();
     }
 
     @Override
     public PDFont getRegularFont() {
         if (regular == null) {
-           regular = load(document, "NotoSans-Regular.ttf");
+           regular = load("NotoSans-Regular.ttf");
         }
         return regular;
     }
@@ -34,7 +35,7 @@ public class NotoSansFont implements Font {
     @Override
     public PDFont getBoldFont() {
         if (bold == null) {
-            bold = load(document, "NotoSans-Bold.ttf");
+            bold = load("NotoSans-Bold.ttf");
         }
         return bold;
     }
@@ -42,7 +43,7 @@ public class NotoSansFont implements Font {
     @Override
     public PDFont getItalicFont() {
         if (italic == null) {
-            italic = load(document, "NotoSans-Italic.ttf");
+            italic = load("NotoSans-Italic.ttf");
         }
         return italic;
     }
@@ -50,14 +51,14 @@ public class NotoSansFont implements Font {
     @Override
     public PDFont getBoldItalicFont() {
         if (bolditalic == null) {
-            bolditalic = load(document, "NotoSans-BoldItalic.ttf");
+            bolditalic = load("NotoSans-BoldItalic.ttf");
         }
         return bolditalic;
     }
 
-    private static PDType0Font load(PDDocument document, String resourceName) {
+    private PDType0Font load(String resourceName) {
         try {
-            return PDType0Font.load(document, Objects.requireNonNull(NotoSansFont.class.getResourceAsStream(resourceName)));
+            return PDType0Font.load(pdDocument, Objects.requireNonNull(NotoSansFont.class.getResourceAsStream(resourceName)));
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

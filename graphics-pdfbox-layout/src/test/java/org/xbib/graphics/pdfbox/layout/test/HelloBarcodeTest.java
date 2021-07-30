@@ -9,7 +9,6 @@ import org.xbib.graphics.pdfbox.layout.elements.Document;
 import org.xbib.graphics.pdfbox.layout.elements.PageFormats;
 import org.xbib.graphics.pdfbox.layout.elements.Paragraph;
 import org.xbib.graphics.pdfbox.layout.elements.render.VerticalLayoutHint;
-import org.xbib.graphics.pdfbox.layout.font.NotoSansFont;
 import org.xbib.graphics.pdfbox.layout.text.Alignment;
 import org.xbib.graphics.pdfbox.layout.font.BaseFont;
 import org.xbib.graphics.pdfbox.layout.text.Indent;
@@ -32,7 +31,7 @@ public class HelloBarcodeTest {
         symbol.setHumanReadableLocation(HumanReadableLocation.BOTTOM);
         BarcodeElement barcodeElement = new BarcodeElement(symbol);
         document.add(barcodeElement, new VerticalLayoutHint(Alignment.LEFT, 10, 10, 10, 10, true));
-        final OutputStream outputStream = new FileOutputStream("build/hellobarcode.pdf");
-        document.save(outputStream);
+        OutputStream outputStream = new FileOutputStream("build/hellobarcode.pdf");
+        document.render().save(outputStream);
     }
 }

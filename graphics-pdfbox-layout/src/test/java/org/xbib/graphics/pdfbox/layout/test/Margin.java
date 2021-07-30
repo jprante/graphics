@@ -52,7 +52,7 @@ public class Margin {
                 150, 20, 0));
 
         final OutputStream outputStream = new FileOutputStream("build/margin.pdf");
-        document.save(outputStream);
+        document.render().save(outputStream);
 
     }
 }

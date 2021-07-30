@@ -23,6 +23,6 @@ public class HelloCatTest {
         imageElement.setScale(0.1f);
         document.add(imageElement, new VerticalLayoutHint(Alignment.LEFT, 10, 10, 10, 10, true));
         final OutputStream outputStream = new FileOutputStream("build/hellocat.pdf");
-        document.save(outputStream);
+        document.render().save(outputStream);
     }
 }

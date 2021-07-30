@@ -17,12 +17,12 @@ public class HelloNotoFontTest {
         Document document = new Document(PageFormats.A4_PORTRAIT);
         Paragraph paragraph = new Paragraph();
         paragraph.add(new Indent(32, SpaceUnit.pt));
-        paragraph.addMarkup("Hello Noto Regular\n", 12, new NotoSansFont(document.getPDDocument()));
-        paragraph.addMarkup("*Hello Noto Bold*\n", 12, new NotoSansFont(document.getPDDocument()));
-        paragraph.addMarkup("_Hello Noto Italic_\n", 12, new NotoSansFont(document.getPDDocument()));
-        paragraph.addMarkup("*_Hello Noto Bold Italic_*\n", 12, new NotoSansFont(document.getPDDocument()));
+        paragraph.addMarkup("Hello Noto Regular\n", 12, new NotoSansFont(document));
+        paragraph.addMarkup("*Hello Noto Bold*\n", 12, new NotoSansFont(document));
+        paragraph.addMarkup("_Hello Noto Italic_\n", 12, new NotoSansFont(document));
+        paragraph.addMarkup("*_Hello Noto Bold Italic_*\n", 12, new NotoSansFont(document));
         document.add(paragraph);
         final OutputStream outputStream = new FileOutputStream("build/hellonotofont.pdf");
-        document.save(outputStream);
+        document.render().save(outputStream);
     }
 }

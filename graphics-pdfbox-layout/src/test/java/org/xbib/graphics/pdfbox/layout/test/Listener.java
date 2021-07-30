@@ -73,7 +73,7 @@ public class Listener {
         document.add(paragraph);
 
         final OutputStream outputStream = new FileOutputStream("build/listener.pdf");
-        document.save(outputStream);
+        document.render().save(outputStream);
 
     }
 }

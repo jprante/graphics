@@ -38,6 +38,6 @@ public class AlignedTest {
         paragraph.setMaxWidth(40);
         document.add(paragraph, VerticalLayoutHint.CENTER);
         OutputStream outputStream = new FileOutputStream("build/aligned.pdf");
-        document.save(outputStream);
+        document.render().save(outputStream);
     }
 }

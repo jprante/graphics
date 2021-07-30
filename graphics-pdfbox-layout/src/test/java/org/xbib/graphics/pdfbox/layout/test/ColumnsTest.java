@@ -80,6 +80,6 @@ public class ColumnsTest {
         document.add(paragraph2);
         document.add(paragraph2);
         final OutputStream outputStream = new FileOutputStream("build/columns.pdf");
-        document.save(outputStream);
+        document.render().save(outputStream);
     }
 }

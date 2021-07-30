@@ -19,7 +19,6 @@ public interface Renderer {
      * @return <code>true</code> if the layout is able to render the element.
      * @throws IOException by pdfbox
      */
-    boolean render(final RenderContext renderContext, final Element element,
-                   final LayoutHint layoutHint) throws IOException;
-
+    boolean render(RenderContext renderContext, Element element,
+                   LayoutHint layoutHint) throws IOException;
 }
