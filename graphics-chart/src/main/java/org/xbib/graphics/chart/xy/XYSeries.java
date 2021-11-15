@@ -7,7 +7,7 @@ import org.xbib.graphics.chart.legend.LegendRenderType;
 import java.util.List;
 
 /**
- * A Series containing X and Y data to be plotted on a Chart
+ * A Series containing X and Y data to be plotted on a Chart.
  */
 public class XYSeries extends AxesChartSeriesNumericalNoErrorBars {
 
@@ -33,6 +33,4 @@ public class XYSeries extends AxesChartSeriesNumericalNoErrorBars {
     public LegendRenderType getLegendRenderType() {
         return xySeriesRenderStyle.getLegendRenderType();
     }
-
-
 }

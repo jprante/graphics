@@ -11,13 +11,9 @@ import org.xbib.graphics.ghostscript.internal.NullOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -99,7 +95,6 @@ public class Ghostscript {
                 nativeInstanceByRef = null;
             }
             instance = null;
-            deleteTmp();
         }
     }
 
@@ -326,38 +321,9 @@ public class Ghostscript {
             throw new IllegalStateException("no TEMP/TMPDIR environment set for ghostscript");
         }
         tmpDir = Paths.get(tmp);
-        deleteTmp();
-        Files.createDirectories(tmpDir);
-    }
-
-    private static void deleteTmp() throws IOException {
-        if (tmpDir == null) {
-            return;
-        }
         if (!Files.exists(tmpDir)) {
-            return;
+            Files.createDirectories(tmpDir);
         }
-        try {
-            Files.walkFileTree(tmpDir, new SimpleFileVisitor<>() {
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    logger.info("deleting " + file);
-                    Files.deleteIfExists(file);
-                    return FileVisitResult.CONTINUE;
-                }
-
-                @Override
-                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-                    logger.info("deleting " + dir);
-                    Files.deleteIfExists(dir);
-                    return FileVisitResult.CONTINUE;
-                }
-            });
-        } catch (NoSuchFileException e) {
-            logger.log(Level.WARNING, e.getMessage(), e);
-        } finally {
-            logger.info("deleting " + tmpDir);
-            Files.deleteIfExists(tmpDir);
-        }
+        // never delete TMPDIR or TEMP automatically, it might be a shared directory
     }
 }

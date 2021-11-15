@@ -13,8 +13,10 @@ test {
     useJUnitPlatform()
     failFast = false
     environment 'TMPDIR', '/var/tmp/gs'
+    file('/var/tmp/gs').mkdirs()
     systemProperty 'java.awt.headless', 'true'
     systemProperty 'java.io.tmpdir', '/var/tmp/'
+    systemProperty 'jna.tmpdir', '/var/tmp/'
     systemProperty 'jna.debug', 'false'
     systemProperty 'java.util.logging.config.file', 'src/test/resources/logging.properties'
     testLogging {

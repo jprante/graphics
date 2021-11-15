@@ -12,8 +12,10 @@ import java.util.List;
  */
 public abstract class AxesChartSeriesNumericalNoErrorBars extends MarkerSeries {
 
-    protected List<?> xData; // can be Number or Instant
+    protected List<?> xData;
+
     protected List<? extends Number> yData;
+
     protected List<? extends Number> extraValues;
 
     public AxesChartSeriesNumericalNoErrorBars(String name,
@@ -30,11 +32,9 @@ public abstract class AxesChartSeriesNumericalNoErrorBars extends MarkerSeries {
 
     @Override
     protected void calculateMinMax() {
-        // xData
         List<Double> xMinMax = findMinMax(xData);
         setXMin(xMinMax.get(0));
         setXMax(xMinMax.get(1));
-        // yData
         List<Double> yMinMax;
         if (extraValues == null) {
             yMinMax = findMinMax(yData);
@@ -46,6 +46,9 @@ public abstract class AxesChartSeriesNumericalNoErrorBars extends MarkerSeries {
     }
 
     List<Double> findMinMax(List<?> data) {
+        if (data == null) {
+            return Arrays.asList(null, null);
+        }
         Double min = null;
         Double max = null;
         for (Object dataPoint : data) {
@@ -113,7 +116,10 @@ public abstract class AxesChartSeriesNumericalNoErrorBars extends MarkerSeries {
     }
 
     private List<Double> findMinMaxWithErrorBars(List<? extends Number> data,
-                                             List<? extends Number> errorBars) {
+                                                 List<? extends Number> errorBars) {
+        if (data == null) {
+            return Arrays.asList(Double.MAX_VALUE, Double.MAX_VALUE);
+        }
         double min = Double.MAX_VALUE;
         double max = -Double.MAX_VALUE;
         for (int i = 0; i < data.size(); i++) {
