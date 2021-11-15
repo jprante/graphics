@@ -33,16 +33,20 @@ public abstract class AxesChartSeriesNumericalNoErrorBars extends MarkerSeries {
     @Override
     protected void calculateMinMax() {
         List<Double> xMinMax = findMinMax(xData);
-        setXMin(xMinMax.get(0));
-        setXMax(xMinMax.get(1));
+        if (xMinMax != null) {
+            setXMin(xMinMax.get(0));
+            setXMax(xMinMax.get(1));
+        }
         List<Double> yMinMax;
         if (extraValues == null) {
             yMinMax = findMinMax(yData);
         } else {
             yMinMax = findMinMaxWithErrorBars(yData, extraValues);
         }
-        setYMin(yMinMax.get(0));
-        setYMax(yMinMax.get(1));
+        if (yMinMax != null) {
+            setYMin(yMinMax.get(0));
+            setYMax(yMinMax.get(1));
+        }
     }
 
     List<Double> findMinMax(List<?> data) {
@@ -81,6 +85,20 @@ public abstract class AxesChartSeriesNumericalNoErrorBars extends MarkerSeries {
                 }
                 if (bd.doubleValue() > max) {
                     max = bd.doubleValue();
+                }
+            } else if (dataPoint instanceof Long) {
+                long i = (Long) dataPoint;
+                if (min == null) {
+                    min = (double) i;
+                }
+                if (max == null) {
+                    max = (double) i;
+                }
+                if (i < min) {
+                    min = (double) i;
+                }
+                if (i > max) {
+                    max = (double) i;
                 }
             } else if (dataPoint instanceof Integer) {
                 int i = (Integer) dataPoint;
