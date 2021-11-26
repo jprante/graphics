@@ -27,9 +27,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- */
 public class PrintUtility {
 
     public static void print(InputStream inputStream, DocFlavor docFlavor)
@@ -96,22 +93,20 @@ public class PrintUtility {
         job.print();
     }
 
+    public static Printer getDefaultPrinter() {
+        return createPrinter(PrintServiceLookup.lookupDefaultPrintService());
+    }
+
     public static Printer getPrinter(String printerName, DocFlavor docFlavor) {
-        Printer printer = null;
         if (printerName != null) {
             List<Printer> printers = findPrinters(docFlavor);
             for (Printer p : printers) {
                 if (printerName.equalsIgnoreCase(p.getName())) {
-                    printer = p;
-                    break;
+                    return p;
                 }
             }
         }
-        if (printer == null) {
-            PrintService service = PrintServiceLookup.lookupDefaultPrintService();
-            printer = createPrinter(service);
-        }
-        return printer;
+        return null;
     }
 
     public static Printer findDefaultPrinter(DocFlavor docFlavor) {
@@ -141,7 +136,6 @@ public class PrintUtility {
         if (attr != null) {
             printer.setModel(attr.toString());
         }
-        //attr = service.getAttribute( PrinterIsAcceptingJobs.class );
         printer.setStatus(Printer.STATUS_ACCEPTING_JOBS);
         attr = service.getAttribute(PrinterInfo.class);
         if (attr != null) {
