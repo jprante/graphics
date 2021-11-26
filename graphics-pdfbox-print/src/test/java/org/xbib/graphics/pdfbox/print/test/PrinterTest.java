@@ -1,6 +1,8 @@
 package org.xbib.graphics.pdfbox.print.test;
 
 import javax.print.DocFlavor;
+
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.xbib.graphics.pdfbox.print.PrintUtility;
 import org.xbib.graphics.pdfbox.print.Printer;
@@ -8,6 +10,7 @@ import org.xbib.graphics.pdfbox.print.Printer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@Disabled
 public class PrinterTest {
 
     private static final Logger logger = Logger.getLogger(PrinterTest.class.getName());
