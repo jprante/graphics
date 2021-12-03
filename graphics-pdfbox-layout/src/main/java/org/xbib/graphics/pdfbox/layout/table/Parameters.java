@@ -3,7 +3,7 @@ package org.xbib.graphics.pdfbox.layout.table;
 import org.xbib.graphics.pdfbox.layout.font.Font;
 import java.awt.Color;
 
-public class Settings {
+public class Parameters {
 
     private Font font;
 
@@ -55,14 +55,14 @@ public class Settings {
         this.wordBreak = wordBreak;
     }
 
-    public void fillingMergeBy(Settings settings) {
-        fillingMergeFontSettings(settings);
-        fillingMergePaddingSettings(settings);
-        fillingMergeBorderWidthSettings(settings);
-        fillingMergeBorderStyleSettings(settings);
-        fillingMergeColorSettings(settings);
-        fillingMergeAlignmentSettings(settings);
-        fillingMergeWordBreakSetting(settings);
+    public void fillingMergeBy(Parameters parameters) {
+        fillingMergeFontSettings(parameters);
+        fillingMergePaddingSettings(parameters);
+        fillingMergeBorderWidthSettings(parameters);
+        fillingMergeBorderStyleSettings(parameters);
+        fillingMergeColorSettings(parameters);
+        fillingMergeAlignmentSettings(parameters);
+        fillingMergeWordBreakSetting(parameters);
     }
 
     public Boolean getWordBreak() {
@@ -225,97 +225,97 @@ public class Settings {
         this.wordBreak = wordBreak;
     }
 
-    private void fillingMergeWordBreakSetting(Settings settings) {
+    private void fillingMergeWordBreakSetting(Parameters parameters) {
         // Note that we use the boxed Boolean only here internally!
-        if (wordBreak == null && settings.wordBreak != null) {
-            wordBreak = settings.getWordBreak();
+        if (wordBreak == null && parameters.wordBreak != null) {
+            wordBreak = parameters.getWordBreak();
         }
     }
 
-    private void fillingMergePaddingSettings(Settings settings) {
-        if (getPaddingBottom() == null && settings.getPaddingBottom() != null) {
-            paddingBottom = settings.getPaddingBottom();
+    private void fillingMergePaddingSettings(Parameters parameters) {
+        if (getPaddingBottom() == null && parameters.getPaddingBottom() != null) {
+            paddingBottom = parameters.getPaddingBottom();
         }
 
-        if (getPaddingTop() == null && settings.getPaddingTop() != null) {
-            paddingTop = settings.getPaddingTop();
+        if (getPaddingTop() == null && parameters.getPaddingTop() != null) {
+            paddingTop = parameters.getPaddingTop();
         }
 
-        if (getPaddingLeft() == null && settings.getPaddingLeft() != null) {
-            paddingLeft = settings.getPaddingLeft();
+        if (getPaddingLeft() == null && parameters.getPaddingLeft() != null) {
+            paddingLeft = parameters.getPaddingLeft();
         }
 
-        if (getPaddingRight() == null && settings.getPaddingRight() != null) {
-            paddingRight = settings.getPaddingRight();
+        if (getPaddingRight() == null && parameters.getPaddingRight() != null) {
+            paddingRight = parameters.getPaddingRight();
         }
     }
 
-    private void fillingMergeBorderWidthSettings(Settings settings) {
-        if (getBorderWidthBottom() == null && settings.getBorderWidthBottom() != null) {
-            borderWidthBottom = settings.getBorderWidthBottom();
+    private void fillingMergeBorderWidthSettings(Parameters parameters) {
+        if (getBorderWidthBottom() == null && parameters.getBorderWidthBottom() != null) {
+            borderWidthBottom = parameters.getBorderWidthBottom();
         }
 
-        if (getBorderWidthTop() == null && settings.getBorderWidthTop() != null) {
-            borderWidthTop = settings.getBorderWidthTop();
+        if (getBorderWidthTop() == null && parameters.getBorderWidthTop() != null) {
+            borderWidthTop = parameters.getBorderWidthTop();
         }
 
-        if (getBorderWidthLeft() == null && settings.getBorderWidthLeft() != null) {
-            borderWidthLeft = settings.getBorderWidthLeft();
+        if (getBorderWidthLeft() == null && parameters.getBorderWidthLeft() != null) {
+            borderWidthLeft = parameters.getBorderWidthLeft();
         }
 
-        if (getBorderWidthRight() == null && settings.getBorderWidthRight() != null) {
-            borderWidthRight = settings.getBorderWidthRight();
+        if (getBorderWidthRight() == null && parameters.getBorderWidthRight() != null) {
+            borderWidthRight = parameters.getBorderWidthRight();
         }
     }
 
-    private void fillingMergeBorderStyleSettings(Settings settings) {
-        if (getBorderStyleBottom() == null && settings.getBorderStyleBottom() != null) {
-            borderStyleBottom = settings.getBorderStyleBottom();
+    private void fillingMergeBorderStyleSettings(Parameters parameters) {
+        if (getBorderStyleBottom() == null && parameters.getBorderStyleBottom() != null) {
+            borderStyleBottom = parameters.getBorderStyleBottom();
         }
 
-        if (getBorderStyleTop() == null && settings.getBorderStyleTop() != null) {
-            borderStyleTop = settings.getBorderStyleTop();
+        if (getBorderStyleTop() == null && parameters.getBorderStyleTop() != null) {
+            borderStyleTop = parameters.getBorderStyleTop();
         }
 
-        if (getBorderStyleLeft() == null && settings.getBorderStyleLeft() != null) {
-            borderStyleLeft = settings.getBorderStyleLeft();
+        if (getBorderStyleLeft() == null && parameters.getBorderStyleLeft() != null) {
+            borderStyleLeft = parameters.getBorderStyleLeft();
         }
 
-        if (getBorderStyleRight() == null && settings.getBorderStyleRight() != null) {
-            borderStyleRight = settings.getBorderStyleRight();
+        if (getBorderStyleRight() == null && parameters.getBorderStyleRight() != null) {
+            borderStyleRight = parameters.getBorderStyleRight();
         }
     }
 
-    private void fillingMergeColorSettings(Settings settings) {
-        if (getTextColor() == null && settings.getTextColor() != null) {
-            textColor = settings.getTextColor();
+    private void fillingMergeColorSettings(Parameters parameters) {
+        if (getTextColor() == null && parameters.getTextColor() != null) {
+            textColor = parameters.getTextColor();
         }
 
-        if (getBackgroundColor() == null && settings.getBackgroundColor() != null) {
-            backgroundColor = settings.getBackgroundColor();
+        if (getBackgroundColor() == null && parameters.getBackgroundColor() != null) {
+            backgroundColor = parameters.getBackgroundColor();
         }
 
-        if (getBorderColor() == null && settings.getBorderColor() != null) {
-            borderColor = settings.getBorderColor();
+        if (getBorderColor() == null && parameters.getBorderColor() != null) {
+            borderColor = parameters.getBorderColor();
         }
     }
 
-    private void fillingMergeAlignmentSettings(Settings settings) {
-        if (getHorizontalAlignment() == null && settings.getHorizontalAlignment() != null) {
-            horizontalAlignment = settings.getHorizontalAlignment();
+    private void fillingMergeAlignmentSettings(Parameters parameters) {
+        if (getHorizontalAlignment() == null && parameters.getHorizontalAlignment() != null) {
+            horizontalAlignment = parameters.getHorizontalAlignment();
         }
 
-        if (getVerticalAlignment() == null && settings.getVerticalAlignment() != null) {
-            verticalAlignment = settings.getVerticalAlignment();
+        if (getVerticalAlignment() == null && parameters.getVerticalAlignment() != null) {
+            verticalAlignment = parameters.getVerticalAlignment();
         }
     }
 
-    private void fillingMergeFontSettings(Settings settings) {
-        if (getFont() == null && settings.getFont() != null) {
-            font = settings.getFont();
+    private void fillingMergeFontSettings(Parameters parameters) {
+        if (getFont() == null && parameters.getFont() != null) {
+            font = parameters.getFont();
         }
-        if (getFontSize() == null && settings.getFontSize() != null) {
-            fontSize = settings.getFontSize();
+        if (getFontSize() == null && parameters.getFontSize() != null) {
+            fontSize = parameters.getFontSize();
         }
     }
 }

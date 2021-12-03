@@ -188,7 +188,7 @@ public class CustomAnnotationTest {
         // register our custom highlight annotation processor
         AnnotationProcessorFactory.register(HighlightAnnotationProcessor.class);
 
-        Document document = new Document(PageFormat.with().A4()
+        Document document = new Document(PageFormat.builder().A4()
                 .margins(40, 60, 40, 60).portrait().build());
 
         Paragraph paragraph = new Paragraph();

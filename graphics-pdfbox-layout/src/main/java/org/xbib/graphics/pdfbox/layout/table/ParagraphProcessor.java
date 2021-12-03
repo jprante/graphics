@@ -5,6 +5,6 @@ import java.io.IOException;
 
 public interface ParagraphProcessor {
 
-    void process(Paragraph paragraph, Settings settings) throws IOException;
+    void process(Paragraph paragraph, Parameters parameters) throws IOException;
 
 }

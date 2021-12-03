@@ -11,15 +11,15 @@ public abstract class AbstractTextCell extends AbstractCell {
     protected float lineSpacing = 1f;
 
     public Font getFont() {
-        return settings.getFont();
+        return parameters.getFont();
     }
 
     public Integer getFontSize() {
-        return settings.getFontSize();
+        return parameters.getFontSize();
     }
 
     public Color getTextColor() {
-        return settings.getTextColor();
+        return parameters.getTextColor();
     }
 
     private Float textHeight;
@@ -40,7 +40,7 @@ public abstract class AbstractTextCell extends AbstractCell {
             return this.textHeight;
         }
         this.textHeight = PdfUtil.getFontHeight(getFont(), getFontSize());
-        if (settings.isWordBreak()) {
+        if (parameters.isWordBreak()) {
             final int size = PdfUtil.getOptimalTextBreakLines(getText(), getFont(), getFontSize(), getMaxWidth()).size();
             final float heightOfTextLines = size * this.textHeight;
             final float heightOfLineSpacing = (size - 1) * this.textHeight * getLineSpacing();
@@ -52,7 +52,7 @@ public abstract class AbstractTextCell extends AbstractCell {
     public float getWidthOfText() {
         assertIsRendered();
         final float notBrokenTextWidth = PdfUtil.getStringWidth(getText(), getFont(), getFontSize());
-        if (settings.isWordBreak()) {
+        if (parameters.isWordBreak()) {
             final float maxWidth = getMaxWidthOfText() - getHorizontalPadding();
             List<String> textLines = PdfUtil.getOptimalTextBreakLines(getText(), getFont(), getFontSize(), maxWidth);
             return textLines.stream()

@@ -36,7 +36,7 @@ public class ParagraphCell extends AbstractCell {
         }
         for (ParagraphProcessor p : getParagraph().getProcessables()) {
             try {
-                p.process(getParagraph().getWrappedParagraph(), getSettings());
+                p.process(getParagraph().getWrappedParagraph(), getParameters());
             } catch (IOException exception) {
                 throw new UncheckedIOException(exception);
             }

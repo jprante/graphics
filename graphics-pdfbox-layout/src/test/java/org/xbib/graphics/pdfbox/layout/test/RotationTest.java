@@ -46,8 +46,8 @@ public class RotationTest {
         Paragraph titleA5 = new Paragraph();
         titleA5.addMarkup("*Format A4 Landscape rotated by -90 degrees*", 20, BaseFont.TIMES);
 
-        PageFormat a4_landscape = PageFormat.with().margins(40, 50, 40, 60).landscape().build();
-        PageFormat a4_landscape_rotated = PageFormat.with().margins(40, 50, 40, 60).landscape().rotation(-90).build();
+        PageFormat a4_landscape = PageFormat.builder().margins(40, 50, 40, 60).landscape().build();
+        PageFormat a4_landscape_rotated = PageFormat.builder().margins(40, 50, 40, 60).landscape().rotation(-90).build();
 
         Document document = new Document(a4_landscape);
 

@@ -28,7 +28,7 @@ public class TextCell extends AbstractTextCell {
     
     public static class Builder {
         
-        private final Settings settings;
+        private final Parameters parameters;
         
         private String text;
 
@@ -37,7 +37,7 @@ public class TextCell extends AbstractTextCell {
         private int rowSpan;
 
         private Builder() {
-            settings = new Settings();
+            parameters = new Parameters();
         }
         
         public Builder text(String text) {
@@ -46,65 +46,65 @@ public class TextCell extends AbstractTextCell {
         }
 
         public Builder font(Font font) {
-            settings.setFont(font);
+            parameters.setFont(font);
             return this;
         }
 
         public Builder fontSize(Integer fontSize) {
-            settings.setFontSize(fontSize);
+            parameters.setFontSize(fontSize);
             return this;
         }
 
         public Builder textColor(Color textColor) {
-            settings.setTextColor(textColor);
+            parameters.setTextColor(textColor);
             return this;
         }
 
         public Builder borderWidth(float borderWidth) {
-            settings.setBorderWidthTop(borderWidth);
-            settings.setBorderWidthBottom(borderWidth);
-            settings.setBorderWidthLeft(borderWidth);
-            settings.setBorderWidthRight(borderWidth);
+            parameters.setBorderWidthTop(borderWidth);
+            parameters.setBorderWidthBottom(borderWidth);
+            parameters.setBorderWidthLeft(borderWidth);
+            parameters.setBorderWidthRight(borderWidth);
             return this;
         }
 
         public Builder borderWidthTop(final float borderWidth) {
-            settings.setBorderWidthTop(borderWidth);
+            parameters.setBorderWidthTop(borderWidth);
             return this;
         }
 
         public Builder borderWidthBottom(final float borderWidth) {
-            settings.setBorderWidthBottom(borderWidth);
+            parameters.setBorderWidthBottom(borderWidth);
             return this;
         }
 
         public Builder borderWidthLeft(final float borderWidth) {
-            settings.setBorderWidthLeft(borderWidth);
+            parameters.setBorderWidthLeft(borderWidth);
             return this;
         }
 
         public Builder borderWidthRight(final float borderWidth) {
-            settings.setBorderWidthRight(borderWidth);
+            parameters.setBorderWidthRight(borderWidth);
             return this;
         }
 
         public Builder borderStyleTop(final BorderStyleInterface style) {
-            settings.setBorderStyleTop(style);
+            parameters.setBorderStyleTop(style);
             return this;
         }
 
         public Builder borderStyleBottom(final BorderStyleInterface style) {
-            settings.setBorderStyleBottom(style);
+            parameters.setBorderStyleBottom(style);
             return this;
         }
 
         public Builder borderStyleLeft(final BorderStyleInterface style) {
-            settings.setBorderStyleLeft(style);
+            parameters.setBorderStyleLeft(style);
             return this;
         }
 
         public Builder borderStyleRight(final BorderStyleInterface style) {
-            settings.setBorderStyleRight(style);
+            parameters.setBorderStyleRight(style);
             return this;
         }
 
@@ -123,47 +123,47 @@ public class TextCell extends AbstractTextCell {
         }
 
         public Builder paddingTop(final float padding) {
-            settings.setPaddingTop(padding);
+            parameters.setPaddingTop(padding);
             return this;
         }
 
         public Builder paddingBottom(final float padding) {
-            settings.setPaddingBottom(padding);
+            parameters.setPaddingBottom(padding);
             return this;
         }
 
         public Builder paddingLeft(final float padding) {
-            settings.setPaddingLeft(padding);
+            parameters.setPaddingLeft(padding);
             return this;
         }
 
         public Builder paddingRight(final float padding) {
-            settings.setPaddingRight(padding);
+            parameters.setPaddingRight(padding);
             return this;
         }
 
         public Builder horizontalAlignment(final HorizontalAlignment alignment) {
-            settings.setHorizontalAlignment(alignment);
+            parameters.setHorizontalAlignment(alignment);
             return this;
         }
 
         public Builder verticalAlignment(final VerticalAlignment alignment) {
-            settings.setVerticalAlignment(alignment);
+            parameters.setVerticalAlignment(alignment);
             return this;
         }
 
         public Builder backgroundColor(final Color backgroundColor) {
-            settings.setBackgroundColor(backgroundColor);
+            parameters.setBackgroundColor(backgroundColor);
             return this;
         }
 
         public Builder borderColor(final Color borderColor) {
-            settings.setBorderColor(borderColor);
+            parameters.setBorderColor(borderColor);
             return this;
         }
 
         public Builder wordBreak(final Boolean wordBreak) {
-            settings.setWordBreak(wordBreak);
+            parameters.setWordBreak(wordBreak);
             return this;
         }
 
@@ -179,7 +179,7 @@ public class TextCell extends AbstractTextCell {
 
         public TextCell build() {
             TextCell cell = new TextCell();
-            cell.setSettings(settings);
+            cell.setParameters(parameters);
             cell.setText(text);
             if (colSpan > 0) {
                 cell.setColSpan(colSpan);

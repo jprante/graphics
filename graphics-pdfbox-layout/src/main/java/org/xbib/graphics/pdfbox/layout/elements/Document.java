@@ -34,9 +34,9 @@ public class Document implements Closeable, RenderListener {
 
     private final List<RenderListener> renderListener = new ArrayList<>();
 
-    private PDDocument pdDocument;
-
     private final PageFormat pageFormat;
+
+    private final PDDocument pdDocument;
 
     /**
      * Creates a Document using the {@link #DEFAULT_PAGE_FORMAT}.
@@ -65,7 +65,7 @@ public class Document implements Closeable, RenderListener {
                     float marginRight,
                     float marginTop,
                     float marginBottom, boolean memory) {
-        this(PageFormat.with().margins(marginLeft, marginRight, marginTop, marginBottom).build(), memory);
+        this(PageFormat.builder().margins(marginLeft, marginRight, marginTop, marginBottom).build(), memory);
     }
 
     /**
@@ -201,7 +201,6 @@ public class Document implements Closeable, RenderListener {
     public synchronized void save(OutputStream outputStream) throws IOException {
         if (pdDocument != null) {
             pdDocument.save(outputStream);
-            pdDocument = null;
         }
     }
 

@@ -11,6 +11,7 @@ module org.xbib.graphics.layout.pdfbox {
     exports org.xbib.graphics.pdfbox.layout.util;
     requires transitive org.xbib.graphics.barcode;
     requires transitive org.xbib.graphics.pdfbox;
+    requires org.xbib.settings.datastructures;
     requires transitive java.desktop;
     requires java.logging;
 }

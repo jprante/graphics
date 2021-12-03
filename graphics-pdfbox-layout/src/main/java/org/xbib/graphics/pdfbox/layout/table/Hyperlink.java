@@ -72,11 +72,11 @@ public class Hyperlink implements ParagraphProcessor {
     }
 
     @Override
-    public void process(Paragraph paragraph, Settings settings) {
+    public void process(Paragraph paragraph, Parameters parameters) {
         Annotations.HyperlinkAnnotation hyperlink =
                 new Annotations.HyperlinkAnnotation(getUrl(), Annotations.HyperlinkAnnotation.LinkStyle.ul);
-        FontDescriptor fontDescriptor = new FontDescriptor(getFont() != null ? getFont() : settings.getFont(),
-                getFontSize() != null ? getFontSize() : settings.getFontSize());
+        FontDescriptor fontDescriptor = new FontDescriptor(getFont() != null ? getFont() : parameters.getFont(),
+                getFontSize() != null ? getFontSize() : parameters.getFontSize());
         paragraph.add(new AnnotatedStyledText(getText(), fontDescriptor,
                         getColor(), getBaselineOffset(), 0, 0, Collections.singleton(hyperlink)));
     }

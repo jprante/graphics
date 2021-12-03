@@ -16,7 +16,7 @@ public class Row {
 
     private List<AbstractCell> cells;
 
-    private Settings settings;
+    private Parameters parameters;
 
     private Float height;
 
@@ -27,12 +27,12 @@ public class Row {
         this.cells = cells;
     }
 
-    public void setSettings(Settings settings) {
-        this.settings = settings;
+    public void setSettings(Parameters parameters) {
+        this.parameters = parameters;
     }
 
-    public Settings getSettings() {
-        return settings;
+    public Parameters getSettings() {
+        return parameters;
     }
 
     public Row getNext() {
@@ -96,7 +96,7 @@ public class Row {
 
         private final List<AbstractCell> cells = new ArrayList<>();
 
-        private final Settings settings = new Settings();
+        private final Parameters parameters = new Parameters();
 
         private Builder() {
         }
@@ -107,72 +107,72 @@ public class Row {
         }
 
         public Builder font(Font font) {
-            settings.setFont(font);
+            parameters.setFont(font);
             return this;
         }
 
         public Builder fontSize(final Integer fontSize) {
-            settings.setFontSize(fontSize);
+            parameters.setFontSize(fontSize);
             return this;
         }
 
         public Builder textColor(final Color textColor) {
-            settings.setTextColor(textColor);
+            parameters.setTextColor(textColor);
             return this;
         }
 
         public Builder backgroundColor(final Color backgroundColor) {
-            settings.setBackgroundColor(backgroundColor);
+            parameters.setBackgroundColor(backgroundColor);
             return this;
         }
 
         public Builder padding(final float padding) {
-            settings.setPaddingTop(padding);
-            settings.setPaddingBottom(padding);
-            settings.setPaddingLeft(padding);
-            settings.setPaddingRight(padding);
+            parameters.setPaddingTop(padding);
+            parameters.setPaddingBottom(padding);
+            parameters.setPaddingLeft(padding);
+            parameters.setPaddingRight(padding);
             return this;
         }
 
         public Builder borderWidth(final float borderWidth) {
-            settings.setBorderWidthTop(borderWidth);
-            settings.setBorderWidthBottom(borderWidth);
-            settings.setBorderWidthLeft(borderWidth);
-            settings.setBorderWidthRight(borderWidth);
+            parameters.setBorderWidthTop(borderWidth);
+            parameters.setBorderWidthBottom(borderWidth);
+            parameters.setBorderWidthLeft(borderWidth);
+            parameters.setBorderWidthRight(borderWidth);
             return this;
         }
 
         public Builder borderStyle(final BorderStyleInterface borderStyle) {
-            settings.setBorderStyleTop(borderStyle);
-            settings.setBorderStyleBottom(borderStyle);
-            settings.setBorderStyleLeft(borderStyle);
-            settings.setBorderStyleRight(borderStyle);
+            parameters.setBorderStyleTop(borderStyle);
+            parameters.setBorderStyleBottom(borderStyle);
+            parameters.setBorderStyleLeft(borderStyle);
+            parameters.setBorderStyleRight(borderStyle);
             return this;
         }
 
         public Builder borderColor(final Color borderColor) {
-            settings.setBorderColor(borderColor);
+            parameters.setBorderColor(borderColor);
             return this;
         }
 
         public Builder horizontalAlignment(HorizontalAlignment alignment) {
-            settings.setHorizontalAlignment(alignment);
+            parameters.setHorizontalAlignment(alignment);
             return this;
         }
 
         public Builder verticalAlignment(VerticalAlignment alignment) {
-            settings.setVerticalAlignment(alignment);
+            parameters.setVerticalAlignment(alignment);
             return this;
         }
 
         public Builder wordBreak(Boolean wordBreak) {
-            settings.setWordBreak(wordBreak);
+            parameters.setWordBreak(wordBreak);
             return this;
         }
 
         public Row build() {
             final Row row = new Row(cells);
-            row.setSettings(settings);
+            row.setSettings(parameters);
             //row.setHeight(height);
             return row;
         }

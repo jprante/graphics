@@ -50,8 +50,8 @@ public class Markup implements ParagraphProcessor {
     }
 
     @Override
-    public void process(Paragraph paragraph, Settings settings) throws IOException {
-        float fontSize = getFontSize() != null ? getFontSize() : settings.getFontSize();
+    public void process(Paragraph paragraph, Parameters parameters) throws IOException {
+        float fontSize = getFontSize() != null ? getFontSize() : parameters.getFontSize();
         paragraph.addMarkup(getMarkup(), fontSize, FONT_MAP.get(getFont()));
     }
 

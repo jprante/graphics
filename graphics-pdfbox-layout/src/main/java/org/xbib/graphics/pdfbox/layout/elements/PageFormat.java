@@ -3,16 +3,16 @@ package org.xbib.graphics.pdfbox.layout.elements;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.xbib.graphics.pdfbox.layout.elements.render.VerticalLayout;
 
+import java.util.Locale;
+
 /**
- * Defines the size and orientation of a page. The default is A4 portrait
- * without margins.
+ * Defines the size and orientation of a page. The default is A4 portrait without margins.
  */
 public class PageFormat implements Element {
 
-    private static final int DEFAULT_USER_SPACE_UNIT_DPI = 72;
+    public static final int DEFAULT_USER_SPACE_UNIT_DPI = 72;
 
-    private static final float MM_TO_UNITS = 1 / (10 * 2.54f)
-            * DEFAULT_USER_SPACE_UNIT_DPI;
+    public static final float MM_TO_UNITS = 1 / (10 * 2.54f) * DEFAULT_USER_SPACE_UNIT_DPI;
 
     public static final PDRectangle A0 = new PDRectangle(841 * MM_TO_UNITS,
             1189 * MM_TO_UNITS);
@@ -113,6 +113,8 @@ public class PageFormat implements Element {
         this.marginBottom = marginBottom;
     }
 
+
+
     /**
      * @return the orientation to use.
      */
@@ -172,7 +174,7 @@ public class PageFormat implements Element {
      * @return a page format builder. The default of the builder is A4 portrait
      * without margins.
      */
-    public static PageFormatBuilder with() {
+    public static PageFormatBuilder builder() {
         return new PageFormatBuilder();
     }
 
@@ -186,16 +188,6 @@ public class PageFormat implements Element {
         private int rotation;
 
         protected PageFormatBuilder() {
-        }
-
-        /**
-         * Actually builds the PageFormat.
-         *
-         * @return the resulting PageFormat.
-         */
-        public PageFormat build() {
-            return new PageFormat(mediaBox, orientation, rotation, marginLeft,
-                    marginRight, marginTop, marginBottom);
         }
 
         /**
@@ -362,6 +354,11 @@ public class PageFormat implements Element {
             return this;
         }
 
+        public PageFormatBuilder orientation(String orientation) {
+            this.orientation = Orientation.valueOf(orientation);
+            return this;
+        }
+
         /**
          * Sets the orientation to {@link Orientation#PORTRAIT}.
          *
@@ -392,6 +389,45 @@ public class PageFormat implements Element {
             this.rotation = angle;
             return this;
         }
-    }
 
+        public PageFormatBuilder pageFormat(String format) {
+            switch (format.toLowerCase(Locale.ROOT)) {
+                case "A0" :
+                    A0();
+                    break;
+                case "A1" :
+                    A1();
+                    break;
+                case "A2" :
+                    A2();
+                    break;
+                case "A3" :
+                    A3();
+                    break;
+                case "A4" :
+                    A4();
+                    break;
+                case "A5" :
+                    A5();
+                    break;
+                case "A6" :
+                    A6();
+                    break;
+                case "LETTER" :
+                    letter();
+                    break;
+            }
+            return this;
+        }
+
+        /**
+         * Actually builds the PageFormat.
+         *
+         * @return the resulting PageFormat.
+         */
+        public PageFormat build() {
+            return new PageFormat(mediaBox, orientation, rotation, marginLeft,
+                    marginRight, marginTop, marginBottom);
+        }
+    }
 }

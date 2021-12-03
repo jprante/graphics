@@ -49,10 +49,10 @@ public class StyledText implements ParagraphProcessor {
     }
 
     @Override
-    public void process(Paragraph paragraph, Settings settings) {
-        final float actualFontSize = getFontSize() != null ? getFontSize() : settings.getFontSize();
-        final Font actualFont = getFont() != null ? getFont() : settings.getFont();
-        final Color actualColor = getColor() != null ? getColor() : settings.getTextColor();
+    public void process(Paragraph paragraph, Parameters parameters) {
+        final float actualFontSize = getFontSize() != null ? getFontSize() : parameters.getFontSize();
+        final Font actualFont = getFont() != null ? getFont() : parameters.getFont();
+        final Color actualColor = getColor() != null ? getColor() : parameters.getTextColor();
         // TODO this is a complete mess to handle new lines!!!
         String[] lines = getText().split(PdfUtil.NEW_LINE_REGEX);
         for (int i = 0; i < lines.length; i++) {

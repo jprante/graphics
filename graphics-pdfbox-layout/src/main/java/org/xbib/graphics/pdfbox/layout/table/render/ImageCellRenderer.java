@@ -21,9 +21,9 @@ public class ImageCellRenderer extends AbstractCellRenderer<ImageCell> {
         final Point2D.Float size = cell.getFitSize();
         final Point2D.Float drawAt = new Point2D.Float();
         float xOffset = moveX + cell.getPaddingLeft();
-        if (cell.getSettings().getHorizontalAlignment() == HorizontalAlignment.RIGHT) {
+        if (cell.getParameters().getHorizontalAlignment() == HorizontalAlignment.RIGHT) {
             xOffset = moveX + (cell.getWidth() - (size.x + cell.getPaddingRight()));
-        } else if (cell.getSettings().getHorizontalAlignment() == HorizontalAlignment.CENTER) {
+        } else if (cell.getParameters().getHorizontalAlignment() == HorizontalAlignment.CENTER) {
             final float diff = (cell.getWidth() - size.x) / 2;
             xOffset = moveX + diff;
         }

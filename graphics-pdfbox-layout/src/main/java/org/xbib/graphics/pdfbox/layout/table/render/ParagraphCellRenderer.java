@@ -42,7 +42,7 @@ public class ParagraphCellRenderer extends AbstractCellRenderer<ParagraphCell> {
         float y = renderContext.getStartingPoint().y + getAdaptionForVerticalAlignment();
         paragraph.drawText(renderContext.getContentStream(),
                 new Position(x, y),
-                ALIGNMENT_MAP.getOrDefault(cell.getSettings().getHorizontalAlignment(), Alignment.LEFT),
+                ALIGNMENT_MAP.getOrDefault(cell.getParameters().getHorizontalAlignment(), Alignment.LEFT),
                 annotationDrawListener
         );
         annotationDrawListener.afterPage(null);

@@ -16,7 +16,7 @@ public class NewLine implements ParagraphProcessor {
     }
 
     @Override
-    public void process(Paragraph paragraph, Settings settings) {
+    public void process(Paragraph paragraph, Parameters parameters) {
         paragraph.add(new org.xbib.graphics.pdfbox.layout.text.NewLine(new FontDescriptor(font, fontSize)));
     }
 

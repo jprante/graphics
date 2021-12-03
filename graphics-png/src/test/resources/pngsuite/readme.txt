@@ -9,7 +9,7 @@ without fee is hereby granted.
 These 15 images are part of the much larger PngSuite test-set of 
 images, available for developers of PNG supporting software. The 
 complete set, available at http:/www.schaik.com/pngsuite/, contains 
-a variety of images to test interlacing, gamma settings, ancillary
+a variety of images to test interlacing, gamma parameters, ancillary
 chunks, etc.
 
 The images in this directory represent the basic PNG color-types:

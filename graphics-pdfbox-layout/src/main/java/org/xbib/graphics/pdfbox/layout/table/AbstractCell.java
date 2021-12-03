@@ -22,7 +22,7 @@ public abstract class AbstractCell {
 
     private float minHeight = DEFAULT_MIN_HEIGHT;
 
-    protected Settings settings;
+    protected Parameters parameters;
 
     public void setColSpan(int colSpan) {
         this.colSpan = colSpan;
@@ -33,91 +33,91 @@ public abstract class AbstractCell {
     }
 
     public float getPaddingBottom() {
-        return settings.getPaddingBottom();
+        return parameters.getPaddingBottom();
     }
 
     public float getPaddingTop() {
-        return settings.getPaddingTop();
+        return parameters.getPaddingTop();
     }
 
     public float getPaddingLeft() {
-        return settings.getPaddingLeft();
+        return parameters.getPaddingLeft();
     }
 
     public float getPaddingRight() {
-        return settings.getPaddingRight();
+        return parameters.getPaddingRight();
     }
 
     public float getHorizontalPadding() {
-        return settings.getPaddingLeft() + settings.getPaddingRight();
+        return parameters.getPaddingLeft() + parameters.getPaddingRight();
     }
 
     public float getVerticalPadding() {
-        return settings.getPaddingTop() + settings.getPaddingBottom();
+        return parameters.getPaddingTop() + parameters.getPaddingBottom();
     }
 
     public float getBorderWidthTop() {
-        return hasBorderTop() ? settings.getBorderWidthTop() : 0;
+        return hasBorderTop() ? parameters.getBorderWidthTop() : 0;
     }
 
     public boolean hasBorderTop() {
-        return settings.getBorderWidthTop() != null && settings.getBorderWidthTop() > 0;
+        return parameters.getBorderWidthTop() != null && parameters.getBorderWidthTop() > 0;
     }
 
     public float getBorderWidthBottom() {
-        return hasBorderBottom() ? settings.getBorderWidthBottom() : 0;
+        return hasBorderBottom() ? parameters.getBorderWidthBottom() : 0;
     }
 
     public boolean hasBorderBottom() {
-        return settings.getBorderWidthBottom() != null && settings.getBorderWidthBottom() > 0;
+        return parameters.getBorderWidthBottom() != null && parameters.getBorderWidthBottom() > 0;
     }
 
     public float getBorderWidthLeft() {
-        return hasBorderLeft() ? settings.getBorderWidthLeft() : 0;
+        return hasBorderLeft() ? parameters.getBorderWidthLeft() : 0;
     }
 
     public boolean hasBorderLeft() {
-        return settings.getBorderWidthLeft() != null && settings.getBorderWidthLeft() > 0;
+        return parameters.getBorderWidthLeft() != null && parameters.getBorderWidthLeft() > 0;
     }
 
     public float getBorderWidthRight() {
-        return hasBorderRight() ? settings.getBorderWidthRight() : 0;
+        return hasBorderRight() ? parameters.getBorderWidthRight() : 0;
     }
 
     public boolean hasBorderRight() {
-        return settings.getBorderWidthRight() != null && settings.getBorderWidthRight() > 0;
+        return parameters.getBorderWidthRight() != null && parameters.getBorderWidthRight() > 0;
     }
 
     public BorderStyleInterface getBorderStyleTop() {
-        return settings.getBorderStyleTop();
+        return parameters.getBorderStyleTop();
     }
 
     public BorderStyleInterface getBorderStyleBottom() {
-        return settings.getBorderStyleBottom();
+        return parameters.getBorderStyleBottom();
     }
 
     public BorderStyleInterface getBorderStyleLeft() {
-        return settings.getBorderStyleLeft();
+        return parameters.getBorderStyleLeft();
     }
 
     public BorderStyleInterface getBorderStyleRight() {
-        return settings.getBorderStyleRight();
+        return parameters.getBorderStyleRight();
     }
 
     public boolean hasBackgroundColor() {
-        return settings.getBackgroundColor() != null;
+        return parameters.getBackgroundColor() != null;
     }
 
     public Color getBackgroundColor() {
-        return settings.getBackgroundColor();
+        return parameters.getBackgroundColor();
     }
 
     public Color getBorderColor() {
-        return settings.getBorderColor();
+        return parameters.getBorderColor();
     }
 
     public boolean isWordBreak() {
-        return settings.isWordBreak();
+        return parameters.isWordBreak();
     }
 
     public Column getColumn() {
@@ -148,8 +148,8 @@ public abstract class AbstractCell {
         return row;
     }
 
-    public Settings getSettings() {
-        return settings;
+    public Parameters getParameters() {
+        return parameters;
     }
 
     public void setColumn(Column column) {
@@ -168,8 +168,8 @@ public abstract class AbstractCell {
         this.row = row;
     }
 
-    public void setSettings(Settings settings) {
-        this.settings = settings;
+    public void setParameters(Parameters parameters) {
+        this.parameters = parameters;
     }
 
     public void setWidth(float width) {
@@ -194,7 +194,6 @@ public abstract class AbstractCell {
             result += currentRow.getNext().getHeight();
             currentRow = currentRow.getNext();
         }
-
         return result;
     }
 
@@ -205,10 +204,10 @@ public abstract class AbstractCell {
     }
 
     public boolean isHorizontallyAligned(HorizontalAlignment alignment) {
-        return getSettings().getHorizontalAlignment() == alignment;
+        return getParameters().getHorizontalAlignment() == alignment;
     }
 
     public boolean isVerticallyAligned(VerticalAlignment alignment) {
-        return getSettings().getVerticalAlignment() == alignment;
+        return getParameters().getVerticalAlignment() == alignment;
     }
 }

@@ -36,7 +36,7 @@ public class Table {
 
     private final Set<Point> rowSpanCells;
 
-    private Settings settings;
+    private Parameters parameters;
 
     private int numberOfColumns;
 
@@ -48,12 +48,12 @@ public class Table {
         this.rowSpanCells = rowSpanCells;
     }
 
-    public void setSettings(Settings settings) {
-        this.settings = settings;
+    public void setSettings(Parameters parameters) {
+        this.parameters = parameters;
     }
 
-    public Settings getSettings() {
-        return settings;
+    public Parameters getSettings() {
+        return parameters;
     }
 
     public void setWidth(float width) {
@@ -130,7 +130,7 @@ public class Table {
 
     public static class Builder {
 
-        private final Settings settings = new Settings();
+        private final Parameters parameters = new Parameters();
 
         private final List<Row> rows = new ArrayList<>();
 
@@ -143,19 +143,19 @@ public class Table {
         private float width;
 
         private Builder() {
-            settings.setFont(DEFAULT_FONT);
-            settings.setFontSize(DEFAULT_FONT_SIZE);
-            settings.setTextColor(DEFAULT_TEXT_COLOR);
-            settings.setBorderColor(DEFAULT_BORDER_COLOR);
-            settings.setBorderStyleTop(DEFAULT_BORDER_STYLE);
-            settings.setBorderStyleBottom(DEFAULT_BORDER_STYLE);
-            settings.setBorderStyleLeft(DEFAULT_BORDER_STYLE);
-            settings.setBorderStyleRight(DEFAULT_BORDER_STYLE);
-            settings.setPaddingTop(DEFAULT_PADDING);
-            settings.setPaddingBottom(DEFAULT_PADDING);
-            settings.setPaddingLeft(DEFAULT_PADDING);
-            settings.setPaddingRight(DEFAULT_PADDING);
-            settings.setWordBreak(true);
+            parameters.setFont(DEFAULT_FONT);
+            parameters.setFontSize(DEFAULT_FONT_SIZE);
+            parameters.setTextColor(DEFAULT_TEXT_COLOR);
+            parameters.setBorderColor(DEFAULT_BORDER_COLOR);
+            parameters.setBorderStyleTop(DEFAULT_BORDER_STYLE);
+            parameters.setBorderStyleBottom(DEFAULT_BORDER_STYLE);
+            parameters.setBorderStyleLeft(DEFAULT_BORDER_STYLE);
+            parameters.setBorderStyleRight(DEFAULT_BORDER_STYLE);
+            parameters.setPaddingTop(DEFAULT_PADDING);
+            parameters.setPaddingBottom(DEFAULT_PADDING);
+            parameters.setPaddingLeft(DEFAULT_PADDING);
+            parameters.setPaddingRight(DEFAULT_PADDING);
+            parameters.setWordBreak(true);
         }
 
         public Builder addRow(final Row row) {
@@ -225,66 +225,66 @@ public class Table {
         }
 
         public Builder font(Font font) {
-            settings.setFont(font);
+            parameters.setFont(font);
             return this;
         }
 
         public Builder fontSize(final Integer fontSize) {
-            settings.setFontSize(fontSize);
+            parameters.setFontSize(fontSize);
             return this;
         }
 
         public Builder textColor(final Color textColor) {
-            settings.setTextColor(textColor);
+            parameters.setTextColor(textColor);
             return this;
         }
 
         public Builder backgroundColor(final Color backgroundColor) {
-            settings.setBackgroundColor(backgroundColor);
+            parameters.setBackgroundColor(backgroundColor);
             return this;
         }
 
         public Builder borderWidth(final float borderWidth) {
-            settings.setBorderWidthTop(borderWidth);
-            settings.setBorderWidthBottom(borderWidth);
-            settings.setBorderWidthLeft(borderWidth);
-            settings.setBorderWidthRight(borderWidth);
+            parameters.setBorderWidthTop(borderWidth);
+            parameters.setBorderWidthBottom(borderWidth);
+            parameters.setBorderWidthLeft(borderWidth);
+            parameters.setBorderWidthRight(borderWidth);
             return this;
         }
 
         public Builder borderStyle(final BorderStyleInterface borderStyle) {
-            settings.setBorderStyleTop(borderStyle);
-            settings.setBorderStyleBottom(borderStyle);
-            settings.setBorderStyleLeft(borderStyle);
-            settings.setBorderStyleRight(borderStyle);
+            parameters.setBorderStyleTop(borderStyle);
+            parameters.setBorderStyleBottom(borderStyle);
+            parameters.setBorderStyleLeft(borderStyle);
+            parameters.setBorderStyleRight(borderStyle);
             return this;
         }
 
         public Builder padding(final float padding) {
-            settings.setPaddingTop(padding);
-            settings.setPaddingBottom(padding);
-            settings.setPaddingLeft(padding);
-            settings.setPaddingRight(padding);
+            parameters.setPaddingTop(padding);
+            parameters.setPaddingBottom(padding);
+            parameters.setPaddingLeft(padding);
+            parameters.setPaddingRight(padding);
             return this;
         }
 
         public Builder borderColor(final Color borderColor) {
-            settings.setBorderColor(borderColor);
+            parameters.setBorderColor(borderColor);
             return this;
         }
 
         public Builder horizontalAlignment(HorizontalAlignment alignment) {
-            settings.setHorizontalAlignment(alignment);
+            parameters.setHorizontalAlignment(alignment);
             return this;
         }
 
         public Builder verticalAlignment(VerticalAlignment alignment) {
-            settings.setVerticalAlignment(alignment);
+            parameters.setVerticalAlignment(alignment);
             return this;
         }
 
         public Builder wordBreak(Boolean wordBreak) {
-            settings.setWordBreak(wordBreak);
+            parameters.setWordBreak(wordBreak);
             return this;
         }
 
@@ -294,7 +294,7 @@ public class Table {
                         "This could be due to row or col spanning not being correct");
             }
             Table table = new Table(rows, columns, rowSpanCells);
-            table.setSettings(settings);
+            table.setSettings(parameters);
             table.setWidth(width);
             table.setNumberOfColumns(numberOfColumns);
             setupConnectionsBetweenElementsFor(table);
@@ -311,7 +311,7 @@ public class Table {
                 }
                 int columnIndex = 0;
                 for (AbstractCell cell : row.getCells()) {
-                    cell.getSettings().fillingMergeBy(row.getSettings());
+                    cell.getParameters().fillingMergeBy(row.getSettings());
                     cell.setRow(row);
                     while (table.isRowSpanAt(rowIndex, columnIndex)) {
                         columnIndex++;
