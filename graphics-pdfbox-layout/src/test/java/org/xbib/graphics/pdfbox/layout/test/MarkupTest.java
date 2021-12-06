@@ -68,6 +68,6 @@ public class MarkupTest {
         paragraph.addMarkup(text1, 11, BaseFont.TIMES);
         document.add(paragraph);
 
-        document.render().save( new FileOutputStream("build/markup.pdf"));
+        document.render().save( new FileOutputStream("build/markup.pdf")).close();
     }
 }

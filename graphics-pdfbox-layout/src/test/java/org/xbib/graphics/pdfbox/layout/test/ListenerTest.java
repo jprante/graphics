@@ -13,9 +13,8 @@ import org.xbib.graphics.pdfbox.layout.text.TextFlow;
 import org.xbib.graphics.pdfbox.layout.text.TextFlowUtil;
 import org.xbib.graphics.pdfbox.layout.text.TextSequenceUtil;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
 
-public class Listener {
+public class ListenerTest {
 
     @Test
     public void test() throws Exception {
@@ -71,9 +70,6 @@ public class Listener {
         document.add(paragraph);
         document.add(paragraph);
         document.add(paragraph);
-
-        final OutputStream outputStream = new FileOutputStream("build/listener.pdf");
-        document.render().save(outputStream);
-
+        document.render().save(new FileOutputStream("build/listener.pdf")).close();
     }
 }

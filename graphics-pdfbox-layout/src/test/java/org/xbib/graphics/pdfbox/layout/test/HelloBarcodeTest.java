@@ -14,7 +14,6 @@ import org.xbib.graphics.pdfbox.layout.font.BaseFont;
 import org.xbib.graphics.pdfbox.layout.text.Indent;
 import org.xbib.graphics.pdfbox.layout.text.SpaceUnit;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
 
 public class HelloBarcodeTest {
 
@@ -31,7 +30,6 @@ public class HelloBarcodeTest {
         symbol.setHumanReadableLocation(HumanReadableLocation.BOTTOM);
         BarcodeElement barcodeElement = new BarcodeElement(symbol);
         document.add(barcodeElement, new VerticalLayoutHint(Alignment.LEFT, 10, 10, 10, 10, true));
-        OutputStream outputStream = new FileOutputStream("build/hellobarcode.pdf");
-        document.render().save(outputStream);
+        document.render().save(new FileOutputStream("build/hellobarcode.pdf")).close();
     }
 }

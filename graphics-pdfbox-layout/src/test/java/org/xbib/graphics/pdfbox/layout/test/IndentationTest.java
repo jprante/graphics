@@ -13,7 +13,6 @@ import org.xbib.graphics.pdfbox.layout.util.Enumerators.LowerCaseAlphabeticEnume
 import org.xbib.graphics.pdfbox.layout.util.Enumerators.LowerCaseRomanEnumerator;
 import org.xbib.graphics.pdfbox.layout.util.Enumerators.RomanEnumerator;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
 
 public class IndentationTest {
 
@@ -21,7 +20,6 @@ public class IndentationTest {
     public void test() throws Exception {
         String bulletOdd = getBulletCharacter(1) + " ";
         String bulletEven = getBulletCharacter(2) + " ";
-
         Document document = new Document(40, 60, 40, 60);
         Paragraph paragraph = new Paragraph();
         paragraph.addMarkup("This is an example for the new indent feature. Let's do some empty space indentation:\n",
@@ -33,36 +31,27 @@ public class IndentationTest {
         paragraph.add(new Indent(70, SpaceUnit.pt));
         paragraph.addMarkup("any new indent comes.\n", 11, BaseFont.TIMES);
         document.add(paragraph);
-
         paragraph = new Paragraph();
         paragraph.addMarkup("New paragraph, now indentation is gone. But we can indent with a label also:\n", 11, BaseFont.TIMES);
         paragraph.addIndent("This is some label", 100, SpaceUnit.pt, 11, BaseFont.TIMES);
         paragraph.addMarkup("Here we go indented.\n", 11, BaseFont.TIMES);
         paragraph.addMarkup("And again, the Indentation holds for the rest of the paragraph, or any new indent comes.\nLabels can be aligned:\n", 11, BaseFont.TIMES);
         paragraph.addIndent("Left", 100, SpaceUnit.pt, 11, BaseFont.TIMES, Alignment.LEFT);
-                //PDType1Font.TIMES_BOLD, Alignment.LEFT));
         paragraph.addMarkup("Indent with label aligned to the left.\n", 11, BaseFont.TIMES);
         paragraph.addIndent("Center", 100, SpaceUnit.pt, 11, BaseFont.TIMES, Alignment.CENTER);
-                //PDType1Font.TIMES_BOLD, Alignment.CENTER));
         paragraph.addMarkup("Indent with label aligned to the center.\n", 11, BaseFont.TIMES);
         paragraph.addIndent("Right", 100, SpaceUnit.pt, 11, BaseFont.TIMES, Alignment.RIGHT);
-                //PDType1Font.TIMES_BOLD, Alignment.RIGHT));
         paragraph.addMarkup("Indent with label aligned to the right.\n", 11, BaseFont.TIMES);
         document.add(paragraph);
-
         paragraph = new Paragraph();
         paragraph.addMarkup("So, what can you do with that? How about lists:\n", 11, BaseFont.TIMES);
         paragraph.addIndent(bulletOdd, 4, SpaceUnit.em, 11, BaseFont.TIMES, Alignment.RIGHT);
-                //PDType1Font.TIMES_BOLD, Alignment.RIGHT));
         paragraph.addMarkup("This is a list item\n", 11, BaseFont.TIMES);
         paragraph.addIndent(bulletOdd, 4, SpaceUnit.em, 11, BaseFont.TIMES, Alignment.RIGHT);
-                //PDType1Font.TIMES_BOLD, Alignment.RIGHT));
         paragraph.addMarkup("Another list item\n", 11, BaseFont.TIMES);
         paragraph.addIndent(bulletEven, 8, SpaceUnit.em, 11, BaseFont.TIMES, Alignment.RIGHT);
-                //PDType1Font.TIMES_BOLD, Alignment.RIGHT));
         paragraph.addMarkup("Sub list item\n", 11, BaseFont.TIMES);
         paragraph.addIndent(bulletOdd, 4, SpaceUnit.em, 11, BaseFont.TIMES, Alignment.RIGHT);
-                //PDType1Font.TIMES_BOLD, Alignment.RIGHT));
         paragraph.addMarkup("And yet another one\n", 11, BaseFont.TIMES);
         document.add(paragraph);
 
@@ -71,19 +60,14 @@ public class IndentationTest {
         RomanEnumerator e1 = new RomanEnumerator();
         LowerCaseAlphabeticEnumerator e2 = new LowerCaseAlphabeticEnumerator();
         paragraph.addIndent(e1.next() + ". ", 4, SpaceUnit.em, 11, BaseFont.TIMES, Alignment.RIGHT);
-                //PDType1Font.TIMES_BOLD, Alignment.RIGHT));
         paragraph.addMarkup("First item\n", 11, BaseFont.TIMES);
         paragraph.addIndent(e1.next() + ". ", 4, SpaceUnit.em, 11, BaseFont.TIMES, Alignment.RIGHT);
-                //PDType1Font.TIMES_BOLD, Alignment.RIGHT));
         paragraph.addMarkup("Second item\n", 11, BaseFont.TIMES);
         paragraph.addIndent(e2.next() + ") ", 8, SpaceUnit.em, 11, BaseFont.TIMES, Alignment.RIGHT);
-                //PDType1Font.TIMES_BOLD, Alignment.RIGHT));
         paragraph.addMarkup("A sub item\n", 11, BaseFont.TIMES);
         paragraph.addIndent(e2.next() + ") ", 8, SpaceUnit.em, 11, BaseFont.TIMES, Alignment.RIGHT);
-                //PDType1Font.TIMES_BOLD, Alignment.RIGHT));
         paragraph.addMarkup("Another sub item\n", 11, BaseFont.TIMES);
         paragraph.addIndent(e1.next() + ". ", 4, SpaceUnit.em, 11, BaseFont.TIMES, Alignment.RIGHT);
-                //PDType1Font.TIMES_BOLD, Alignment.RIGHT));
         paragraph.addMarkup("Third item\n", 11, BaseFont.TIMES);
         document.add(paragraph);
 
@@ -91,23 +75,17 @@ public class IndentationTest {
         paragraph.addMarkup("The following types are built in:\n", 11,
                 BaseFont.TIMES);
         paragraph.addIndent(new ArabicEnumerator().next() + " ", 4, SpaceUnit.em, 11, BaseFont.TIMES, Alignment.RIGHT);
-                //PDType1Font.TIMES_BOLD, Alignment.RIGHT));
         paragraph.addMarkup("ArabicEnumerator\n", 11, BaseFont.TIMES);
         paragraph.addIndent(new RomanEnumerator().next() + " ", 4, SpaceUnit.em, 11, BaseFont.TIMES, Alignment.RIGHT);
-                //PDType1Font.TIMES_BOLD, Alignment.RIGHT));
         paragraph.addMarkup("RomanEnumerator\n", 11, BaseFont.TIMES);
         paragraph.addIndent(new LowerCaseRomanEnumerator().next() + " ", 4, SpaceUnit.em, 11, BaseFont.TIMES, Alignment.RIGHT);
-                //PDType1Font.TIMES_BOLD, Alignment.RIGHT));
         paragraph.addMarkup("LowerCaseRomanEnumerator\n", 11, BaseFont.TIMES);
         paragraph.addIndent(new AlphabeticEnumerator().next() + " ", 4, SpaceUnit.em, 11, BaseFont.TIMES, Alignment.RIGHT);
-                //PDType1Font.TIMES_BOLD, Alignment.RIGHT));
         paragraph.addMarkup("AlphabeticEnumerator\n", 11, BaseFont.TIMES);
         paragraph.addIndent(new LowerCaseAlphabeticEnumerator().next() + " ", 4, SpaceUnit.em, 11, BaseFont.TIMES, Alignment.RIGHT);
-                //PDType1Font.TIMES_BOLD, Alignment.RIGHT));
         paragraph.addMarkup("LowerCaseAlphabeticEnumerator\n", 11,
                 BaseFont.TIMES);
         document.add(paragraph);
-
         paragraph = new Paragraph();
         String text1 = "For your convenience, you can do all that much easier with markup, e.g. simple indentation\n"
                 + "--At vero eos et accusam\n\n"
@@ -128,8 +106,7 @@ public class IndentationTest {
                 + "-#{I ->:5}And yet another one\n\n";
         paragraph.addMarkup(text1, 11, BaseFont.TIMES);
         document.add(paragraph);
-
-        document.render().save(new FileOutputStream("build/indentation.pdf"));
+        document.render().save(new FileOutputStream("build/indentation.pdf")).close();
     }
 
     private static String getBulletCharacter(final int level) {

@@ -79,7 +79,6 @@ public class ColumnsTest {
         document.add(paragraph3);
         document.add(paragraph2);
         document.add(paragraph2);
-        final OutputStream outputStream = new FileOutputStream("build/columns.pdf");
-        document.render().save(outputStream);
+        document.render().save(new FileOutputStream("build/columns.pdf")).close();
     }
 }

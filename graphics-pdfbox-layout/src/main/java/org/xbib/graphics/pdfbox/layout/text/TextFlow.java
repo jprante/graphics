@@ -72,24 +72,19 @@ public class TextFlow implements TextSequence, WidthRespecting {
         add(TextFlowUtil.createTextFlow(text, new FontDescriptor(font, fontSize)));
     }
 
-    /**
-     * Adds some markup to the text flow.
-     *
-     * @param markup   the markup to add.
-     * @param fontSize the font size to use.
-     * @param font the font
-     */
+    public void addMarkup(String markup, FontDescriptor fontDescriptor) {
+        add(TextFlowUtil.createTextFlowFromMarkup(markup, fontDescriptor));
+    }
+
     public void addMarkup(String markup, float fontSize, Font font) {
         add(TextFlowUtil.createTextFlowFromMarkup(markup, new FontDescriptor(font, fontSize)));
     }
 
-    public void addIndent(String label, float indentWidth, SpaceUnit indentUnit,
-                          float fontsize, Font font) {
+    public void addIndent(String label, float indentWidth, SpaceUnit indentUnit, float fontsize, Font font) {
         add(new Indent(label, indentWidth, indentUnit, new FontDescriptor(font, fontsize)));
     }
 
-    public void addIndent(String label, float indentWidth, SpaceUnit indentUnit,
-                          float fontsize, Font font, Alignment alignment) {
+    public void addIndent(String label, float indentWidth, SpaceUnit indentUnit, float fontsize, Font font, Alignment alignment) {
         add(new Indent(label, indentWidth, indentUnit, new FontDescriptor(font, fontsize), alignment));
     }
 

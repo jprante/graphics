@@ -198,10 +198,12 @@ public class Document implements Closeable, RenderListener {
         return this;
     }
 
-    public synchronized void save(OutputStream outputStream) throws IOException {
-        if (pdDocument != null) {
+    public synchronized Document save(OutputStream outputStream) throws IOException {
+        if (pdDocument != null && outputStream != null) {
             pdDocument.save(outputStream);
+            outputStream.close();
         }
+        return this;
     }
 
     @Override

@@ -22,9 +22,8 @@ import org.xbib.graphics.pdfbox.layout.text.TextSequenceUtil;
 import java.awt.Color;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 
-public class CustomRenderer {
+public class CustomRendererTest {
 
     @Test
     public void test() throws Exception {
@@ -67,10 +66,7 @@ public class CustomRenderer {
         document.add(new Section(3));
         document.add(paragraph);
         document.add(paragraph);
-
-        final OutputStream outputStream = new FileOutputStream("build/customrenderer.pdf");
-        document.render().save(outputStream);
-
+        document.render().save(new FileOutputStream("build/customrenderer.pdf")).close();
     }
 
     public static class SectionRenderer implements Renderer, RenderListener {

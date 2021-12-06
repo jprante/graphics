@@ -1,5 +1,6 @@
 package org.xbib.graphics.pdfbox.layout.text;
 
+import org.xbib.graphics.pdfbox.layout.font.BaseFont;
 import org.xbib.graphics.pdfbox.layout.font.FontDescriptor;
 import java.awt.Color;
 import java.io.IOException;
@@ -10,10 +11,12 @@ import java.io.UncheckedIOException;
  */
 public class Indent extends ControlFragment {
 
+    public static final FontDescriptor DEFAULT_FONT_DESCRIPTOR = new FontDescriptor(BaseFont.HELVETICA, 11);
+
     /**
      * Constant for the indentation of 0.
      */
-    public final static Indent UNINDENT = new Indent(0);
+    public static final Indent UNINDENT = new Indent(0);
 
     protected Alignment alignment = Alignment.LEFT;
 
@@ -31,7 +34,7 @@ public class Indent extends ControlFragment {
 
     /**
      * Creates a new line with the
-     * {@link ControlFragment#DEFAULT_FONT_DESCRIPTOR}'s font and the given
+     * {@link #DEFAULT_FONT_DESCRIPTOR}'s font and the given
      * height.
      *
      * @param label       the label of the indentation.
@@ -45,7 +48,7 @@ public class Indent extends ControlFragment {
 
     /**
      * Creates a new line with the
-     * {@link ControlFragment#DEFAULT_FONT_DESCRIPTOR}'s font and the given
+     * {@link #DEFAULT_FONT_DESCRIPTOR}'s font and the given
      * height.
      *
      * @param label       the label of the indentation.

@@ -7,7 +7,6 @@ import org.xbib.graphics.pdfbox.layout.elements.Paragraph;
 import org.xbib.graphics.pdfbox.layout.elements.render.ColumnLayout;
 import org.xbib.graphics.pdfbox.layout.font.BaseFont;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
 
 public class LineSpacingTest {
 
@@ -44,9 +43,6 @@ public class LineSpacingTest {
 
         document.add(right);
         document.add(right);
-
-        final OutputStream outputStream = new FileOutputStream("build/linespacing.pdf");
-        document.render().save(outputStream);
-
+        document.render().save(new FileOutputStream("build/linespacing.pdf")).close();
     }
 }

@@ -12,13 +12,13 @@ public class NotoSansFont implements Font {
 
     private final PDDocument pdDocument;
 
-    private static PDType0Font regular;
+    private PDType0Font regular;
 
-    private static PDType0Font bold;
+    private PDType0Font bold;
 
-    private static PDType0Font italic;
+    private PDType0Font italic;
 
-    private static PDType0Font bolditalic;
+    private PDType0Font bolditalic;
 
     public NotoSansFont(Document document) {
         this.pdDocument = document.getPdDocument();
@@ -27,7 +27,7 @@ public class NotoSansFont implements Font {
     @Override
     public PDFont getRegularFont() {
         if (regular == null) {
-           regular = load("NotoSans-Regular.ttf");
+            regular = load("NotoSans-Regular.ttf");
         }
         return regular;
     }

@@ -3,6 +3,8 @@ package org.xbib.graphics.pdfbox.layout.font;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
+import java.io.IOException;
+
 /**
  * In order to easy handling with fonts, this enum bundles the
  * plain/italic/bold/bold-italic variants of the three standard font types
@@ -54,5 +56,4 @@ public enum BaseFont implements Font {
     public PDFont getBoldItalicFont() {
         return boldItalicFont;
     }
-
 }

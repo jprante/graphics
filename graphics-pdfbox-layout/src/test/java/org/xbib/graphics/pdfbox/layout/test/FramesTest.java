@@ -38,7 +38,6 @@ public class FramesTest {
                 + "gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.\n";
 
         Document document = new Document(PageFormats.A5_PORTRAIT);
-
         Paragraph paragraph = new Paragraph();
         paragraph.addMarkup("Am I living in a box?", 11, BaseFont.TIMES);
         Frame frame = new Frame(paragraph);
@@ -47,7 +46,6 @@ public class FramesTest {
         frame.setPadding(10, 10, 5, 5);
         frame.setMargin(40, 40, 20, 10);
         document.add(frame, VerticalLayoutHint.CENTER);
-
         paragraph = new Paragraph();
         paragraph.addMarkup(text1, 11, BaseFont.TIMES);
         frame = new Frame(paragraph, 200f, null);
@@ -56,7 +54,6 @@ public class FramesTest {
         frame.setPadding(10, 10, 5, 5);
         frame.setMargin(40, 40, 20, 10);
         document.add(frame);
-
         paragraph = new Paragraph();
         paragraph.addMarkup("{color:#aa00aa}*Ain't no rectangle*", 22, BaseFont.HELVETICA);
         paragraph.setAlignment(Alignment.CENTER);
@@ -66,7 +63,6 @@ public class FramesTest {
         frame.setBackgroundColor(Color.pink);
         frame.setPadding(50, 0, 35, 0);
         document.add(frame);
-
         paragraph = new Paragraph();
         paragraph.addMarkup("Frames also paginate, see here:\n\n", 13, BaseFont.TIMES);
         paragraph.addMarkup(text2, 11, BaseFont.TIMES);
@@ -77,14 +73,11 @@ public class FramesTest {
         frame.setBackgroundColor(new Color(255, 240, 180));
         frame.setPadding(20, 15, 10, 15);
         frame.setMargin(50, 50, 20, 10);
-
         paragraph = new Paragraph();
         paragraph.addMarkup(text2, 11, BaseFont.TIMES);
         paragraph.addMarkup(text2, 11, BaseFont.TIMES);
         frame.add(paragraph);
-
         document.add(frame);
-
-        document.render().save(new FileOutputStream("build/frames.pdf"));
+        document.render().save(new FileOutputStream("build/frames.pdf")).close();
     }
 }

@@ -24,10 +24,34 @@
     },
     "paragraph2": {
       "text1": {
+        "value": "Hello World",
+        "size": 24,
+        "font": "HELVETICA"
+      }
+    },
+    "paragraph3": {
+      "text1": {
+        "value": "Hello World",
+        "size": 24,
+        "font": "HELVETICA"
+      }
+    },
+    "paragraph4": {
+      "type": "horizontalruler"
+    },
+    "paragraph5": {
+      "text1": {
         "value": "*Hello World*",
         "size": 16,
         "font": "NOTOSANS"
       }
     },
+    "paragraph6": {
+      "text1": {
+        "value": "*Hello World*",
+        "size": 20,
+        "font": "NOTOSANS"
+      }
+    }
   }
 }

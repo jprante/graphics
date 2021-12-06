@@ -4,7 +4,7 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import java.util.Objects;
 
 /**
- * Container for a Font and size.
+ * A descriptor for a font and a size, and activated attributes for font selection.
  */
 public class FontDescriptor {
 

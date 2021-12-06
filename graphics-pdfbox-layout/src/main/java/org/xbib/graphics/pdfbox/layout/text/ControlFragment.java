@@ -10,9 +10,6 @@ import java.awt.Color;
  */
 public class ControlFragment implements TextFragment {
 
-    protected final static FontDescriptor DEFAULT_FONT_DESCRIPTOR =
-            new FontDescriptor(BaseFont.HELVETICA, 11);
-
     private String name;
 
     private final String text;

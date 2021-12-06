@@ -2,14 +2,17 @@ package org.xbib.graphics.pdfbox.layout.script;
 
 import org.xbib.graphics.pdfbox.layout.elements.Document;
 import org.xbib.graphics.pdfbox.layout.elements.Paragraph;
-import org.xbib.graphics.pdfbox.layout.elements.PathElement;
+
+import java.util.Collection;
+import java.util.Stack;
 
 public class State {
 
-    public Document document;
+    public Stack<Document> documents = new Stack<>();
 
-    public Paragraph paragraph;
+    public Stack<Paragraph> paragraphs = new Stack<>();
 
-    public PathElement pathElement;
-
+    public Collection<Document> getDocuments() {
+        return documents;
+    }
 }

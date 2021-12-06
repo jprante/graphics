@@ -5,7 +5,6 @@ import org.xbib.graphics.pdfbox.layout.elements.Document;
 import org.xbib.graphics.pdfbox.layout.elements.Paragraph;
 import org.xbib.graphics.pdfbox.layout.font.BaseFont;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
 
 public class LinksTest {
 
@@ -51,22 +50,16 @@ public class LinksTest {
 
         Paragraph paragraph4 = new Paragraph();
         paragraph4.addMarkup("\n\n{anchor:hello}Here{anchor} comes the internal anchor named *hello*\n\n", 15, BaseFont.COURIER);
-
         document.add(paragraph1);
         document.add(paragraph3);
         document.add(paragraph1);
         document.add(paragraph2);
         document.add(paragraph1);
         document.add(paragraph3);
-
         document.add(paragraph4);
-
         document.add(paragraph2);
         document.add(paragraph1);
         document.add(paragraph1);
-
-        final OutputStream outputStream = new FileOutputStream("build/links.pdf");
-        document.render().save(outputStream);
-
+        document.render().save(new FileOutputStream("build/links.pdf")).close();
     }
 }

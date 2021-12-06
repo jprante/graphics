@@ -22,7 +22,7 @@ public class DocumentCommand implements Command {
                 .pageFormat(settings.get("format", "A4"))
                 .orientation(settings.get("orientiation", "PORTRAIT"))
                 .build();
-        state.document = new Document(pageFormat);
+        state.documents.push(new Document(pageFormat));
         engine.execute("image", state, settings);
         engine.execute("barcode", state, settings);
         engine.execute("path", state, settings);

@@ -26,6 +26,6 @@ public class ImageCommand implements Command {
         if (settings.containsSetting("scale")) {
             element.setScale(settings.getAsFloat("scale", element.getScale()));
         }
-        state.document.add(element, new VerticalLayoutHint(Alignment.LEFT, 10, 10, 10, 10, true));
+        state.documents.peek().add(element, new VerticalLayoutHint(Alignment.LEFT, 10, 10, 10, 10, true));
     }
 }

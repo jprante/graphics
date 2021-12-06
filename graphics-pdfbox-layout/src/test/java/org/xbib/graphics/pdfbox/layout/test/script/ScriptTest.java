@@ -11,11 +11,14 @@ public class ScriptTest {
 
     @Test
     public void script() throws Exception {
-        Settings settings = Settings.settingsBuilder().loadFromResource("json", getClass().getResourceAsStream("script.json"))
+        Settings settings = Settings.settingsBuilder()
+                .loadFromResource("json", getClass().getResourceAsStream("script.json"))
                 .build();
         Engine engine = new Engine();
         engine.execute(settings);
-        Document document = engine.getState().document;
-        document.render().save(new FileOutputStream("build/script.pdf"));
+        for (Document document : engine.getState().getDocuments()) {
+            document.render().save(new FileOutputStream("build/script.pdf")).close();
+        }
+        engine.close();
     }
 }

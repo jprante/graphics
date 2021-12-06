@@ -68,6 +68,6 @@ public class MultiplePagesTest {
         document.add(paragraph2);
         document.add(paragraph2);
 
-        document.render().save(new FileOutputStream("build/multiplepages.pdf"));
+        document.render().save(new FileOutputStream("build/multiplepages.pdf")).close();
     }
 }

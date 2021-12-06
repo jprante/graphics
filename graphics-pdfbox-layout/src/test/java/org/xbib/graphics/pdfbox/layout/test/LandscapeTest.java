@@ -12,7 +12,7 @@ import org.xbib.graphics.pdfbox.layout.elements.render.VerticalLayoutHint;
 import org.xbib.graphics.pdfbox.layout.font.BaseFont;
 import java.io.FileOutputStream;
 
-public class Landscape {
+public class LandscapeTest {
 
     @Test
     public void main() throws Exception {
@@ -103,6 +103,6 @@ public class Landscape {
         document.add(paragraph2);
         document.add(paragraph3);
 
-        document.render().save(new FileOutputStream("build/landscape.pdf"));
+        document.render().save(new FileOutputStream("build/landscape.pdf")).close();
     }
 }

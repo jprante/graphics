@@ -108,6 +108,6 @@ public class RotationTest {
         document.add(paragraph2);
         document.add(paragraph3);
 
-        document.render().save(new FileOutputStream("build/rotation.pdf"));
+        document.render().save(new FileOutputStream("build/rotation.pdf")).close();
     }
 }

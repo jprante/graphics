@@ -7,9 +7,8 @@ import org.xbib.graphics.pdfbox.layout.elements.render.VerticalLayoutHint;
 import org.xbib.graphics.pdfbox.layout.text.Alignment;
 import org.xbib.graphics.pdfbox.layout.font.BaseFont;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
 
-public class Margin {
+public class MarginTest {
 
     @Test
     public void test() throws Exception {
@@ -50,9 +49,6 @@ public class Margin {
         paragraph.addText(text3, 11, BaseFont.HELVETICA);
         document.add(paragraph, new VerticalLayoutHint(Alignment.RIGHT, 150,
                 150, 20, 0));
-
-        final OutputStream outputStream = new FileOutputStream("build/margin.pdf");
-        document.render().save(outputStream);
-
+        document.render().save(new FileOutputStream("build/margin.pdf")).close();
     }
 }

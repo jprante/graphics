@@ -19,7 +19,6 @@ import org.xbib.graphics.pdfbox.layout.text.TextSequenceUtil;
 import org.xbib.graphics.pdfbox.layout.text.annotations.AnnotationDrawListener;
 import java.awt.Color;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
 
 public class LowLevelText {
 
@@ -103,11 +102,8 @@ public class LowLevelText {
 
         annotationDrawListener.afterPage(null);
         contentStream.close();
-
         annotationDrawListener.afterRender();
-
-        final OutputStream outputStream = new FileOutputStream("build/lowleveltext.pdf");
-        pdDocument.save(outputStream);
+        pdDocument.save(new FileOutputStream("build/lowleveltext.pdf"));
         pdDocument.close();
     }
 }

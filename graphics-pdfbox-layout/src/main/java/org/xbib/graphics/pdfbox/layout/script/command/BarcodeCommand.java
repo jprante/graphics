@@ -36,6 +36,6 @@ public class BarcodeCommand implements Command {
         if (settings.containsSetting("scale")) {
             element.setScale(settings.getAsFloat("scale", element.getScale()));
         }
-        state.document.add(element);
+        state.documents.peek().add(element);
     }
 }

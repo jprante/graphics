@@ -12,10 +12,9 @@ import org.xbib.graphics.pdfbox.layout.text.Position;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
 import javax.imageio.ImageIO;
 
-public class Letter {
+public class LetterTest {
 
     @Test
     public void test() throws Exception {
@@ -80,6 +79,6 @@ public class Letter {
         paragraph.setAbsolutePosition(new Position(hMargin, vMargin));
         document.add(paragraph);
 
-        document.render().save(new FileOutputStream("build/letter.pdf"));
+        document.render().save(new FileOutputStream("build/letter.pdf")).close();
     }
 }
