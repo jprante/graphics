@@ -5,7 +5,7 @@ import static org.xbib.graphics.pdfbox.layout.table.HorizontalAlignment.JUSTIFY;
 import static org.xbib.graphics.pdfbox.layout.table.HorizontalAlignment.RIGHT;
 import org.xbib.graphics.pdfbox.layout.font.Font;
 import org.xbib.graphics.pdfbox.layout.table.AbstractTextCell;
-import org.xbib.graphics.pdfbox.layout.table.PdfUtil;
+import org.xbib.graphics.pdfbox.layout.util.PdfUtil;
 
 import java.awt.Color;
 import java.io.IOException;

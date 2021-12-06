@@ -11,6 +11,11 @@ public class ControlElement implements Element {
      */
     public final static ControlElement NEWPAGE = new ControlElement("NEWPAGE");
 
+    /**
+     * Triggers flip to the next column.
+     */
+    public final static ControlElement NEWCOLUMN = new ControlElement("NEWCOLUMN");
+
     private final String name;
 
     public ControlElement(final String name) {

@@ -24,8 +24,7 @@ public class Rectangle extends Dimension {
 
     @Override
     public String toString() {
-        return "Rectangle [x=" + x + ", y=" + y + ", width=" + getWidth()
-                + ", height=" + getHeight() + "]";
+        return "Rectangle [x=" + x + ", y=" + y + ", width=" + getWidth() + ", height=" + getHeight() + "]";
     }
 
     @Override
@@ -54,5 +53,4 @@ public class Rectangle extends Dimension {
         }
         return Float.floatToIntBits(y) == Float.floatToIntBits(other.y);
     }
-
 }

@@ -98,7 +98,7 @@ public class Frame implements Element, Drawable, WidthRespecting, Dividable {
     /**
      * Adds a drawable to the frame.
      *
-     * @param drawable
+     * @param drawable the drawable
      */
     public void add(final Drawable drawable) {
         innerList.add(drawable);
@@ -154,8 +154,7 @@ public class Frame implements Element, Drawable, WidthRespecting, Dividable {
      * stroke} and {@link #getBorderColor() color} is set.
      */
     protected boolean hasBorder() {
-        return getShape() != null && getBorderStroke() != null
-                && getBorderColor() != null;
+        return getShape() != null && getBorderStroke() != null && getBorderColor() != null;
     }
 
     /**
@@ -490,11 +489,9 @@ public class Frame implements Element, Drawable, WidthRespecting, Dividable {
     private void setMaxWidth(final Drawable inner, float maxWidth) {
         if (inner instanceof WidthRespecting) {
             if (getGivenWidth() != null) {
-                ((WidthRespecting) inner).setMaxWidth(getGivenWidth()
-                        - getHorizontalShapeSpacing());
+                ((WidthRespecting) inner).setMaxWidth(getGivenWidth() - getHorizontalShapeSpacing());
             } else if (maxWidth >= 0) {
-                ((WidthRespecting) inner).setMaxWidth(maxWidth
-                        - getHorizontalSpacing());
+                ((WidthRespecting) inner).setMaxWidth(maxWidth - getHorizontalSpacing());
             }
         }
     }
@@ -514,22 +511,15 @@ public class Frame implements Element, Drawable, WidthRespecting, Dividable {
     @Override
     public void draw(PDDocument pdDocument, PDPageContentStream contentStream,
                      Position upperLeft, DrawListener drawListener) throws IOException {
-
         setInnerMaxWidthIfNecessary();
-
         float halfBorderWidth = 0;
         if (getBorderWidth() > 0) {
             halfBorderWidth = getBorderWidth() / 2f;
         }
-        upperLeft = upperLeft.add(getMarginLeft() + halfBorderWidth,
-                -getMarginTop() - halfBorderWidth);
-
+        upperLeft = upperLeft.add(getMarginLeft() + halfBorderWidth, -getMarginTop() - halfBorderWidth);
         if (getShape() != null) {
-            float shapeWidth = getWidth() - getMarginLeft() - getMarginRight()
-                    - getBorderWidth();
-            float shapeHeight = getHeight() - getMarginTop()
-                    - getMarginBottom() - getBorderWidth();
-
+            float shapeWidth = getWidth() - getMarginLeft() - getMarginRight() - getBorderWidth();
+            float shapeHeight = getHeight() - getMarginTop() - getMarginBottom() - getBorderWidth();
             if (getBackgroundColor() != null) {
                 getShape().fill(pdDocument, contentStream, upperLeft,
                         shapeWidth, shapeHeight, getBackgroundColor(),
@@ -541,10 +531,7 @@ public class Frame implements Element, Drawable, WidthRespecting, Dividable {
                         getBorderStroke(), drawListener);
             }
         }
-
-        Position innerUpperLeft = upperLeft.add(getPaddingLeft()
-                + halfBorderWidth, -getPaddingTop() - halfBorderWidth);
-
+        Position innerUpperLeft = upperLeft.add(getPaddingLeft() + halfBorderWidth, -getPaddingTop() - halfBorderWidth);
         for (Drawable inner : innerList) {
             inner.draw(pdDocument, contentStream, innerUpperLeft, drawListener);
             innerUpperLeft = innerUpperLeft.add(0, -inner.getHeight());
@@ -562,23 +549,16 @@ public class Frame implements Element, Drawable, WidthRespecting, Dividable {
     }
 
     @Override
-    public Divided divide(float remainingHeight, float nextPageHeight)
-            throws IOException {
+    public Divided divide(float remainingHeight, float nextPageHeight) throws IOException {
         setInnerMaxWidthIfNecessary();
-
         if (remainingHeight - getVerticalSpacing() <= 0) {
             return new Divided(new VerticalSpacer(remainingHeight), this);
         }
-
         // find first inner that does not fit on page
         float spaceLeft = remainingHeight - getVerticalSpacing();
-
         DividedList dividedList = divideList(innerList, spaceLeft);
-
-        float spaceLeftForDivided = spaceLeft
-                - getHeight(dividedList.getHead());
+        float spaceLeftForDivided = spaceLeft - getHeight(dividedList.getHead());
         Divided divided = null;
-
         if (dividedList.getDrawableToDivide() != null) {
             Dividable innerDividable = null;
             if (dividedList.getDrawableToDivide() instanceof Dividable) {
@@ -590,11 +570,9 @@ public class Frame implements Element, Drawable, WidthRespecting, Dividable {
             divided = innerDividable.divide(spaceLeftForDivided, nextPageHeight
                     - getVerticalSpacing());
         }
-
         Float firstHeight = getGivenHeight() == null ? null : remainingHeight;
         Float tailHeight = getGivenHeight() == null ? null : getGivenHeight()
                 - spaceLeft;
-
         // create head sub frame
         Frame first = new Frame(getGivenWidth(), firstHeight);
         copyAllButInnerAndSizeTo(first);
@@ -604,7 +582,6 @@ public class Frame implements Element, Drawable, WidthRespecting, Dividable {
         if (divided != null) {
             first.add(divided.getFirst());
         }
-
         // create tail sub frame
         Frame tail = new Frame(getGivenWidth(), tailHeight);
         copyAllButInnerAndSizeTo(tail);
@@ -614,21 +591,17 @@ public class Frame implements Element, Drawable, WidthRespecting, Dividable {
         if (dividedList.getTail() != null) {
             tail.addAll(dividedList.getTail());
         }
-
         return new Divided(first, tail);
     }
 
-    private DividedList divideList(List<Drawable> items, float spaceLeft)
-            throws IOException {
+    private DividedList divideList(List<Drawable> items, float spaceLeft) throws IOException {
         List<Drawable> head = null;
         List<Drawable> tail = null;
         Drawable toDivide = null;
-
         float tmpHeight = 0;
         int index = 0;
         while (tmpHeight < spaceLeft) {
             tmpHeight += items.get(index).getHeight();
-
             if (tmpHeight == spaceLeft) {
                 // we can split between two drawables
                 head = items.subList(0, index + 1);
@@ -636,7 +609,6 @@ public class Frame implements Element, Drawable, WidthRespecting, Dividable {
                     tail = items.subList(index + 1, items.size());
                 }
             }
-
             if (tmpHeight > spaceLeft) {
                 head = items.subList(0, index);
                 toDivide = items.get(index);
@@ -644,10 +616,8 @@ public class Frame implements Element, Drawable, WidthRespecting, Dividable {
                     tail = items.subList(index + 1, items.size());
                 }
             }
-
             ++index;
         }
-
         return new DividedList(head, toDivide, tail);
     }
 
@@ -674,7 +644,5 @@ public class Frame implements Element, Drawable, WidthRespecting, Dividable {
         public List<Drawable> getTail() {
             return tail;
         }
-
     }
-
 }

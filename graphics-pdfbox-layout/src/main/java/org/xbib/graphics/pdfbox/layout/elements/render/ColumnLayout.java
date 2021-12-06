@@ -13,17 +13,12 @@ import java.io.IOException;
  */
 public class ColumnLayout extends VerticalLayout {
 
-    /**
-     * Triggers flip to the next column.
-     */
-    public final static ControlElement NEWCOLUMN = new ControlElement("NEWCOLUMN");
-
-
     private final int columnCount;
+
     private final float columnSpacing;
+
     private int columnIndex = 0;
     private Float offsetY = null;
-
 
     public ColumnLayout(int columnCount) {
         this(columnCount, 0);
@@ -65,7 +60,7 @@ public class ColumnLayout extends VerticalLayout {
             renderContext.newPage();
             return true;
         }
-        if (element == NEWCOLUMN) {
+        if (element == ControlElement.NEWCOLUMN) {
             turnPage(renderContext);
             return true;
         }

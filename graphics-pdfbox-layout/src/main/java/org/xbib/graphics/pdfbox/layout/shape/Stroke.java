@@ -2,7 +2,6 @@ package org.xbib.graphics.pdfbox.layout.shape;
 
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import java.io.IOException;
-import java.util.Arrays;
 
 /**
  * This is a container for all information needed to perform a stroke.

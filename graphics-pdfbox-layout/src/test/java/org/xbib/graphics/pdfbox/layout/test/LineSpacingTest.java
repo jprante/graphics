@@ -1,6 +1,7 @@
 package org.xbib.graphics.pdfbox.layout.test;
 
 import org.junit.jupiter.api.Test;
+import org.xbib.graphics.pdfbox.layout.elements.ControlElement;
 import org.xbib.graphics.pdfbox.layout.elements.Document;
 import org.xbib.graphics.pdfbox.layout.elements.Paragraph;
 import org.xbib.graphics.pdfbox.layout.elements.render.ColumnLayout;
@@ -34,7 +35,7 @@ public class LineSpacingTest {
         document.add(left);
         document.add(left);
         document.add(left);
-        document.add(ColumnLayout.NEWCOLUMN);
+        document.add(ControlElement.NEWCOLUMN);
         Paragraph right = new Paragraph();
         right.setLineSpacing(1.5f);
         right.setMaxWidth(document.getPageWidth() / 2);

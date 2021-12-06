@@ -34,7 +34,7 @@ public class Enumerators {
         }
 
         @Override
-        public String getDefaultSeperator() {
+        public String getDefaultSeparator() {
             return ".";
         }
     }
@@ -49,8 +49,7 @@ public class Enumerators {
      * c) Stet clita ...
      * </pre>
      */
-    public static class LowerCaseAlphabeticEnumerator extends
-            AlphabeticEnumerator {
+    public static class LowerCaseAlphabeticEnumerator extends AlphabeticEnumerator {
 
         public LowerCaseAlphabeticEnumerator() {
             super();
@@ -98,7 +97,7 @@ public class Enumerators {
         }
 
         @Override
-        public String getDefaultSeperator() {
+        public String getDefaultSeparator() {
             return ")";
         }
 
@@ -173,7 +172,7 @@ public class Enumerators {
         }
 
         @Override
-        public String getDefaultSeperator() {
+        public String getDefaultSeparator() {
             return ".";
         }
 
@@ -181,60 +180,60 @@ public class Enumerators {
             if (input < 1 || input > 3999) {
                 return "Invalid Roman Number Value";
             }
-            String s = "";
+            StringBuilder s = new StringBuilder();
             while (input >= 1000) {
-                s += "M";
+                s.append("M");
                 input -= 1000;
             }
             while (input >= 900) {
-                s += "CM";
+                s.append("CM");
                 input -= 900;
             }
             while (input >= 500) {
-                s += "D";
+                s.append("D");
                 input -= 500;
             }
             while (input >= 400) {
-                s += "CD";
+                s.append("CD");
                 input -= 400;
             }
             while (input >= 100) {
-                s += "C";
+                s.append("C");
                 input -= 100;
             }
             while (input >= 90) {
-                s += "XC";
+                s.append("XC");
                 input -= 90;
             }
             while (input >= 50) {
-                s += "L";
+                s.append("L");
                 input -= 50;
             }
             while (input >= 40) {
-                s += "XL";
+                s.append("XL");
                 input -= 40;
             }
             while (input >= 10) {
-                s += "X";
+                s.append("X");
                 input -= 10;
             }
             while (input >= 9) {
-                s += "IX";
+                s.append("IX");
                 input -= 9;
             }
             while (input >= 5) {
-                s += "V";
+                s.append("V");
                 input -= 5;
             }
             while (input >= 4) {
-                s += "IV";
+                s.append("IV");
                 input -= 4;
             }
             while (input >= 1) {
-                s += "I";
+                s.append("I");
                 input -= 1;
             }
-            return s;
+            return s.toString();
         }
     }
 

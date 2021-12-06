@@ -13,8 +13,6 @@ public class Rect extends AbstractShape {
     @Override
     public void add(PDDocument pdDocument, PDPageContentStream contentStream,
                     Position upperLeft, float width, float height) throws IOException {
-        contentStream.addRect(upperLeft.getX(), upperLeft.getY() - height,
-                width, height);
+        contentStream.addRect(upperLeft.getX(), upperLeft.getY() - height, width, height);
     }
-
 }

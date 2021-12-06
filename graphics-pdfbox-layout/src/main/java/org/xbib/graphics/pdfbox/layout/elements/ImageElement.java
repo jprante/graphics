@@ -7,8 +7,12 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.xbib.graphics.pdfbox.layout.text.DrawListener;
 import org.xbib.graphics.pdfbox.layout.text.Position;
 import org.xbib.graphics.pdfbox.layout.text.WidthRespecting;
+
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Base64;
 
 public class ImageElement implements Element, Drawable, Dividable, WidthRespecting {
 
@@ -24,9 +28,15 @@ public class ImageElement implements Element, Drawable, Dividable, WidthRespecti
 
     private float height;
 
+    private float scale;
+
     private float maxWidth = -1;
 
     private Position absolutePosition;
+
+    public ImageElement(String base64) throws IOException {
+        this(ImageIO.read(new ByteArrayInputStream(Base64.getDecoder().decode(base64))));
+    }
 
     public ImageElement(BufferedImage image) {
         this.image = image;
@@ -35,19 +45,13 @@ public class ImageElement implements Element, Drawable, Dividable, WidthRespecti
     }
 
     public void setScale(float scale) {
+        this.scale = scale;
         setWidth(width * scale);
         setHeight(height * scale);
     }
 
-    @Override
-    public float getWidth() throws IOException {
-        if (width == SCALE_TO_RESPECT_WIDTH) {
-            if (getMaxWidth() > 0 && image.getWidth() > getMaxWidth()) {
-                return getMaxWidth();
-            }
-            return image.getWidth();
-        }
-        return width;
+    public float getScale() {
+        return scale;
     }
 
     /**
@@ -62,15 +66,14 @@ public class ImageElement implements Element, Drawable, Dividable, WidthRespecti
     }
 
     @Override
-    public float getHeight() throws IOException {
-        if (height == SCALE_TO_RESPECT_WIDTH) {
+    public float getWidth() throws IOException {
+        if (width == SCALE_TO_RESPECT_WIDTH) {
             if (getMaxWidth() > 0 && image.getWidth() > getMaxWidth()) {
-                return getMaxWidth() / (float) image.getWidth()
-                        * (float) image.getHeight();
+                return getMaxWidth();
             }
-            return image.getHeight();
+            return image.getWidth();
         }
-        return height;
+        return width;
     }
 
     /**
@@ -86,8 +89,18 @@ public class ImageElement implements Element, Drawable, Dividable, WidthRespecti
     }
 
     @Override
-    public Divided divide(float remainingHeight, float nextPageHeight)
-            throws IOException {
+    public float getHeight() throws IOException {
+        if (height == SCALE_TO_RESPECT_WIDTH) {
+            if (getMaxWidth() > 0 && image.getWidth() > getMaxWidth()) {
+                return getMaxWidth() / (float) image.getWidth() * (float) image.getHeight();
+            }
+            return image.getHeight();
+        }
+        return height;
+    }
+
+    @Override
+    public Divided divide(float remainingHeight, float nextPageHeight) throws IOException {
         if (getHeight() <= nextPageHeight) {
             return new Divided(new VerticalSpacer(remainingHeight), this);
         }

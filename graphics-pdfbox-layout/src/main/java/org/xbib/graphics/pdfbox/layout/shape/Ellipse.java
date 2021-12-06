@@ -20,7 +20,6 @@ public class Ellipse extends RoundRect {
     protected void addRoundRect(PDPageContentStream contentStream,
                                 Position upperLeft, float width, float height, float cornerRadiusX,
                                 float cornerRadiusY) throws IOException {
-        super.addRoundRect(contentStream, upperLeft, width, height, width / 2f,
-                height / 2);
+        super.addRoundRect(contentStream, upperLeft, width, height, width / 2f, height / 2);
     }
 }

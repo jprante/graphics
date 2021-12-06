@@ -1,6 +1,7 @@
-package org.xbib.graphics.pdfbox.layout.table;
+package org.xbib.graphics.pdfbox.layout.util;
 
 import org.xbib.graphics.pdfbox.layout.font.Font;
+import org.xbib.graphics.pdfbox.layout.table.CouldNotDetermineStringWidthException;
 
 import java.io.IOException;
 import java.util.ArrayList;

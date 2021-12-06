@@ -3,7 +3,7 @@ package org.xbib.graphics.pdfbox.layout.table.render;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.util.Matrix;
 import org.xbib.graphics.pdfbox.layout.font.Font;
-import org.xbib.graphics.pdfbox.layout.table.PdfUtil;
+import org.xbib.graphics.pdfbox.layout.util.PdfUtil;
 import org.xbib.graphics.pdfbox.layout.table.VerticalTextCell;
 
 import java.awt.Color;

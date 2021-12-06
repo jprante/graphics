@@ -17,7 +17,7 @@ import org.xbib.graphics.pdfbox.layout.table.BorderStyle;
 import org.xbib.graphics.pdfbox.layout.table.Column;
 import org.xbib.graphics.pdfbox.layout.table.HorizontalAlignment;
 import org.xbib.graphics.pdfbox.layout.table.ImageCell;
-import org.xbib.graphics.pdfbox.layout.table.PdfUtil;
+import org.xbib.graphics.pdfbox.layout.util.PdfUtil;
 import org.xbib.graphics.pdfbox.layout.table.Row;
 import org.xbib.graphics.pdfbox.layout.table.Table;
 import org.xbib.graphics.pdfbox.layout.table.TableRenderer;

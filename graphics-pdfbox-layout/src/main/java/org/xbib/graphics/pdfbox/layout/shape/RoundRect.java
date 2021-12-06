@@ -37,9 +37,11 @@ public class RoundRect extends AbstractShape {
     }
 
     @Override
-    public void add(PDDocument pdDocument, PDPageContentStream contentStream,
-                    Position upperLeft, float width, float height) throws IOException {
-
+    public void add(PDDocument pdDocument,
+                    PDPageContentStream contentStream,
+                    Position upperLeft,
+                    float width,
+                    float height) throws IOException {
         addRoundRect(contentStream, upperLeft, width, height, cornerRadiusX, cornerRadiusY);
     }
 

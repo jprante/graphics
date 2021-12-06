@@ -122,8 +122,8 @@ public class SymbolTest {
         }
         String backend = "org.xbib.graphics.barcode";
         Reflections reflections = new Reflections(backend);
-        Set< Class< ? extends AbstractSymbol>> symbols = reflections.getSubTypesOf(AbstractSymbol.class);
-        List< Object[] > data = new ArrayList<>();
+        Set<Class<? extends AbstractSymbol>> symbols = reflections.getSubTypesOf(AbstractSymbol.class);
+        List<Object[]> data = new ArrayList<>();
         for (Class< ? extends AbstractSymbol> symbol : symbols) {
             String symbolName = symbol.getSimpleName().toLowerCase();
             String dir = "src/test/resources/" + backend.replace('.', '/') + "/" + symbolName;

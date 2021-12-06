@@ -7,32 +7,44 @@ import org.xbib.graphics.pdfbox.layout.text.Position;
 
 import java.awt.Color;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Path implements Shape {
 
     private final List<Position> list;
 
-    public Path() {
-        this.list = new ArrayList<>();
+    public Path(List<Position> list) {
+        this.list = list;
     }
 
     @Override
-    public void draw(PDDocument pdDocument, PDPageContentStream contentStream, Position upperLeft,
-                     float width, float height, Color color, Stroke stroke, DrawListener drawListener) throws IOException {
+    public void draw(PDDocument pdDocument,
+                     PDPageContentStream contentStream,
+                     Position upperLeft,
+                     float width,
+                     float height,
+                     Color color,
+                     Stroke stroke,
+                     DrawListener drawListener) throws IOException {
         contentStream.saveGraphicsState();
-        contentStream.moveTo(upperLeft.getX(), upperLeft.getY());
+        float x = upperLeft.getX();
+        float y = upperLeft.getY() - stroke.getLineWidth() / 2;
         contentStream.setStrokingColor(color);
-        contentStream.setLineCapStyle(stroke.getCapStyle().value());
-        contentStream.setLineDashPattern(stroke.getDashPattern().getPattern(), stroke.getDashPattern().getPhase());
-        contentStream.setLineJoinStyle(stroke.getJoinStyle().value());
-        contentStream.setLineWidth(stroke.getLineWidth());
+        stroke.applyTo(contentStream);
+        boolean move = true;
         for (Position p : list) {
-            contentStream.lineTo(p.getX(), p.getY());
+            if (move) {
+                contentStream.moveTo(x + p.getX(), y + p.getY());
+                move = false;
+            } else {
+                contentStream.lineTo(x + p.getX(), y + p.getY());
+            }
         }
+        contentStream.stroke();
         contentStream.restoreGraphicsState();
-        drawListener.drawn(this, upperLeft, width, height);
+        if (drawListener != null) {
+            drawListener.drawn(this, upperLeft, width, height);
+        }
     }
 
     @Override
@@ -44,6 +56,5 @@ public class Path implements Shape {
     @Override
     public void add(PDDocument pdDocument, PDPageContentStream contentStream, Position upperLeft,
                     float width, float height) throws IOException {
-        list.add(new Position(width, height));
     }
 }

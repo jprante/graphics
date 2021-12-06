@@ -13,5 +13,5 @@ public interface Enumerator {
     /**
      * @return the default separator.
      */
-    String getDefaultSeperator();
+    String getDefaultSeparator();
 }

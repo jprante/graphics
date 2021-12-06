@@ -21,24 +21,27 @@ public class BarcodeElement implements Element, Drawable, Dividable, WidthRespec
 
     private float height;
 
+    private float scale;
+
     private float maxWidth = -1;
 
     private Position absolutePosition;
 
     public BarcodeElement(Symbol symbol) {
         this.symbol = symbol;
-        this.width = symbol.getWidth();
-        this.height = symbol.getHeight();
+        setWidth(symbol.getWidth());
+        setHeight(symbol.getHeight());
+        setScale(1.0f);
     }
 
     public void setScale(float scale) {
+        this.scale = scale;
         setWidth(width * scale);
         setHeight(height * scale);
     }
 
-    @Override
-    public float getWidth() throws IOException {
-        return width;
+    public float getScale() {
+        return scale;
     }
 
     public void setWidth(float width) {
@@ -46,12 +49,17 @@ public class BarcodeElement implements Element, Drawable, Dividable, WidthRespec
     }
 
     @Override
-    public float getHeight() throws IOException {
-        return height;
+    public float getWidth() throws IOException {
+        return width;
     }
 
     public void setHeight(float height) {
         this.height = height;
+    }
+
+    @Override
+    public float getHeight() throws IOException {
+        return height;
     }
 
     @Override

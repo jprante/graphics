@@ -1,6 +1,7 @@
 package org.xbib.graphics.pdfbox.layout.table;
 
 import org.xbib.graphics.pdfbox.layout.font.Font;
+import org.xbib.graphics.pdfbox.layout.util.PdfUtil;
 
 import java.awt.Color;
 import java.util.Comparator;

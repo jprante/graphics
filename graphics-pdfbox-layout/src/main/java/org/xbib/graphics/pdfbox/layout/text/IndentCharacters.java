@@ -200,7 +200,7 @@ public class IndentCharacters {
             }
             enumerator = EnumeratorFactory.createEnumerator(enumerationType);
             this.separator = separator != null ? separator : enumerator
-                    .getDefaultSeperator();
+                    .getDefaultSeparator();
         }
 
         @Override
