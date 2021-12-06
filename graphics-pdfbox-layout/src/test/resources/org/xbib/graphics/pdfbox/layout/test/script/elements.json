@@ -1,0 +1,21 @@
+{
+  "type": "document",
+  "elements": [
+    {
+      "type": "paragraph",
+      "elements": [
+        {
+          "type": "text",
+          "value": "Hello World 1"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "elements": {
+          "type": "text",
+          "value": "Hello World 2"
+        }
+    }
+  ]
+}
