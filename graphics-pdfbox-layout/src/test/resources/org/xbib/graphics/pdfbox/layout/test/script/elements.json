@@ -1,6 +1,6 @@
 {
   "type": "document",
-  "margin": "10 10 10 10",
+  "margin": "20 20 20 20",
   "author": "Jörg Prante",
   "elements": [
     {
@@ -80,6 +80,7 @@
     },
     {
       "type": "table",
+      "padding": 10,
       "columnwidths": "50 50 50",
       "elements": [
         {

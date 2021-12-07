@@ -47,6 +47,6 @@ public class PathCommand implements Command {
                 strokeBuilder.dashPattern(new Stroke.DashPattern(settings.getAsFloat("dash", 1f)));
         }
         Color color = ColorFactory.web(settings.get("color", "black"));
-        state.documents.peek().add(new PathElement(path, strokeBuilder.build(), color, position));
+        state.elements.peek().add(new PathElement(path, strokeBuilder.build(), color, position));
     }
 }

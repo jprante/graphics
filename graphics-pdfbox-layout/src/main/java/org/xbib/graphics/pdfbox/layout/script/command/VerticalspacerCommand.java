@@ -11,6 +11,6 @@ public class VerticalspacerCommand implements Command {
     @Override
     public void execute(Engine engine, State state, Settings settings) throws IOException {
         VerticalSpacer verticalSpacer = new VerticalSpacer(settings.getAsFloat("height", 0f));
-        state.documents.peek().add(verticalSpacer);
+        state.elements.peek().add(verticalSpacer);
     }
 }

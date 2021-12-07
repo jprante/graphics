@@ -45,7 +45,5 @@ public interface Dividable {
         public Drawable getTail() {
             return tail;
         }
-
     }
-
 }

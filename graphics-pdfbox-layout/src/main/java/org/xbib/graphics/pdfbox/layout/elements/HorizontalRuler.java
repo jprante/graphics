@@ -92,5 +92,4 @@ public class HorizontalRuler implements Drawable, Element, WidthRespecting {
     public Drawable removeLeadingEmptyVerticalSpace() {
         return this;
     }
-
 }

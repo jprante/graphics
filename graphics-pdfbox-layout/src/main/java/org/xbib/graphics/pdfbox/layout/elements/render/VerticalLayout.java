@@ -264,5 +264,4 @@ public class VerticalLayout implements Layout {
         }
         return drawable;
     }
-
 }

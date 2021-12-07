@@ -11,7 +11,6 @@ public class TableCommand implements Command {
 
     @Override
     public void execute(Engine engine, State state, Settings settings) throws IOException {
-        state.rows.clear();
         TableElement tableElement = new TableElement();
         if (settings.containsSetting("columnwidths")) {
             String columnWidths = settings.get("columnwidths");
@@ -19,8 +18,9 @@ public class TableCommand implements Command {
                 tableElement.addColumnOfWidth(Float.parseFloat(columnWidth));
             }
         }
-        state.documents.peek().add(tableElement);
-        state.tables.push(tableElement);
+        state.elements.push(tableElement);
         engine.executeElements(settings);
+        state.elements.pop();
+        state.elements.peek().add(tableElement);
     }
 }

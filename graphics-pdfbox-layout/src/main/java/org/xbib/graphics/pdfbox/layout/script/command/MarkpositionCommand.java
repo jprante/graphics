@@ -12,6 +12,6 @@ public class MarkpositionCommand implements Command {
     @Override
     public void execute(Engine engine, State state, Settings settings) throws IOException {
         PositionControl.MarkPosition markPosition = PositionControl.createMarkPosition();
-        state.documents.peek().add(markPosition);
+        state.elements.peek().add(markPosition);
     }
 }

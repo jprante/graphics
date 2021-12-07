@@ -11,6 +11,6 @@ public class NewcolumnCommand implements Command {
     @Override
     public void execute(Engine engine, State state, Settings settings) throws IOException {
         ControlElement controlElement = ControlElement.NEWCOLUMN;
-        state.documents.peek().add(controlElement);
+        state.elements.peek().add(controlElement);
     }
 }

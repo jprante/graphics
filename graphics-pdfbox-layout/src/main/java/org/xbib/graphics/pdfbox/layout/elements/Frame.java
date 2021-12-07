@@ -77,7 +77,7 @@ public class Frame implements Element, Drawable, WidthRespecting, Dividable {
      */
     public Frame(final Drawable inner, final Float width, final Float height) {
         this(width, height);
-        add(inner);
+        addDrawable(inner);
     }
 
     /**
@@ -90,7 +90,7 @@ public class Frame implements Element, Drawable, WidthRespecting, Dividable {
      * @param height the height to constrain the border-box of the frame to, or
      *               <code>null</code>.
      */
-    public Frame(final Float width, final Float height) {
+    public Frame(Float width, Float height) {
         this.givenWidth = width;
         this.givenHeight = height;
     }
@@ -100,7 +100,7 @@ public class Frame implements Element, Drawable, WidthRespecting, Dividable {
      *
      * @param drawable the drawable
      */
-    public void add(final Drawable drawable) {
+    public void addDrawable(Drawable drawable) {
         innerList.add(drawable);
     }
 
@@ -580,13 +580,13 @@ public class Frame implements Element, Drawable, WidthRespecting, Dividable {
             first.addAll(dividedList.getHead());
         }
         if (divided != null) {
-            first.add(divided.getFirst());
+            first.addDrawable(divided.getFirst());
         }
         // create tail sub frame
         Frame tail = new Frame(getGivenWidth(), tailHeight);
         copyAllButInnerAndSizeTo(tail);
         if (divided != null) {
-            tail.add(divided.getTail());
+            tail.addDrawable(divided.getTail());
         }
         if (dividedList.getTail() != null) {
             tail.addAll(dividedList.getTail());
@@ -622,12 +622,14 @@ public class Frame implements Element, Drawable, WidthRespecting, Dividable {
     }
 
     public static class DividedList {
+
         private final List<Drawable> head;
+
         private final Drawable drawableToDivide;
+
         private final List<Drawable> tail;
 
-        public DividedList(List<Drawable> head, Drawable drawableToDivide,
-                           List<Drawable> tail) {
+        public DividedList(List<Drawable> head, Drawable drawableToDivide, List<Drawable> tail) {
             this.head = head;
             this.drawableToDivide = drawableToDivide;
             this.tail = tail;

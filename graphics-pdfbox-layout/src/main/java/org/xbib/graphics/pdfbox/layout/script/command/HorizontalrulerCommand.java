@@ -23,6 +23,6 @@ public class HorizontalrulerCommand implements Command {
         }
         Color color = ColorFactory.web(settings.get("color", "black"));
         HorizontalRuler horizontalRuler = new HorizontalRuler(strokeBuilder.build(), color);
-        state.documents.peek().add(horizontalRuler);
+        state.elements.peek().add(horizontalRuler);
     }
 }

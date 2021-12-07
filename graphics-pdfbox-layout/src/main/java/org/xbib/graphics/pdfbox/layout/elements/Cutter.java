@@ -13,7 +13,9 @@ import java.io.IOException;
 public class Cutter implements Dividable, Drawable {
 
     private final Drawable undividable;
+
     private final float viewPortY;
+
     private final float viewPortHeight;
 
     public Cutter(Drawable undividableElement) throws IOException {

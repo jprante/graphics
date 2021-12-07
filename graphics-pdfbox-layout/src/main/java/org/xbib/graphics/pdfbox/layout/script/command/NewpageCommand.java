@@ -11,6 +11,6 @@ public class NewpageCommand implements Command {
     @Override
     public void execute(Engine engine, State state, Settings settings) throws IOException {
         ControlElement controlElement = ControlElement.NEWPAGE;
-        state.documents.peek().add(controlElement);
+        state.elements.peek().add(controlElement);
     }
 }

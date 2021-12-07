@@ -12,6 +12,6 @@ public class MovepositionCommand implements Command {
     @Override
     public void execute(Engine engine, State state, Settings settings) throws IOException {
         PositionControl.MovePosition movePosition = PositionControl.createMovePosition(settings.getAsFloat("x", null), settings.getAsFloat("y", null));
-        state.documents.peek().add(movePosition);
+        state.elements.peek().add(movePosition);
     }
 }

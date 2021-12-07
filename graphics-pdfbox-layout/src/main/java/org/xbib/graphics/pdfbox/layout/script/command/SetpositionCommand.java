@@ -12,6 +12,6 @@ public class SetpositionCommand implements Command {
     @Override
     public void execute(Engine engine, State state, Settings settings) throws IOException {
         PositionControl.SetPosition setPosition = PositionControl.createSetPosition(settings.getAsFloat("x", null), settings.getAsFloat("y", null));
-        state.documents.peek().add(setPosition);
+        state.elements.peek().add(setPosition);
     }
 }

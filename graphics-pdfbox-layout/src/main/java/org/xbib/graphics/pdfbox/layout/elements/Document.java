@@ -27,7 +27,7 @@ import java.util.Map.Entry;
 /**
  * The central class for creating a document.
  */
-public class Document implements Closeable, RenderListener {
+public class Document implements Element, Closeable, RenderListener {
 
     private final List<Entry<Element, LayoutHint>> elements = new ArrayList<>();
 
@@ -141,8 +141,10 @@ public class Document implements Closeable, RenderListener {
      *
      * @param element the element to add
      */
-    public void add(Element element) {
+    @Override
+    public Element add(Element element) {
         add(element, new VerticalLayoutHint());
+        return this;
     }
 
     /**

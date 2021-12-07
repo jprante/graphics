@@ -80,4 +80,14 @@ public class Paragraph extends TextFlow implements Drawable, Element, WidthRespe
         return new Paragraph();
     }
 
+    @Override
+    public Element add(Element element) {
+        if (element instanceof TextElement) {
+            TextElement textElement = (TextElement) element;
+            addMarkup(textElement.getValue(), textElement.getSize(), textElement.getFont());
+        } else {
+            throw new UnsupportedOperationException();
+        }
+        return this;
+    }
 }

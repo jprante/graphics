@@ -5,4 +5,7 @@ package org.xbib.graphics.pdfbox.layout.elements;
  */
 public interface Element {
 
+    default Element add(Element element) {
+        throw new UnsupportedOperationException();
+    }
 }

@@ -76,7 +76,7 @@ public class FramesTest {
         paragraph = new Paragraph();
         paragraph.addMarkup(text2, 11, BaseFont.TIMES);
         paragraph.addMarkup(text2, 11, BaseFont.TIMES);
-        frame.add(paragraph);
+        frame.addDrawable(paragraph);
         document.add(frame);
         document.render().save(new FileOutputStream("build/frames.pdf")).close();
     }

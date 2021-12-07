@@ -1,5 +1,6 @@
 package org.xbib.graphics.pdfbox.layout.table;
 
+import org.xbib.graphics.pdfbox.layout.elements.Element;
 import org.xbib.graphics.pdfbox.layout.font.Font;
 
 import java.awt.Color;
@@ -89,7 +90,7 @@ public class Row {
         return new Builder();
     }
 
-    public static class Builder {
+    public static class Builder implements Element {
 
         private final List<AbstractCell> cells = new ArrayList<>();
 
@@ -98,8 +99,9 @@ public class Row {
         private Builder() {
         }
 
-        public Builder add(final AbstractCell cell) {
-            cells.add(cell);
+        @Override
+        public Builder add(Element element) {
+            cells.add((AbstractCell) element);
             return this;
         }
 

@@ -1,6 +1,7 @@
 package org.xbib.graphics.pdfbox.layout.script.command;
 
 import org.xbib.graphics.pdfbox.layout.color.ColorFactory;
+import org.xbib.graphics.pdfbox.layout.elements.Document;
 import org.xbib.graphics.pdfbox.layout.font.Font;
 import org.xbib.graphics.pdfbox.layout.font.Fonts;
 import org.xbib.graphics.pdfbox.layout.script.Engine;
@@ -21,7 +22,8 @@ public class CellCommand implements Command {
         TextCell.Builder cell = TextCell.builder();
         cell.text(settings.get("value"));
         cell.fontSize(settings.getAsFloat("size", 11.0f));
-        Font font = Fonts.valueOf(settings.get("font", "helvetica").toUpperCase(Locale.ROOT)).getFont(state.documents.peek());
+        Document document = state.getDocument();
+        Font font = Fonts.valueOf(settings.get("font", "helvetica").toUpperCase(Locale.ROOT)).getFont(document);
         cell.font(font);
         cell.padding(settings.getAsFloat("padding", 0f));
         Color color = ColorFactory.web(settings.get("color", "black"));
@@ -39,6 +41,6 @@ public class CellCommand implements Command {
         cell.borderStyle(styleInterface);
         cell.colSpan(settings.getAsInt("colspan", 1));
         cell.rowSpan(settings.getAsInt("rowspan", 1));
-        state.rows.peek().add(cell.build());
+        state.elements.peek().add(cell.build());
     }
 }

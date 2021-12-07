@@ -14,8 +14,6 @@ public class DocumentCommand implements Command {
 
     @Override
     public void execute(Engine engine, State state, Settings settings) throws IOException {
-        state.paragraphs.clear();
-        state.tables.clear();
         String margin = settings.get("margin", "0 0 0 0");
         String[] margins = margin.split(" ");
         PageFormat pageFormat = PageFormat.builder()
@@ -42,7 +40,7 @@ public class DocumentCommand implements Command {
         if (settings.containsSetting("title")) {
             document.setTitle(settings.get("title"));
         }
-        state.documents.push(document);
+        state.elements.push(document);
         engine.executeElements(settings);
     }
 }

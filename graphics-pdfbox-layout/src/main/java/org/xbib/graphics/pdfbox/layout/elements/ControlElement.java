@@ -26,5 +26,4 @@ public class ControlElement implements Element {
     public String toString() {
         return "ControlElement [NEWPAGE=" + NEWPAGE + ", name=" + name + "]";
     }
-
 }

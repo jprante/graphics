@@ -1,10 +1,11 @@
 package org.xbib.graphics.pdfbox.layout.table;
 
+import org.xbib.graphics.pdfbox.layout.elements.Element;
 import org.xbib.graphics.pdfbox.layout.table.render.AbstractCellRenderer;
 import org.xbib.graphics.pdfbox.layout.table.render.Renderer;
 import java.awt.Color;
 
-public abstract class AbstractCell {
+public abstract class AbstractCell implements Element {
 
     private static final float DEFAULT_MIN_HEIGHT = 10f;
 

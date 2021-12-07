@@ -13,9 +13,9 @@ public class RowCommand implements Command {
     public void execute(Engine engine, State state, Settings settings) throws IOException {
         Row.Builder row = Row.builder();
         row.padding(settings.getAsFloat("padding", 0f));
-
-        state.rows.push(row);
+        state.elements.push(row);
         engine.executeElements(settings);
-        state.tables.peek().add(row.build());
+        state.elements.pop();
+        state.elements.peek().add(row);
     }
 }

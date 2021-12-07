@@ -12,6 +12,6 @@ public class ResetpositionCommand implements Command {
     @Override
     public void execute(Engine engine, State state, Settings settings) throws IOException {
         PositionControl.ResetPosition resetPosition = PositionControl.createResetPosition();
-        state.documents.peek().add(resetPosition);
+        state.elements.peek().add(resetPosition);
     }
 }

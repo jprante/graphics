@@ -35,6 +35,6 @@ public class ImageCommand implements Command {
         float margintop = Float.parseFloat(margins[2]);
         float marginbottom = Float.parseFloat(margins[3]);
         VerticalLayoutHint verticalLayoutHint = new VerticalLayoutHint(alignment, marginleft, marginright, margintop, marginbottom, true);
-        state.documents.peek().add(imageElement, verticalLayoutHint);
+        state.elements.peek().add(imageElement);
     }
 }

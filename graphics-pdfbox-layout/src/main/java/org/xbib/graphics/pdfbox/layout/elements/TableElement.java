@@ -24,8 +24,15 @@ public class TableElement implements Element, Drawable, Dividable {
         this.table = Table.builder();
     }
 
-    public void add(Row row) {
-        table.addRow(row);
+    @Override
+    public Element add(Element element) {
+        if (element instanceof Row.Builder) {
+            Row row = ((Row.Builder) element).build();
+            table.addRow(row);
+        } else {
+            throw new UnsupportedOperationException();
+        }
+        return this;
     }
 
     public void addColumnOfWidth(float width) {
