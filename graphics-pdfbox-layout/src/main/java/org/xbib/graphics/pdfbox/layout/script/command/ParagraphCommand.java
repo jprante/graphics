@@ -21,6 +21,6 @@ public class ParagraphCommand implements Command {
             paragraph.setMaxWidth(settings.getAsFloat("width", state.documents.peek().getPageWidth()));
         }
         state.documents.peek().add(paragraph);
-        engine.execute("text", state, settings);
+        engine.executeElements(settings);
     }
 }

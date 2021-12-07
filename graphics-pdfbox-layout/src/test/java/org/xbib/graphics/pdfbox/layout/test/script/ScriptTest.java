@@ -12,12 +12,12 @@ public class ScriptTest {
     @Test
     public void script() throws Exception {
         Settings settings = Settings.settingsBuilder()
-                .loadFromResource("json", getClass().getResourceAsStream("script.json"))
+                .loadFromResource("json", getClass().getResourceAsStream("elements.json"))
                 .build();
         Engine engine = new Engine();
         engine.execute(settings);
         for (Document document : engine.getState().getDocuments()) {
-            document.render().save(new FileOutputStream("build/script.pdf")).close();
+            document.render().save(new FileOutputStream("build/elements.pdf")).close();
         }
         engine.close();
     }

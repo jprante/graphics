@@ -5,9 +5,7 @@ import org.xbib.settings.Settings;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.logging.Logger;
 
 public class Engine implements Closeable {
 
@@ -24,35 +22,39 @@ public class Engine implements Closeable {
     }
 
     public void execute(Settings settings) throws IOException {
-        execute("document", state, settings);
+        executeSettings(settings);
     }
 
-    public void execute(String prefix, State state, Settings settings) throws IOException {
-        execute(List.of(prefix), state, settings);
-    }
-
-    public void execute(List<String> prefixes, State state, Settings settings) throws IOException {
-        Map<String, String> map = new LinkedHashMap<>();
-        for (String prefix : prefixes) {
-            Settings subSettings = settings.getByPrefix(prefix);
-            for (String string : subSettings.getAsStructuredMap().keySet()) {
-                map.put(prefix + string, prefix);
+    public void executeElements(Settings settings) throws IOException {
+        execute(settings.getAsSettings("elements"));
+        for (int i = 0; i < 256; i++) {
+            if (!executeElement(i, settings)) {
+                break;
             }
         }
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            try {
-                Settings thisSettings = settings.getAsSettings(entry.getKey());
-                String type = thisSettings.get("type");
-                if (type == null) {
-                    type = entry.getValue();
-                }
-                String className = packageName + ".command." + type.substring(0, 1).toUpperCase() + type.substring(1) + "Command";
-                Class<?> cl = classLoader.loadClass(className);
-                Command command = (Command) cl.getConstructor().newInstance();
-                command.execute(this, state, thisSettings);
-            } catch (Exception e) {
-                throw new IOException(e);
+    }
+
+    private boolean executeElement(int i, Settings settings) throws IOException {
+        String key = "elements." + i;
+        if (settings.containsSetting(key)) {
+            executeSettings(settings.getAsSettings(key));
+            return true;
+        }
+        return false;
+    }
+
+    private void executeSettings(Settings settings) throws IOException {
+        try {
+            String type = settings.get("type");
+            if (type == null) {
+                return;
             }
+            String className = packageName + ".command." + type.substring(0, 1).toUpperCase() + type.substring(1) + "Command";
+            Class<?> cl = classLoader.loadClass(className);
+            Command command = (Command) cl.getConstructor().newInstance();
+            command.execute(this, state, settings);
+        } catch (Exception e) {
+            throw new IOException(e);
         }
     }
 

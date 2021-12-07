@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 public class ElementsTest {
 
     @Test
-    public void script() throws Exception {
+    public void elements() throws Exception {
         Settings settings = Settings.settingsBuilder()
                 .loadFromResource("json", getClass().getResourceAsStream("elements.json"))
                 .build();

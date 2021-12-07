@@ -23,9 +23,6 @@ public class DocumentCommand implements Command {
                 .orientation(settings.get("orientiation", "PORTRAIT"))
                 .build();
         state.documents.push(new Document(pageFormat));
-        engine.execute("image", state, settings);
-        engine.execute("barcode", state, settings);
-        engine.execute("path", state, settings);
-        engine.execute("paragraph", state, settings);
+        engine.executeElements(settings);
     }
 }
