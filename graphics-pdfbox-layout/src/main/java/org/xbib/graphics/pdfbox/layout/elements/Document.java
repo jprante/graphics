@@ -2,6 +2,7 @@ package org.xbib.graphics.pdfbox.layout.elements;
 
 import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDDocumentInformation;
 import org.xbib.graphics.pdfbox.layout.elements.render.Layout;
 import org.xbib.graphics.pdfbox.layout.elements.render.LayoutHint;
 import org.xbib.graphics.pdfbox.layout.elements.render.RenderContext;
@@ -12,7 +13,12 @@ import org.xbib.graphics.pdfbox.layout.elements.render.VerticalLayoutHint;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -22,11 +28,6 @@ import java.util.Map.Entry;
  * The central class for creating a document.
  */
 public class Document implements Closeable, RenderListener {
-
-    /**
-     * A4 portrait without margins.
-     */
-    public final static PageFormat DEFAULT_PAGE_FORMAT = new PageFormat();
 
     private final List<Entry<Element, LayoutHint>> elements = new ArrayList<>();
 
@@ -38,11 +39,30 @@ public class Document implements Closeable, RenderListener {
 
     private final PDDocument pdDocument;
 
+    private final PDDocumentInformation pdDocumentInformation;
+
     /**
-     * Creates a Document using the {@link #DEFAULT_PAGE_FORMAT}.
+     * Creates a Document.
      */
     public Document() {
-        this(DEFAULT_PAGE_FORMAT, true);
+        this(PageFormats.A4_PORTRAIT, true);
+    }
+
+    /**
+     * Creates a Document based on the given page format. By default, a
+     * {@link VerticalLayout} is used.
+     *
+     * @param pageFormat the page format box to use.
+     */
+    public Document(PageFormat pageFormat) {
+        this(pageFormat, true);
+    }
+
+    public Document(PageFormat pageFormat, boolean memory) {
+        this.pageFormat = pageFormat;
+        this.pdDocument = new PDDocument(memory ?
+                MemoryUsageSetting.setupMainMemoryOnly() : MemoryUsageSetting.setupTempFileOnly());
+        this.pdDocumentInformation = new PDDocumentInformation();
     }
 
     /**
@@ -68,24 +88,52 @@ public class Document implements Closeable, RenderListener {
         this(PageFormat.builder().margins(marginLeft, marginRight, marginTop, marginBottom).build(), memory);
     }
 
-    /**
-     * Creates a Document based on the given page format. By default, a
-     * {@link VerticalLayout} is used.
-     *
-     * @param pageFormat the page format box to use.
-     */
-    public Document(PageFormat pageFormat) {
-        this(pageFormat, true);
-    }
-
-    public Document(PageFormat pageFormat, boolean memory) {
-        this.pageFormat = pageFormat;
-        this.pdDocument = new PDDocument(memory ?
-                MemoryUsageSetting.setupMainMemoryOnly() : MemoryUsageSetting.setupTempFileOnly());
-    }
-
     public PDDocument getPdDocument() {
         return pdDocument;
+    }
+
+    public void setAuthor(String author) {
+        pdDocumentInformation.setAuthor(author);
+    }
+
+    public void setCreator(String creator) {
+        pdDocumentInformation.setCreator(creator);
+    }
+
+    public void setTitle(String title) {
+        pdDocumentInformation.setTitle(title);
+    }
+
+    public void setSubject(String subject) {
+        pdDocumentInformation.setSubject(subject);
+    }
+
+    public void setKeywords(String keywords) {
+        pdDocumentInformation.setKeywords(keywords);
+    }
+
+    public void setProducer(String producer) {
+        pdDocumentInformation.setProducer(producer);
+    }
+
+    public void setTrapped(String value) {
+        pdDocumentInformation.setTrapped(value);
+    }
+
+    public void setCreationDate(Instant instant) {
+        ZonedDateTime zdt = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault());
+        Calendar calendar = GregorianCalendar.from(zdt);
+        pdDocumentInformation.setCreationDate(calendar);
+    }
+
+    public void setModificationDate(Instant instant) {
+        ZonedDateTime zdt = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault());
+        Calendar calendar = GregorianCalendar.from(zdt);
+        pdDocumentInformation.setModificationDate(calendar);
+    }
+
+    public void setCustomMetadata(String key, String value) {
+        pdDocumentInformation.setCustomMetadataValue(key, value);
     }
 
     /**
@@ -176,6 +224,7 @@ public class Document implements Closeable, RenderListener {
      * @throws IOException by pdfbox
      */
     public Document render() throws IOException {
+        pdDocument.setDocumentInformation(pdDocumentInformation);
         RenderContext renderContext = new RenderContext(this, pdDocument);
         for (Entry<Element, LayoutHint> entry : elements) {
             Element element = entry.getKey();

@@ -22,16 +22,15 @@ public class Row {
 
     private Row next;
 
-    private Row(final List<AbstractCell> cells) {
-        super();
+    private Row(List<AbstractCell> cells) {
         this.cells = cells;
     }
 
-    public void setSettings(Parameters parameters) {
+    public void setParameters(Parameters parameters) {
         this.parameters = parameters;
     }
 
-    public Parameters getSettings() {
+    public Parameters getParameters() {
         return parameters;
     }
 
@@ -71,7 +70,6 @@ public class Row {
         if (table == null) {
             throw new TableNotYetBuiltException();
         }
-
         if (height == null) {
             this.height = getCells().stream()
                     .filter(cell -> cell.getRowSpan() == 1)
@@ -79,12 +77,11 @@ public class Row {
                     .max(naturalOrder())
                     .orElse(DEFAULT_HEIGHT);
         }
-
         return height;
     }
 
     void doRowSpanSizeAdaption(float heightOfHighestCell, float rowsHeight) {
-        final float rowSpanSizeDifference = heightOfHighestCell - rowsHeight;
+        float rowSpanSizeDifference = heightOfHighestCell - rowsHeight;
         this.height += (this.height / (heightOfHighestCell - rowSpanSizeDifference)) * rowSpanSizeDifference;
     }
 
@@ -111,7 +108,7 @@ public class Row {
             return this;
         }
 
-        public Builder fontSize(final Integer fontSize) {
+        public Builder fontSize(float fontSize) {
             parameters.setFontSize(fontSize);
             return this;
         }
@@ -172,8 +169,7 @@ public class Row {
 
         public Row build() {
             final Row row = new Row(cells);
-            row.setSettings(parameters);
-            //row.setHeight(height);
+            row.setParameters(parameters);
             return row;
         }
     }

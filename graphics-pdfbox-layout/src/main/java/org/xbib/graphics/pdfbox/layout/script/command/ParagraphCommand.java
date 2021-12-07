@@ -3,10 +3,12 @@ package org.xbib.graphics.pdfbox.layout.script.command;
 import org.xbib.graphics.pdfbox.layout.elements.Paragraph;
 import org.xbib.graphics.pdfbox.layout.script.Engine;
 import org.xbib.graphics.pdfbox.layout.script.State;
+import org.xbib.graphics.pdfbox.layout.text.Alignment;
 import org.xbib.graphics.pdfbox.layout.text.Position;
 import org.xbib.settings.Settings;
 
 import java.io.IOException;
+import java.util.Locale;
 
 public class ParagraphCommand implements Command {
 
@@ -19,6 +21,9 @@ public class ParagraphCommand implements Command {
         }
         if (settings.containsSetting("width")) {
             paragraph.setMaxWidth(settings.getAsFloat("width", state.documents.peek().getPageWidth()));
+        }
+        if (settings.containsSetting("alignment")) {
+            paragraph.setAlignment(Alignment.valueOf(settings.get("alignment", "left").toUpperCase(Locale.ROOT)));
         }
         state.documents.peek().add(paragraph);
         engine.executeElements(settings);

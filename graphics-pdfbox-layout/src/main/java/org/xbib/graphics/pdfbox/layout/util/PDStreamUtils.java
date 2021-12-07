@@ -1,7 +1,11 @@
-package org.xbib.graphics.pdfbox.layout.boxable;
+package org.xbib.graphics.pdfbox.layout.util;
 
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.xbib.graphics.pdfbox.layout.boxable.FontUtils;
+import org.xbib.graphics.pdfbox.layout.boxable.LineStyle;
+import org.xbib.graphics.pdfbox.layout.boxable.PageContentStreamOptimized;
+
 import java.awt.Color;
 import java.io.IOException;
 

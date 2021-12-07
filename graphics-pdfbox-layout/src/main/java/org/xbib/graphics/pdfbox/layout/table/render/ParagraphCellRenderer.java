@@ -63,7 +63,7 @@ public class ParagraphCellRenderer extends AbstractCellRenderer<ParagraphCell> {
         return new AnnotationDrawListener(new DrawContext() {
                 @Override
                 public PDDocument getPdDocument() {
-                    return null;
+                    return renderContext.getPdDocument();
                 }
 
                 @Override

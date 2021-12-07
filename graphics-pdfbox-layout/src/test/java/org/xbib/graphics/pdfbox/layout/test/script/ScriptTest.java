@@ -16,8 +16,9 @@ public class ScriptTest {
                 .build();
         Engine engine = new Engine();
         engine.execute(settings);
+        int i = 0;
         for (Document document : engine.getState().getDocuments()) {
-            document.render().save(new FileOutputStream("build/elements.pdf")).close();
+            document.render().save(new FileOutputStream("build/elements" + (i++) + ".pdf")).close();
         }
         engine.close();
     }

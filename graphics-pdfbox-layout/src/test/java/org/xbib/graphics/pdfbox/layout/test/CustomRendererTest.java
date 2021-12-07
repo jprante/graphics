@@ -83,7 +83,7 @@ public class CustomRendererTest {
                 sectionNumber = ((Section) element).getNumber();
                 renderContext.render(renderContext, element, layoutHint);
                 Element ruler = new HorizontalRuler(Stroke.builder().lineWidth(2)
-                        .capStyle(CapStyle.RoundCap).build(), Color.black);
+                        .capStyle(CapStyle.ROUND_CAP).build(), Color.black);
                 renderContext.render(renderContext, ruler, VerticalLayoutHint.builder().marginBottom(10).build());
                 return true;
             }

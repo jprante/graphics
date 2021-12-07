@@ -16,7 +16,7 @@ public class Table {
 
     private static final Font DEFAULT_FONT = BaseFont.HELVETICA;
 
-    private static final int DEFAULT_FONT_SIZE = 12;
+    private static final Float DEFAULT_FONT_SIZE = 11f;
 
     private static final Color DEFAULT_TEXT_COLOR = Color.BLACK;
 
@@ -84,7 +84,7 @@ public class Table {
         return DEFAULT_HORIZONTAL_ALIGNMENT;
     }
 
-    public static int getDefaultFontSize() {
+    public static float getDefaultFontSize() {
         return DEFAULT_FONT_SIZE;
     }
 
@@ -216,7 +216,7 @@ public class Table {
             return this;
         }
 
-        public Builder addColumnOfWidth(final float width) {
+        public Builder addColumnOfWidth(float width) {
             Column column = new Column(width);
             numberOfColumns++;
             columns.add(column);
@@ -229,17 +229,17 @@ public class Table {
             return this;
         }
 
-        public Builder fontSize(final Integer fontSize) {
+        public Builder fontSize(Float fontSize) {
             parameters.setFontSize(fontSize);
             return this;
         }
 
-        public Builder textColor(final Color textColor) {
+        public Builder textColor(Color textColor) {
             parameters.setTextColor(textColor);
             return this;
         }
 
-        public Builder backgroundColor(final Color backgroundColor) {
+        public Builder backgroundColor(Color backgroundColor) {
             parameters.setBackgroundColor(backgroundColor);
             return this;
         }
@@ -307,11 +307,11 @@ public class Table {
                 Row row = rows.get(rowIndex);
                 row.setTable(table);
                 if (table.getSettings() != null) {
-                    row.getSettings().fillingMergeBy(table.getSettings());
+                    row.getParameters().fillingMergeBy(table.getSettings());
                 }
                 int columnIndex = 0;
                 for (AbstractCell cell : row.getCells()) {
-                    cell.getParameters().fillingMergeBy(row.getSettings());
+                    cell.getParameters().fillingMergeBy(row.getParameters());
                     cell.setRow(row);
                     while (table.isRowSpanAt(rowIndex, columnIndex)) {
                         columnIndex++;

@@ -13,7 +13,8 @@ public class Stroke {
      */
     public enum CapStyle {
 
-        Cap(0), RoundCap(1), Square(2);
+        CAP(0),
+        ROUND_CAP(1), Square(2);
 
         private final int value;
 
@@ -31,7 +32,9 @@ public class Stroke {
      */
     public enum JoinStyle {
 
-        Miter(0), Round(1), Bevel(2);
+        MITER(0),
+        ROUND(1),
+        BEVEL(2);
 
         private final int value;
 
@@ -103,7 +106,6 @@ public class Stroke {
         public float getPhase() {
             return phase;
         }
-
     }
 
     private final CapStyle capStyle;
@@ -116,7 +118,7 @@ public class Stroke {
 
     /**
      * Creates a Stroke with line width 1, cap style
-     * {@link CapStyle#Cap}, join style {@link JoinStyle#Miter}, and no dash
+     * {@link CapStyle#CAP}, join style {@link JoinStyle#MITER}, and no dash
      * pattern.
      */
     public Stroke() {
@@ -125,13 +127,13 @@ public class Stroke {
 
     /**
      * Creates a Stroke with the given line width, cap style
-     * {@link CapStyle#Cap}, join style {@link JoinStyle#Miter}, and no dash
+     * {@link CapStyle#CAP}, join style {@link JoinStyle#MITER}, and no dash
      * pattern.
      *
      * @param lineWidth the line width.
      */
     public Stroke(float lineWidth) {
-        this(CapStyle.Cap, JoinStyle.Miter, null, lineWidth);
+        this(CapStyle.CAP, JoinStyle.MITER, null, lineWidth);
     }
 
     /**
@@ -199,9 +201,9 @@ public class Stroke {
      */
     public static class StrokeBuilder {
 
-        private CapStyle capStyle = CapStyle.Cap;
+        private CapStyle capStyle = CapStyle.CAP;
 
-        private JoinStyle joinStyle = JoinStyle.Miter;
+        private JoinStyle joinStyle = JoinStyle.MITER;
 
         private DashPattern dashPattern;
 

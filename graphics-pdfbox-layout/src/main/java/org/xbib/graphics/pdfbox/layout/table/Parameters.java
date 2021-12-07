@@ -7,7 +7,7 @@ public class Parameters {
 
     private Font font;
 
-    private Integer fontSize;
+    private Float fontSize;
 
     private Color textColor;
 
@@ -133,7 +133,7 @@ public class Parameters {
         return horizontalAlignment;
     }
 
-    public Integer getFontSize() {
+    public Float getFontSize() {
         return fontSize;
     }
 
@@ -189,7 +189,7 @@ public class Parameters {
         this.font = font;
     }
 
-    public void setFontSize(Integer fontSize) {
+    public void setFontSize(Float fontSize) {
         this.fontSize = fontSize;
     }
 

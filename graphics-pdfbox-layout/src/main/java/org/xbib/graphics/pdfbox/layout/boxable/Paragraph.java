@@ -2,6 +2,8 @@ package org.xbib.graphics.pdfbox.layout.boxable;
 
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.xbib.graphics.pdfbox.layout.util.PDStreamUtils;
+
 import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;

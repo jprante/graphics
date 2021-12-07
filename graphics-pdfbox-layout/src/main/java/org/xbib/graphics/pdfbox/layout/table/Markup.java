@@ -1,27 +1,15 @@
 package org.xbib.graphics.pdfbox.layout.table;
 
 import org.xbib.graphics.pdfbox.layout.elements.Paragraph;
-import org.xbib.graphics.pdfbox.layout.font.BaseFont;
+import org.xbib.graphics.pdfbox.layout.font.Font;
+
 import java.io.IOException;
-import java.util.EnumMap;
-import java.util.Map;
 
 public class Markup implements ParagraphProcessor {
 
-    public enum MarkupSupportedFont {
-        TIMES, COURIER, HELVETICA
-    }
-
-    public static final Map<MarkupSupportedFont, BaseFont> FONT_MAP = new EnumMap<>(Markup.MarkupSupportedFont.class);
-    static {
-        FONT_MAP.put(Markup.MarkupSupportedFont.HELVETICA, BaseFont.HELVETICA);
-        FONT_MAP.put(Markup.MarkupSupportedFont.COURIER, BaseFont.COURIER);
-        FONT_MAP.put(Markup.MarkupSupportedFont.TIMES, BaseFont.TIMES);
-    }
-
     private String markup;
 
-    private MarkupSupportedFont font;
+    private Font font;
 
     private Float fontSize;
 
@@ -33,11 +21,11 @@ public class Markup implements ParagraphProcessor {
         return markup;
     }
 
-    public void setFont(MarkupSupportedFont font) {
+    public void setFont(Font font) {
         this.font = font;
     }
 
-    public MarkupSupportedFont getFont() {
+    public Font getFont() {
         return font;
     }
 
@@ -50,9 +38,9 @@ public class Markup implements ParagraphProcessor {
     }
 
     @Override
-    public void process(Paragraph paragraph, Parameters parameters) throws IOException {
+    public void process(Paragraph paragraph, Parameters parameters) {
         float fontSize = getFontSize() != null ? getFontSize() : parameters.getFontSize();
-        paragraph.addMarkup(getMarkup(), fontSize, FONT_MAP.get(getFont()));
+        paragraph.addMarkup(getMarkup(), fontSize, font);
     }
 
 }

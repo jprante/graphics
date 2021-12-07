@@ -6,6 +6,7 @@ package org.xbib.graphics.pdfbox.layout.elements;
 public class Rectangle extends Dimension {
 
     private final float x;
+
     private final float y;
 
     public Rectangle(float x, float y, float width, float height) {

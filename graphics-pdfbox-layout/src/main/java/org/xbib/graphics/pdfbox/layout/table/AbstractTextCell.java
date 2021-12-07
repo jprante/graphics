@@ -15,7 +15,7 @@ public abstract class AbstractTextCell extends AbstractCell {
         return parameters.getFont();
     }
 
-    public Integer getFontSize() {
+    public Float getFontSize() {
         return parameters.getFontSize();
     }
 

@@ -50,8 +50,7 @@ public class VerticalLayout implements Layout {
      * @param renderContext the render context.
      * @throws IOException by pdfbox.
      */
-    protected void turnPage(final RenderContext renderContext)
-            throws IOException {
+    protected void turnPage(final RenderContext renderContext) throws IOException {
         renderContext.newPage();
     }
 
@@ -60,8 +59,7 @@ public class VerticalLayout implements Layout {
      * @return the target width to draw to.
      */
     protected float getTargetWidth(final RenderContext renderContext) {
-        float targetWidth = renderContext.getWidth();
-        return targetWidth;
+        return renderContext.getWidth();
     }
 
     @Override
@@ -75,12 +73,10 @@ public class VerticalLayout implements Layout {
             turnPage(renderContext);
             return true;
         }
-
         return false;
     }
 
-    public void render(final RenderContext renderContext, Drawable drawable,
-                       final LayoutHint layoutHint) throws IOException {
+    public void render(RenderContext renderContext, Drawable drawable, LayoutHint layoutHint) throws IOException {
         if (drawable.getAbsolutePosition() != null) {
             renderAbsolute(renderContext, drawable, layoutHint,
                     drawable.getAbsolutePosition());
@@ -98,11 +94,9 @@ public class VerticalLayout implements Layout {
      * @param position      the left upper position to start drawing at.
      * @throws IOException by pdfbox
      */
-    protected void renderAbsolute(final RenderContext renderContext,
-                                  Drawable drawable, final LayoutHint layoutHint,
-                                  final Position position) throws IOException {
-        drawable.draw(renderContext.getPdDocument(),
-                renderContext.getContentStream(), position, renderContext);
+    protected void renderAbsolute(RenderContext renderContext,
+                                  Drawable drawable, LayoutHint layoutHint, Position position) throws IOException {
+        drawable.draw(renderContext.getPdDocument(), renderContext.getContentStream(), position, renderContext);
     }
 
     /**
@@ -117,8 +111,8 @@ public class VerticalLayout implements Layout {
      * @param layoutHint    the layout hint used to layout.
      * @throws IOException by pdfbox
      */
-    protected void renderReleative(final RenderContext renderContext,
-                                   Drawable drawable, final LayoutHint layoutHint) throws IOException {
+    protected void renderReleative(RenderContext renderContext,
+                                   Drawable drawable, LayoutHint layoutHint) throws IOException {
         VerticalLayoutHint verticalLayoutHint = null;
         if (layoutHint instanceof VerticalLayoutHint) {
             verticalLayoutHint = (VerticalLayoutHint) layoutHint;
@@ -127,9 +121,7 @@ public class VerticalLayout implements Layout {
                         verticalLayoutHint.getMarginTop()), verticalLayoutHint);
             }
         }
-
         layoutAndDrawReleative(renderContext, drawable, verticalLayoutHint);
-
         if (verticalLayoutHint != null) {
             if (verticalLayoutHint.getMarginBottom() > 0) {
                 layoutAndDrawReleative(renderContext, new VerticalSpacer(
@@ -151,9 +143,8 @@ public class VerticalLayout implements Layout {
      * @param layoutHint    the layout hint used to layout.
      * @throws IOException by pdfbox
      */
-    protected void layoutAndDrawReleative(final RenderContext renderContext,
-                                          Drawable drawable, final LayoutHint layoutHint) throws IOException {
-
+    protected void layoutAndDrawReleative(RenderContext renderContext,
+                                          Drawable drawable, LayoutHint layoutHint) throws IOException {
         float targetWidth = getTargetWidth(renderContext);
         boolean movePosition = true;
         VerticalLayoutHint verticalLayoutHint = null;
@@ -163,7 +154,6 @@ public class VerticalLayout implements Layout {
             targetWidth -= verticalLayoutHint.getMarginRight();
             movePosition = !verticalLayoutHint.isResetY();
         }
-
         float oldMaxWidth = -1;
         if (drawable instanceof WidthRespecting) {
             WidthRespecting flowing = (WidthRespecting) drawable;
@@ -172,28 +162,21 @@ public class VerticalLayout implements Layout {
                 flowing.setMaxWidth(targetWidth);
             }
         }
-
-        Drawable drawablePart = removeLeadingEmptyVerticalSpace(drawable,
-                renderContext);
+        Drawable drawablePart = removeLeadingEmptyVerticalSpace(drawable, renderContext);
         while (renderContext.getRemainingHeight() < drawablePart.getHeight()) {
-            Dividable dividable = null;
+            Dividable dividable;
             if (drawablePart instanceof Dividable) {
                 dividable = (Dividable) drawablePart;
             } else {
                 dividable = new Cutter(drawablePart);
             }
-            Dividable.Divided divided = dividable.divide(
-                    renderContext.getRemainingHeight(),
-                    renderContext.getHeight());
+            Dividable.Divided divided = dividable.divide(renderContext.getRemainingHeight(), renderContext.getHeight());
             drawReletivePartAndMovePosition(renderContext, divided.getFirst(),
                     layoutHint, true);
-
             // new page
             turnPage(renderContext);
-
             drawablePart = divided.getTail();
-            drawablePart = removeLeadingEmptyVerticalSpace(drawablePart,
-                    renderContext);
+            drawablePart = removeLeadingEmptyVerticalSpace(drawablePart, renderContext);
         }
 
         drawReletivePartAndMovePosition(renderContext, drawablePart,
@@ -230,12 +213,10 @@ public class VerticalLayout implements Layout {
         if (layoutHint instanceof VerticalLayoutHint) {
             VerticalLayoutHint verticalLayoutHint = (VerticalLayoutHint) layoutHint;
             Alignment alignment = verticalLayoutHint.getAlignment();
-            float horizontalExtraSpace = getTargetWidth(renderContext)
-                    - drawable.getWidth();
+            float horizontalExtraSpace = getTargetWidth(renderContext) - drawable.getWidth();
             switch (alignment) {
                 case RIGHT:
-                    offsetX = horizontalExtraSpace
-                            - verticalLayoutHint.getMarginRight();
+                    offsetX = horizontalExtraSpace - verticalLayoutHint.getMarginRight();
                     break;
                 case CENTER:
                     offsetX = horizontalExtraSpace / 2f;
@@ -264,8 +245,7 @@ public class VerticalLayout implements Layout {
      * @return <code>true</code> if the current position is top of page.
      */
     protected boolean isPositionTopOfPage(final RenderContext renderContext) {
-        return renderContext.getCurrentPosition().getY() == renderContext
-                .getUpperLeft().getY();
+        return renderContext.getCurrentPosition().getY() == renderContext.getUpperLeft().getY();
     }
 
     /**
@@ -279,8 +259,7 @@ public class VerticalLayout implements Layout {
      */
     protected Drawable removeLeadingEmptyVerticalSpace(final Drawable drawable,
                                                        final RenderContext renderContext) throws IOException {
-        if (isRemoveLeadingEmptyVerticalSpace()
-                && isPositionTopOfPage(renderContext)) {
+        if (isRemoveLeadingEmptyVerticalSpace() && isPositionTopOfPage(renderContext)) {
             return drawable.removeLeadingEmptyVerticalSpace();
         }
         return drawable;

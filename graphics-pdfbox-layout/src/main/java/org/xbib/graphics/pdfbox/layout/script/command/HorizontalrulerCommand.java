@@ -9,13 +9,14 @@ import org.xbib.settings.Settings;
 
 import java.awt.Color;
 import java.io.IOException;
+import java.util.Locale;
 
 public class HorizontalrulerCommand implements Command {
     @Override
     public void execute(Engine engine, State state, Settings settings) throws IOException {
         Stroke.StrokeBuilder strokeBuilder = Stroke.builder()
-                .capStyle(Stroke.CapStyle.valueOf(settings.get("capstyie", "Cap")))
-                .joinStyle(Stroke.JoinStyle.valueOf(settings.get("joinstyle", "Miter")))
+                .capStyle(Stroke.CapStyle.valueOf(settings.get("capstyie", "cap").toUpperCase(Locale.ROOT)))
+                .joinStyle(Stroke.JoinStyle.valueOf(settings.get("joinstyle", "miter").toUpperCase(Locale.ROOT)))
                 .lineWidth(settings.getAsFloat("linewidth", 1f));
         if (settings.containsSetting("dash")) {
             strokeBuilder.dashPattern(new Stroke.DashPattern(settings.getAsFloat("dash", 1f)));

@@ -54,6 +54,7 @@ public class TableTest {
                         .build();
                 TableRenderer tableRenderer = TableRenderer.builder()
                         .table(myTable)
+                        .document(document)
                         .contentStream(contentStream)
                         .startX(20f)
                         .startY(page.getMediaBox().getUpperRightY() - 20f)
@@ -73,7 +74,6 @@ public class TableTest {
         final Table table = tableBuilder.build();
         assertThat(table.getNumberOfColumns(), equalTo(3));
     }
-
 
     @Test
     public void getWidthTableBuilderWithTwoColumns() {
@@ -104,7 +104,7 @@ public class TableTest {
         final Table table = Table.builder()
                 .addColumnOfWidth(12)
                 .addColumnOfWidth(34)
-                .fontSize(12)
+                .fontSize(12f)
                 .addRow(Row.builder()
                         .add(TextCell.builder().text("11").paddingTop(35).paddingBottom(15).build())
                         .add(TextCell.builder().text("12").paddingTop(15).paddingBottom(25).build())
@@ -148,7 +148,8 @@ public class TableTest {
         Table.Builder tableBuilder = Table.builder()
                 .addColumnsOfWidth(10, 10, 10)
                 .horizontalAlignment(HorizontalAlignment.CENTER)
-                .fontSize(10).font(BaseFont.HELVETICA)
+                .fontSize(10f)
+                .font(BaseFont.HELVETICA)
                 .wordBreak(false);
         Row row = Row.builder()
                 .add(TextCell.builder().text("iVgebALheQlBkxtDyNDrhKv").colSpan(2).borderWidth(1).build())

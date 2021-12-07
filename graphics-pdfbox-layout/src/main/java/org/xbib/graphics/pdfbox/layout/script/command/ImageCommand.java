@@ -9,23 +9,32 @@ import org.xbib.graphics.pdfbox.layout.text.Position;
 import org.xbib.settings.Settings;
 
 import java.io.IOException;
+import java.util.Locale;
 
 public class ImageCommand implements Command {
     @Override
     public void execute(Engine engine, State state, Settings settings) throws IOException {
-        ImageElement element = new ImageElement(settings.get("value"));
+        ImageElement imageElement = new ImageElement(settings.get("value"));
         if (settings.containsSetting("x") && settings.containsSetting("y")) {
-            element.setAbsolutePosition(new Position(settings.getAsFloat("x", 0f), settings.getAsFloat("y", 0f)));
+            imageElement.setAbsolutePosition(new Position(settings.getAsFloat("x", 0f), settings.getAsFloat("y", 0f)));
         }
         if (settings.containsSetting("width")) {
-            element.setWidth(settings.getAsFloat("width", element.getWidth()));
+            imageElement.setWidth(settings.getAsFloat("width", imageElement.getWidth()));
         }
         if (settings.containsSetting("height")) {
-            element.setWidth(settings.getAsFloat("height", element.getHeight()));
+            imageElement.setWidth(settings.getAsFloat("height", imageElement.getHeight()));
         }
         if (settings.containsSetting("scale")) {
-            element.setScale(settings.getAsFloat("scale", element.getScale()));
+            imageElement.setScale(settings.getAsFloat("scale", imageElement.getScale()));
         }
-        state.documents.peek().add(element, new VerticalLayoutHint(Alignment.LEFT, 10, 10, 10, 10, true));
+        Alignment alignment = Alignment.valueOf(settings.get("alignment", "left").toUpperCase(Locale.ROOT));
+        String margin = settings.get("margin", "0 0 0 0");
+        String[] margins = margin.split(" ");
+        float marginleft = Float.parseFloat(margins[0]);
+        float marginright = Float.parseFloat(margins[1]);
+        float margintop = Float.parseFloat(margins[2]);
+        float marginbottom = Float.parseFloat(margins[3]);
+        VerticalLayoutHint verticalLayoutHint = new VerticalLayoutHint(alignment, marginleft, marginright, margintop, marginbottom, true);
+        state.documents.peek().add(imageElement, verticalLayoutHint);
     }
 }

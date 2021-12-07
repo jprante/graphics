@@ -47,7 +47,7 @@ public abstract class AbstractCellRenderer<T extends AbstractCell> implements Re
                 ? start.y + rowHeight - cell.getHeight()
                 : start.y;
         final Color cellBorderColor = cell.getBorderColor();
-        final Color rowBorderColor = cell.getRow().getSettings().getBorderColor();
+        final Color rowBorderColor = cell.getRow().getParameters().getBorderColor();
         if (cell.hasBorderTop() || cell.hasBorderBottom()) {
             final float correctionLeft = cell.getBorderWidthLeft() / 2;
             final float correctionRight = cell.getBorderWidthRight() / 2;

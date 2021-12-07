@@ -6,13 +6,15 @@ import org.xbib.graphics.pdfbox.layout.script.Engine;
 import org.xbib.graphics.pdfbox.layout.script.State;
 import org.xbib.settings.Settings;
 
+import java.util.Locale;
+
 public class TextCommand implements Command {
 
     @Override
     public void execute(Engine engine, State state, Settings settings) {
         String value = settings.get("value");
         float size = settings.getAsFloat("size", 11.0f);
-        Font font = Fonts.valueOf(settings.get("font", "HELVETICA")).getFont(state.documents.peek());
+        Font font = Fonts.valueOf(settings.get("font", "helvetica").toUpperCase(Locale.ROOT)).getFont(state.documents.peek());
         state.paragraphs.peek().addMarkup(value, size, font);
     }
 }

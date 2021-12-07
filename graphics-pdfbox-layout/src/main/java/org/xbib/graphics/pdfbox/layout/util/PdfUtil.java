@@ -27,7 +27,7 @@ public final class PdfUtil {
      * @param fontSize FontSize of String
      * @return Width (in points)
      */
-    public static float getStringWidth(String text, Font font, int fontSize) {
+    public static float getStringWidth(String text, Font font, float fontSize) {
         return Arrays.stream(text.split(NEW_LINE_REGEX))
                 .max(Comparator.comparing(String::length))
                 .map(x -> {
@@ -40,7 +40,7 @@ public final class PdfUtil {
                 .orElseThrow(CouldNotDetermineStringWidthException::new);
     }
 
-    private static float getWidthOfStringWithoutNewlines(String text, Font font, int fontSize) throws IOException {
+    private static float getWidthOfStringWithoutNewlines(String text, Font font, float fontSize) throws IOException {
         List<String> codePointsAsString = text.codePoints()
                 .mapToObj(codePoint -> new String(new int[]{codePoint}, 0, 1))
                 .collect(Collectors.toList());
@@ -62,7 +62,7 @@ public final class PdfUtil {
      * @param fontSize FontSize
      * @return Height of font
      */
-    public static float getFontHeight(Font font, int fontSize) {
+    public static float getFontHeight(Font font, float fontSize) {
         return font.getRegularFont().getFontDescriptor().getCapHeight() * fontSize / 1000F;
     }
 
@@ -75,7 +75,7 @@ public final class PdfUtil {
      * @param maxWidth Maximal width of resulting text-lines
      * @return A list of lines, where all are smaller than maxWidth
      */
-    public static List<String> getOptimalTextBreakLines(String text, Font font, int fontSize, float maxWidth) {
+    public static List<String> getOptimalTextBreakLines(String text, Font font, float fontSize, float maxWidth) {
         List<String> result = new ArrayList<>();
         for (String line : text.split(NEW_LINE_REGEX)) {
             if (PdfUtil.doesTextLineFit(line, font, fontSize, maxWidth)) {
@@ -87,7 +87,7 @@ public final class PdfUtil {
         return result;
     }
 
-    private static List<String> wrapLine(String line, Font font, int fontSize, float maxWidth) {
+    private static List<String> wrapLine(String line, Font font, float fontSize, float maxWidth) {
         if (doesTextLineFit(line, font, fontSize, maxWidth)) {
             return Collections.singletonList(line);
         }
@@ -101,7 +101,7 @@ public final class PdfUtil {
         return goodLines;
     }
 
-    private static List<String> splitBySize(String line, Font font, int fontSize, float maxWidth) {
+    private static List<String> splitBySize(String line, Font font, float fontSize, float maxWidth) {
         List<String> returnList = new ArrayList<>();
         for (int i = line.length() - 1; i > 0; i--) {
             String fittedNewLine = line.substring(0, i) + "-";
@@ -115,10 +115,7 @@ public final class PdfUtil {
         return returnList;
     }
 
-    private static String buildALine(Stack<String> words,
-                                     Font font,
-                                     int fontSize,
-                                     float maxWidth) {
+    private static String buildALine(Stack<String> words, Font font, float fontSize, float maxWidth) {
         StringBuilder line = new StringBuilder();
         float width = 0;
         while (!words.empty()) {
@@ -142,7 +139,7 @@ public final class PdfUtil {
         return line.toString().trim();
     }
 
-    private static boolean doesTextLineFit(String textLine, Font font, int fontSize, float maxWidth) {
+    private static boolean doesTextLineFit(String textLine, Font font, float fontSize, float maxWidth) {
         return doesTextLineFit(PdfUtil.getStringWidth(textLine, font, fontSize), maxWidth);
     }
 

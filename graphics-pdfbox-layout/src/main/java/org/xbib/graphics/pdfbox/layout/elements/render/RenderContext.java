@@ -12,6 +12,7 @@ import org.xbib.graphics.pdfbox.layout.elements.PageFormat;
 import org.xbib.graphics.pdfbox.layout.elements.PositionControl;
 import org.xbib.graphics.pdfbox.layout.elements.PositionControl.MarkPosition;
 import org.xbib.graphics.pdfbox.layout.elements.PositionControl.MovePosition;
+import org.xbib.graphics.pdfbox.layout.elements.PositionControl.ResetPosition;
 import org.xbib.graphics.pdfbox.layout.elements.PositionControl.SetPosition;
 import org.xbib.graphics.pdfbox.layout.text.DrawContext;
 import org.xbib.graphics.pdfbox.layout.text.DrawListener;
@@ -121,7 +122,7 @@ public class RenderContext implements Renderer, Closeable, DrawContext, DrawList
     }
 
     /**
-     * @return the {@link PositionControl#MARKED_POSITION}.
+     * @return the marked position.
      */
     public Position getMarkedPosition() {
         return markedPosition;
@@ -301,23 +302,18 @@ public class RenderContext implements Renderer, Closeable, DrawContext, DrawList
             setMarkedPosition(getCurrentPosition());
             return true;
         }
+        if (positionControl instanceof ResetPosition) {
+            currentPosition = new Position(getMarkedPosition().getX(), getMarkedPosition().getY());
+        }
         if (positionControl instanceof SetPosition) {
             SetPosition setPosition = (SetPosition) positionControl;
             Float x = setPosition.getX();
             if (x == null) {
                 x = getCurrentPosition().getX();
-            } else {
-                if (x.equals(PositionControl.MARKED_POSITION)) {
-                    x = getMarkedPosition().getX();
-                }
             }
             Float y = setPosition.getY();
             if (y == null) {
                 y = getCurrentPosition().getY();
-            } else {
-                if (y.equals(PositionControl.MARKED_POSITION)) {
-                    y = getMarkedPosition().getY();
-                }
             }
             currentPosition = new Position(x, y);
             return true;
@@ -390,8 +386,7 @@ public class RenderContext implements Renderer, Closeable, DrawContext, DrawList
     }
 
     @Override
-    public void drawn(Object drawnObject, Position upperLeft, float width,
-                      float height) {
+    public void drawn(Object drawnObject, Position upperLeft, float width, float height) {
         updateMaxPositionOnPage(upperLeft, width, height);
         annotationDrawListener.drawn(drawnObject, upperLeft, width, height);
     }
@@ -399,12 +394,11 @@ public class RenderContext implements Renderer, Closeable, DrawContext, DrawList
     /**
      * Updates the maximum right resp. bottom position on the page.
      *
-     * @param upperLeft
-     * @param width
-     * @param height
+     * @param upperLeft the upper left position
+     * @param width the width
+     * @param height the height
      */
-    protected void updateMaxPositionOnPage(Position upperLeft, float width,
-                                           float height) {
+    protected void updateMaxPositionOnPage(Position upperLeft, float width, float height) {
         maxPositionOnPage = new Position(Math.max(maxPositionOnPage.getX(),
                 upperLeft.getX() + width), Math.min(maxPositionOnPage.getY(),
                 upperLeft.getY() - height));

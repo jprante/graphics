@@ -23,7 +23,7 @@ public class TextCellRenderer<T extends AbstractTextCell> extends AbstractCellRe
     public void renderContent(RenderContext renderContext) {
         float startX = renderContext.getStartingPoint().x;
         Font currentFont = cell.getFont();
-        int currentFontSize = cell.getFontSize();
+        float currentFontSize = cell.getFontSize();
         Color currentTextColor = cell.getTextColor();
         float yOffset = renderContext.getStartingPoint().y + getAdaptionForVerticalAlignment();
         float xOffset = startX + cell.getPaddingLeft();
@@ -55,7 +55,7 @@ public class TextCellRenderer<T extends AbstractTextCell> extends AbstractCellRe
     }
 
 
-    private float calculateYOffset(Font currentFont, int currentFontSize, int lineIndex) {
+    private float calculateYOffset(Font currentFont, float currentFontSize, int lineIndex) {
         return PdfUtil.getFontHeight(currentFont, currentFontSize) +
                 (lineIndex > 0 ? PdfUtil.getFontHeight(currentFont, currentFontSize) * cell.getLineSpacing() : 0f);
     }
@@ -76,7 +76,7 @@ public class TextCellRenderer<T extends AbstractTextCell> extends AbstractCellRe
         return charSpacing;
     }
 
-    protected List<String> calculateAndGetLines(Font currentFont, int currentFontSize, float maxWidth) {
+    protected List<String> calculateAndGetLines(Font currentFont, float currentFontSize, float maxWidth) {
         return cell.isWordBreak()
                 ? PdfUtil.getOptimalTextBreakLines(cell.getText(), currentFont, currentFontSize, maxWidth)
                 : Collections.singletonList(cell.getText());

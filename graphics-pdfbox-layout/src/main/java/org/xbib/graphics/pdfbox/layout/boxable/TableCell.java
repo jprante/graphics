@@ -4,6 +4,8 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.xbib.graphics.pdfbox.layout.util.PDStreamUtils;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;

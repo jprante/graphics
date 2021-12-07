@@ -14,11 +14,11 @@ public class PositionedStyledText {
 
     private final Font font;
 
-    private final int fontSize;
+    private final float fontSize;
 
     private final Color color;
 
-    public PositionedStyledText(float x, float y, String text, Font font, int fontSize, Color color) {
+    public PositionedStyledText(float x, float y, String text, Font font, float fontSize, Color color) {
         this.x = x;
         this.y = y;
         this.text = text;
@@ -43,7 +43,7 @@ public class PositionedStyledText {
         return font;
     }
 
-    public int getFontSize() {
+    public float getFontSize() {
         return fontSize;
     }
 

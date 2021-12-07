@@ -50,7 +50,7 @@ public class TextCell extends AbstractTextCell {
             return this;
         }
 
-        public Builder fontSize(Integer fontSize) {
+        public Builder fontSize(Float fontSize) {
             parameters.setFontSize(fontSize);
             return this;
         }

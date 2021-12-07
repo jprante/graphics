@@ -82,12 +82,12 @@ public class Indent extends ControlFragment {
                   Alignment alignment,
                   Color color) {
         super("INDENT", label, fontDescriptor, color);
+        if (label == null) {
+            return;
+        }
         try {
             float indent = calculateIndent(indentWidth, indentUnit, fontDescriptor);
-            float textWidth = 0;
-            if (label != null && !label.isEmpty()) {
-                textWidth = fontDescriptor.getSize() * fontDescriptor.getSelectedFont().getStringWidth(label) / 1000f;
-            }
+            float textWidth = fontDescriptor.getSize() * fontDescriptor.getSelectedFont().getStringWidth(label) / 1000f;
             float marginLeft = 0;
             float marginRight = 0;
             if (textWidth < indent) {
@@ -117,8 +117,7 @@ public class Indent extends ControlFragment {
      */
     public Indent(final float indentPt) {
         super("", DEFAULT_FONT_DESCRIPTOR);
-        styledText = new StyledText("", getFontDescriptor(), getColor(), 0,
-                indentPt, 0);
+        styledText = new StyledText("", getFontDescriptor(), getColor(), 0, indentPt, 0);
     }
 
     private float calculateIndent(float indentWidth, SpaceUnit indentUnit, final FontDescriptor fontDescriptor)

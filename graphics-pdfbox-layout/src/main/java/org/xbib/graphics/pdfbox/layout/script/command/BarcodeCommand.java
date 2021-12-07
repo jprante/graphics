@@ -10,8 +10,10 @@ import org.xbib.graphics.pdfbox.layout.text.Position;
 import org.xbib.settings.Settings;
 
 import java.io.IOException;
+import java.util.Locale;
 
 public class BarcodeCommand implements Command {
+
     @Override
     public void execute(Engine engine, State state, Settings settings) throws IOException {
         BarcodeElement element;
@@ -19,7 +21,7 @@ public class BarcodeCommand implements Command {
             Symbol symbol = Symbols.valueOf(settings.get("symbol")).getSymbol();
             symbol.setContent(settings.get("value"));
             symbol.setBarHeight(settings.getAsInt("barheight", 150));
-            symbol.setHumanReadableLocation(HumanReadableLocation.valueOf(settings.get("readablelocation", "BOTTOM")));
+            symbol.setHumanReadableLocation(HumanReadableLocation.valueOf(settings.get("readablelocation", "bottom").toUpperCase(Locale.ROOT)));
             element = new BarcodeElement(symbol);
         } catch (Exception e) {
             throw new IOException(e);

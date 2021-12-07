@@ -4,33 +4,30 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.xbib.graphics.pdfbox.layout.elements.render.VerticalLayout;
 
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * Defines the size and orientation of a page. The default is A4 portrait without margins.
  */
 public class PageFormat implements Element {
 
-    public static final int DEFAULT_USER_SPACE_UNIT_DPI = 72;
+    public static final float MM_TO_UNITS = 1.0f / 25.4f * 72.0f;
 
-    public static final float MM_TO_UNITS = 1 / (10 * 2.54f) * DEFAULT_USER_SPACE_UNIT_DPI;
+    public static final PDRectangle A0 = new PDRectangle(Math.round(841f * MM_TO_UNITS), Math.round(1189f * MM_TO_UNITS));
 
-    public static final PDRectangle A0 = new PDRectangle(841 * MM_TO_UNITS,
-            1189 * MM_TO_UNITS);
-    public static final PDRectangle A1 = new PDRectangle(594 * MM_TO_UNITS,
-            841 * MM_TO_UNITS);
-    public static final PDRectangle A2 = new PDRectangle(420 * MM_TO_UNITS,
-            594 * MM_TO_UNITS);
-    public static final PDRectangle A3 = new PDRectangle(297 * MM_TO_UNITS,
-            420 * MM_TO_UNITS);
-    public static final PDRectangle A4 = new PDRectangle(210 * MM_TO_UNITS,
-            297 * MM_TO_UNITS);
-    public static final PDRectangle A5 = new PDRectangle(148 * MM_TO_UNITS,
-            210 * MM_TO_UNITS);
-    public static final PDRectangle A6 = new PDRectangle(105 * MM_TO_UNITS,
-            148 * MM_TO_UNITS);
+    public static final PDRectangle A1 = new PDRectangle(Math.round(594f * MM_TO_UNITS), Math.round(841f * MM_TO_UNITS));
 
-    public static final PDRectangle Letter = new PDRectangle(215.9f * MM_TO_UNITS,
-            279.4f * MM_TO_UNITS);
+    public static final PDRectangle A2 = new PDRectangle(Math.round(420f * MM_TO_UNITS), Math.round(594f * MM_TO_UNITS));
+
+    public static final PDRectangle A3 = new PDRectangle(Math.round(297f * MM_TO_UNITS), Math.round(420f * MM_TO_UNITS));
+
+    public static final PDRectangle A4 = new PDRectangle(Math.round(210f * MM_TO_UNITS), Math.round(297f * MM_TO_UNITS));
+
+    public static final PDRectangle A5 = new PDRectangle(Math.round(148f * MM_TO_UNITS), Math.round(210f * MM_TO_UNITS));
+
+    public static final PDRectangle A6 = new PDRectangle(Math.round(105f * MM_TO_UNITS), Math.round(148f * MM_TO_UNITS));
+
+    public static final PDRectangle Letter = new PDRectangle(Math.round(215.9f * MM_TO_UNITS), Math.round(279.4f * MM_TO_UNITS));
 
     private final float marginLeft;
 
@@ -58,7 +55,7 @@ public class PageFormat implements Element {
      *
      * @param mediaBox the size.
      */
-    public PageFormat(final PDRectangle mediaBox) {
+    public PageFormat(PDRectangle mediaBox) {
         this(mediaBox, Orientation.PORTRAIT);
     }
 
@@ -68,7 +65,7 @@ public class PageFormat implements Element {
      * @param mediaBox    the size.
      * @param orientation the orientation.
      */
-    public PageFormat(final PDRectangle mediaBox, final Orientation orientation) {
+    public PageFormat(PDRectangle mediaBox, Orientation orientation) {
         this(mediaBox, orientation, 0, 0, 0, 0);
     }
 
@@ -84,8 +81,7 @@ public class PageFormat implements Element {
      * @param marginBottom the bottom margin
      */
     public PageFormat(PDRectangle mediaBox, Orientation orientation,
-                      float marginLeft, float marginRight, float marginTop,
-                      float marginBottom) {
+                      float marginLeft, float marginRight, float marginTop, float marginBottom) {
         this(mediaBox, orientation, 0, marginLeft, marginRight, marginTop, marginBottom);
     }
 
@@ -101,9 +97,8 @@ public class PageFormat implements Element {
      * @param marginTop    the top margin
      * @param marginBottom the bottom margin
      */
-    public PageFormat(PDRectangle mediaBox, Orientation orientation,
-                      int rotation, float marginLeft, float marginRight,
-                      float marginTop, float marginBottom) {
+    public PageFormat(PDRectangle mediaBox, Orientation orientation, int rotation,
+                      float marginLeft, float marginRight, float marginTop, float marginBottom) {
         this.mediaBox = mediaBox;
         this.orientation = orientation;
         this.rotation = rotation;
@@ -112,8 +107,6 @@ public class PageFormat implements Element {
         this.marginTop = marginTop;
         this.marginBottom = marginBottom;
     }
-
-
 
     /**
      * @return the orientation to use.
@@ -179,12 +172,19 @@ public class PageFormat implements Element {
     }
 
     public static class PageFormatBuilder {
+
         private float marginLeft;
+
         private float marginRight;
+
         private float marginTop;
+
         private float marginBottom;
+
         private PDRectangle mediaBox = A4;
+
         private Orientation orientation;
+
         private int rotation;
 
         protected PageFormatBuilder() {
@@ -243,8 +243,7 @@ public class PageFormat implements Element {
          * @param marginBottom the bottom margin to use.
          * @return the builder.
          */
-        public PageFormatBuilder margins(float marginLeft, float marginRight,
-                                         float marginTop, float marginBottom) {
+        public PageFormatBuilder margins(float marginLeft, float marginRight, float marginTop, float marginBottom) {
             this.marginLeft = marginLeft;
             this.marginRight = marginRight;
             this.marginTop = marginTop;
@@ -391,7 +390,8 @@ public class PageFormat implements Element {
         }
 
         public PageFormatBuilder pageFormat(String format) {
-            switch (format.toLowerCase(Locale.ROOT)) {
+            Objects.requireNonNull(format);
+            switch (format.toUpperCase(Locale.ROOT)) {
                 case "A0" :
                     A0();
                     break;
@@ -426,8 +426,7 @@ public class PageFormat implements Element {
          * @return the resulting PageFormat.
          */
         public PageFormat build() {
-            return new PageFormat(mediaBox, orientation, rotation, marginLeft,
-                    marginRight, marginTop, marginBottom);
+            return new PageFormat(mediaBox, orientation, rotation, marginLeft, marginRight, marginTop, marginBottom);
         }
     }
 }

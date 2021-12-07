@@ -7,12 +7,6 @@ package org.xbib.graphics.pdfbox.layout.elements;
 public class PositionControl extends ControlElement {
 
     /**
-     * Use this value in {@link #createSetPosition(Float, Float)} to reset
-     * either one or both coordinates to the marked position.
-     */
-    public static final Float MARKED_POSITION = Float.NEGATIVE_INFINITY;
-
-    /**
      * Add this element to a document to mark the current position.
      *
      * @return the created element
@@ -22,17 +16,24 @@ public class PositionControl extends ControlElement {
     }
 
     /**
+     * Add this element to a document to reset to the marked position.
+     *
+     * @return the created element
+     */
+    public static ResetPosition createResetPosition() {
+        return new ResetPosition();
+    }
+
+    /**
      * Add this element to a document to manipulate the current layout position.
      * If <code>null</code>, the position won't be changed (useful if you want
-     * to change only X or Y). If the value is {@link #MARKED_POSITION}, it wil
-     * be (re-)set to the marked position.
+     * to change only X or Y).
      *
      * @param newX the new X position.
      * @param newY new new Y position.
      * @return the created element
      */
-    public static SetPosition createSetPosition(final Float newX,
-                                                final Float newY) {
+    public static SetPosition createSetPosition(Float newX, Float newY) {
         return new SetPosition(newX, newY);
     }
 
@@ -45,22 +46,31 @@ public class PositionControl extends ControlElement {
      * @param relativeY the value to change position in Y direction.
      * @return the created element
      */
-    public static MovePosition createMovePosition(final float relativeX,
-                                                  final float relativeY) {
+    public static MovePosition createMovePosition(float relativeX, float relativeY) {
         return new MovePosition(relativeX, relativeY);
     }
 
     public static class MarkPosition extends PositionControl {
+
         private MarkPosition() {
             super("MARK_POSITION");
         }
     }
 
+    public static class ResetPosition extends PositionControl {
+
+        private ResetPosition() {
+            super("RESET_POSITION");
+        }
+    }
+
     public static class SetPosition extends PositionControl {
+
         private final Float newX;
+
         private final Float newY;
 
-        private SetPosition(final Float newX, final Float newY) {
+        private SetPosition(Float newX, Float newY) {
             super(String.format("SET_POSITION x:%f, y%f", newX, newY));
             this.newX = newX;
             this.newY = newY;
@@ -73,15 +83,16 @@ public class PositionControl extends ControlElement {
         public Float getY() {
             return newY;
         }
-
     }
 
     public static class MovePosition extends PositionControl {
+
         private final float relativeX;
+
         private final float relativeY;
 
-        private MovePosition(final float relativeX, final float relativeY) {
-            super(String.format("SET_POSITION x:%f, y%f", relativeX, relativeY));
+        private MovePosition(float relativeX, float relativeY) {
+            super(String.format("MOVE_POSITION x:%f, y%f", relativeX, relativeY));
             this.relativeX = relativeX;
             this.relativeY = relativeY;
         }
@@ -93,11 +104,9 @@ public class PositionControl extends ControlElement {
         public float getY() {
             return relativeY;
         }
-
     }
 
     private PositionControl(String name) {
         super(name);
     }
-
 }

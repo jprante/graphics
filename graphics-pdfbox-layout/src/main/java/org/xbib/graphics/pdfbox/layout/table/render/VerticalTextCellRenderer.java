@@ -25,11 +25,11 @@ public class VerticalTextCellRenderer extends AbstractCellRenderer<VerticalTextC
 
     @Override
     public void renderContent(RenderContext renderContext) {
-        final float startX = renderContext.getStartingPoint().x;
-        final float startY = renderContext.getStartingPoint().y;
-        final Font currentFont = cell.getFont();
-        final int currentFontSize = cell.getFontSize();
-        final Color currentTextColor = cell.getTextColor();
+        float startX = renderContext.getStartingPoint().x;
+        float startY = renderContext.getStartingPoint().y;
+        Font currentFont = cell.getFont();
+        float currentFontSize = cell.getFontSize();
+        Color currentTextColor = cell.getTextColor();
         float yOffset = startY + cell.getPaddingBottom();
         float height = cell.getRow().getHeight();
         if (cell.getRowSpan() > 1) {
@@ -54,7 +54,7 @@ public class VerticalTextCellRenderer extends AbstractCellRenderer<VerticalTextC
         return 0;
     }
 
-    protected void drawText(String text, Font font, int fontSize, Color color, float x, float y, PDPageContentStream contentStream) {
+    protected void drawText(String text, Font font, float fontSize, Color color, float x, float y, PDPageContentStream contentStream) {
         try {
             // Rotate by 90 degrees counter clockwise
             AffineTransform transform = AffineTransform.getTranslateInstance(x, y);

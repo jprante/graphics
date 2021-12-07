@@ -21,6 +21,8 @@ public class TableRenderer {
 
     protected final Table table;
 
+    protected PDDocument pdDocument;
+
     protected PDPageContentStream contentStream;
 
     protected PDPage page;
@@ -61,6 +63,10 @@ public class TableRenderer {
 
     public void setEndY(float endY) {
         this.endY = endY;
+    }
+
+    public void setDocument(PDDocument pdDocument) {
+        this.pdDocument = pdDocument;
     }
 
     public void setContentStream(PDPageContentStream contentStream) {
@@ -161,7 +167,7 @@ public class TableRenderer {
                 x += table.getColumns().get(columnCounter).getWidth();
                 columnCounter++;
             }
-            consumer.accept(cell.getDrawer(), new RenderContext(contentStream, page, new Point2D.Float(x, start.y)));
+            consumer.accept(cell.getDrawer(), new RenderContext(pdDocument, contentStream, page, new Point2D.Float(x, start.y)));
             x += cell.getWidth();
             columnCounter += cell.getColSpan();
         }
@@ -186,6 +192,8 @@ public class TableRenderer {
 
         private Table table;
 
+        private PDDocument pdDocument;
+
         private PDPageContentStream contentStream;
 
         private float startX;
@@ -199,6 +207,11 @@ public class TableRenderer {
 
         public Builder table(Table table) {
             this.table = table;
+            return this;
+        }
+
+        public Builder document(PDDocument document) {
+            this.pdDocument = document;
             return this;
         }
 
@@ -224,6 +237,7 @@ public class TableRenderer {
 
         public TableRenderer build() {
             TableRenderer tableRenderer = new TableRenderer(table);
+            tableRenderer.setDocument(pdDocument);
             tableRenderer.setContentStream(contentStream);
             tableRenderer.setStartX(startX);
             tableRenderer.setStartY(startY);

@@ -6,6 +6,7 @@ package org.xbib.graphics.pdfbox.layout.elements;
 public class Dimension {
 
     private final float width;
+
     private final float height;
 
     public Dimension(float width, float height) {

@@ -7,6 +7,8 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.destination.PDPageXYZDestination;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
+import org.xbib.graphics.pdfbox.layout.util.PDStreamUtils;
+
 import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
