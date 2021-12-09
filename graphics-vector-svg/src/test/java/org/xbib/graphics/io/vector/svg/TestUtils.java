@@ -67,7 +67,6 @@ public abstract class TestUtils {
         assertEquals(expectedFrags.size(), actualFrags.size());
     }
 
-    @SuppressWarnings("serial")
     public static class Template extends LinkedList<Object> {
         public Template(Object[] lines) {
             Collections.addAll(this, lines);

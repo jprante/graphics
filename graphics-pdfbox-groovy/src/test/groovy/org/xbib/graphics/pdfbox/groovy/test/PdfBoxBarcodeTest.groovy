@@ -92,8 +92,8 @@ class PdfBoxBarcodeTest {
             BufferedImage bufferedImage = new BufferedImage(width as int, height as int, BufferedImage.TYPE_BYTE_GRAY)
             Graphics2D g2d = bufferedImage.createGraphics()
             Rectangle rectangle = new Rectangle(0, 0, width as int, height as int)
-            BarcodeGraphicsRenderer renderer = new BarcodeGraphicsRenderer(g2d, rectangle, 1.0d,
-                    Color.WHITE, Color.BLACK, false, false)
+            BarcodeGraphicsRenderer renderer = new BarcodeGraphicsRenderer(g2d, rectangle,
+                    1.0d, 1.0d, Color.WHITE, Color.BLACK, false, false)
             renderer.render(code3Of9)
             renderer.close()
             PDImageXObject img = LosslessFactory.createFromImage(document, bufferedImage)
@@ -120,8 +120,8 @@ class PdfBoxBarcodeTest {
         void create(float x, float y, float width, float height, Code3Of9 code3Of9) {
             PdfBoxGraphics2D pdfBoxGraphics2D = new PdfBoxGraphics2D(document, width, height)
             Rectangle rectangle = new Rectangle(0, 0, width as int, height as int)
-            BarcodeGraphicsRenderer renderer = new BarcodeGraphicsRenderer(pdfBoxGraphics2D, rectangle, 1.0d,
-                    Color.WHITE, Color.BLACK, false, false)
+            BarcodeGraphicsRenderer renderer = new BarcodeGraphicsRenderer(pdfBoxGraphics2D, rectangle,
+                    1.0d, 1.0d, Color.WHITE, Color.BLACK, false, false)
             renderer.render(code3Of9)
             renderer.close()
             PDFormXObject xFormObject = pdfBoxGraphics2D.getXFormObject()

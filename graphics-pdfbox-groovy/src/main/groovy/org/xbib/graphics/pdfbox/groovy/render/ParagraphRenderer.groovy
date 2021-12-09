@@ -231,7 +231,8 @@ class ParagraphRenderer implements Renderable {
         float width = barcode.width
         float height = barcode.height
         PdfBoxGraphics2D pdfBoxGraphics2D = new PdfBoxGraphics2D(pdfDocument.pdDocument, width, height)
-        BarcodeGraphicsRenderer renderer = new BarcodeGraphicsRenderer(pdfBoxGraphics2D, null, 1.0d,
+        BarcodeGraphicsRenderer renderer = new BarcodeGraphicsRenderer(pdfBoxGraphics2D, null,
+                1.0d, 1.0d,
                 java.awt.Color.WHITE, java.awt.Color.BLACK, false, false)
         renderer.render(symbol)
         renderer.close()
