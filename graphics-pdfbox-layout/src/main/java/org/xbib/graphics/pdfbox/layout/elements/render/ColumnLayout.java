@@ -13,20 +13,22 @@ import java.io.IOException;
  */
 public class ColumnLayout extends VerticalLayout {
 
-    private final int columnCount;
+    private int columnCount = 1;
 
-    private final float columnSpacing;
+    private float columnSpacing = 0f;
 
     private int columnIndex = 0;
+
     private Float offsetY = null;
 
-    public ColumnLayout(int columnCount) {
-        this(columnCount, 0);
+    public ColumnLayout setColumnCount(int columnCount) {
+        this.columnCount = columnCount;
+        return this;
     }
 
-    public ColumnLayout(int columnCount, float columnSpacing) {
-        this.columnCount = columnCount;
+    public ColumnLayout setColumnSpacing(float columnSpacing) {
         this.columnSpacing = columnSpacing;
+        return this;
     }
 
     @Override
@@ -36,26 +38,24 @@ public class ColumnLayout extends VerticalLayout {
     }
 
     /**
-     * Flips to the next column
+     * Flips to the next column.
+     * @param renderContext render context
      */
     @Override
-    protected void turnPage(final RenderContext renderContext)
-            throws IOException {
+    protected void turnPage(RenderContext renderContext) throws IOException {
         if (++columnIndex >= columnCount) {
             renderContext.newPage();
             columnIndex = 0;
             offsetY = 0f;
         } else {
-            float nextColumnX = (getTargetWidth(renderContext) + columnSpacing)
-                    * columnIndex;
+            float nextColumnX = (getTargetWidth(renderContext) + columnSpacing) * columnIndex;
             renderContext.resetPositionToUpperLeft();
             renderContext.movePositionBy(nextColumnX, -offsetY);
         }
     }
 
     @Override
-    public boolean render(RenderContext renderContext, Element element,
-                          LayoutHint layoutHint) throws IOException {
+    public boolean render(RenderContext renderContext, Element element, LayoutHint layoutHint) throws IOException {
         if (element == ControlElement.NEWPAGE) {
             renderContext.newPage();
             return true;
@@ -68,8 +68,7 @@ public class ColumnLayout extends VerticalLayout {
     }
 
     @Override
-    public void render(RenderContext renderContext, Drawable drawable,
-                       LayoutHint layoutHint) throws IOException {
+    public void render(RenderContext renderContext, Drawable drawable, LayoutHint layoutHint) throws IOException {
         if (offsetY == null) {
             offsetY = renderContext.getUpperLeft().getY() - renderContext.getCurrentPosition().getY();
         }
@@ -84,5 +83,4 @@ public class ColumnLayout extends VerticalLayout {
         }
         return renderContext.getCurrentPosition().getY() == topPosition;
     }
-
 }

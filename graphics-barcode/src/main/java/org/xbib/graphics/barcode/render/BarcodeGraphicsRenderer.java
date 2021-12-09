@@ -31,9 +31,14 @@ public class BarcodeGraphicsRenderer {
     private final Rectangle rectangle;
 
     /**
-     * The scaling factor.
+     * The scaling factor for X dimension.
      */
-    private final double scalingFactor;
+    private final double scalingFactorX;
+
+    /**
+     * The scaling factor for Y dimension.
+     */
+    private final double scalingFactorY;
 
     /**
      * The paper (background) color.
@@ -54,7 +59,8 @@ public class BarcodeGraphicsRenderer {
      *
      * @param g2d           the graphics to render to
      * @param rectangle the visible rectangle
-     * @param scalingFactor the scaling factor to apply
+     * @param scalingFactorX the scaling factor to apply for x dimension
+     * @param scalingFactorY the scaling factor to apply for y dimension
      * @param background         the paper (background) color
      * @param foreground           the ink (foreground) color
      * @param antialias if true give anti alias hint
@@ -62,14 +68,16 @@ public class BarcodeGraphicsRenderer {
      */
     public BarcodeGraphicsRenderer(Graphics2D g2d,
                                    Rectangle rectangle,
-                                   double scalingFactor,
+                                   double scalingFactorX,
+                                   double scalingFactorY,
                                    Color background,
                                    Color foreground,
                                    boolean antialias,
                                    boolean transparentBackground) {
         this.g2d = g2d;
         this.rectangle = rectangle;
-        this.scalingFactor = scalingFactor;
+        this.scalingFactorX = scalingFactorX;
+        this.scalingFactorY = scalingFactorY;
         this.background = background;
         this.foreground = foreground;
         this.antialias = antialias;
@@ -85,8 +93,8 @@ public class BarcodeGraphicsRenderer {
         } else {
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         }
-        double marginX = symbol.getQuietZoneHorizontal() * scalingFactor;
-        double marginY = symbol.getQuietZoneVertical() * scalingFactor;
+        double marginX = symbol.getQuietZoneHorizontal() * scalingFactorX;
+        double marginY = symbol.getQuietZoneVertical() * scalingFactorY;
         g2d.setBackground(background);
         if (!transparentBackground) {
             g2d.setColor(background);
@@ -96,10 +104,10 @@ public class BarcodeGraphicsRenderer {
             g2d.setColor(foreground);
         }
         for (Rectangle2D.Double rect : symbol.getRectangles()) {
-            double x = rect.x * scalingFactor + marginX;
-            double y = rect.y * scalingFactor + marginY;
-            double w = rect.width * scalingFactor;
-            double h = rect.height * scalingFactor;
+            double x = rect.x * scalingFactorX + marginX;
+            double y = rect.y * scalingFactorY + marginY;
+            double w = rect.width * scalingFactorX;
+            double h = rect.height * scalingFactorY;
             Path2D path = new Path2D.Double();
             path.moveTo(x, y);
             path.lineTo(x + w, y);
@@ -111,24 +119,24 @@ public class BarcodeGraphicsRenderer {
         if (symbol.getHumanReadableLocation() != HumanReadableLocation.NONE) {
             Map<TextAttribute, Object> attributes = new HashMap<>();
             attributes.put(TextAttribute.TRACKING, 0);
-            Font f = new Font(symbol.getFontName(), Font.PLAIN, (int) (symbol.getFontSize() * scalingFactor)).deriveFont(attributes);
+            Font f = new Font(symbol.getFontName(), Font.PLAIN, (int) (symbol.getFontSize() * Math.min(scalingFactorX, scalingFactorY))).deriveFont(attributes);
             Font oldFont = g2d.getFont();
             g2d.setFont(f);
             FontMetrics fm = g2d.getFontMetrics();
             for (TextBox text : symbol.getTexts()) {
                 Rectangle2D bounds = fm.getStringBounds(text.text, g2d);
-                double x = (text.x * scalingFactor) - (bounds.getWidth() / 2) + marginX;
-                double y = (text.y * scalingFactor) + marginY;
+                double x = (text.x * scalingFactorX) - (bounds.getWidth() / 2) + marginX;
+                double y = (text.y * scalingFactorY) + marginY;
                 g2d.drawString(text.text, (float) x, (float) y);
             }
             g2d.setFont(oldFont);
         }
         for (Hexagon hexagon : symbol.getHexagons()) {
             Path2D path = new Path2D.Double();
-            path.moveTo(hexagon.pointX[0] * scalingFactor + marginX, hexagon.pointY[0] * scalingFactor + marginY);
+            path.moveTo(hexagon.pointX[0] * scalingFactorX + marginX, hexagon.pointY[0] * scalingFactorY + marginY);
             for(int i = 1; i < 6; ++i) {
-                double x = hexagon.pointX[i] * scalingFactor + marginX;
-                double y = hexagon.pointY[i] * scalingFactor + marginY;
+                double x = hexagon.pointX[i] * scalingFactorX + marginX;
+                double y = hexagon.pointY[i] * scalingFactorY + marginY;
                 path.lineTo(x, y);
             }
             path.closePath();
@@ -137,10 +145,10 @@ public class BarcodeGraphicsRenderer {
         List<Ellipse2D.Double> targets = symbol.getTarget();
         for (int i = 0; i < targets.size(); i++) {
             Ellipse2D.Double ellipse = targets.get(i);
-            double x = ellipse.x * scalingFactor + marginX;
-            double y = ellipse.y * scalingFactor + marginY;
-            double w = ellipse.width * scalingFactor;
-            double h = ellipse.height * scalingFactor;
+            double x = ellipse.x * scalingFactorX + marginX;
+            double y = ellipse.y * scalingFactorY + marginY;
+            double w = ellipse.width * scalingFactorX;
+            double h = ellipse.height * scalingFactorY;
             if ((i & 1) == 0) {
                 g2d.setColor(foreground);
             } else {

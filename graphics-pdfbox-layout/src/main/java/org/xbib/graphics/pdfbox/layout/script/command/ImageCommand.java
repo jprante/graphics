@@ -11,18 +11,20 @@ import org.xbib.settings.Settings;
 import java.io.IOException;
 import java.util.Locale;
 
+import static org.xbib.graphics.pdfbox.layout.util.PdfUtil.mmToPt;
+
 public class ImageCommand implements Command {
     @Override
     public void execute(Engine engine, State state, Settings settings) throws IOException {
         ImageElement imageElement = new ImageElement(settings.get("value"));
         if (settings.containsSetting("x") && settings.containsSetting("y")) {
-            imageElement.setAbsolutePosition(new Position(settings.getAsFloat("x", 0f), settings.getAsFloat("y", 0f)));
+            imageElement.setAbsolutePosition(new Position(mmToPt(settings.getAsFloat("x", 0f)), mmToPt(settings.getAsFloat("y", 0f))));
         }
         if (settings.containsSetting("width")) {
             imageElement.setWidth(settings.getAsFloat("width", imageElement.getWidth()));
         }
         if (settings.containsSetting("height")) {
-            imageElement.setWidth(settings.getAsFloat("height", imageElement.getHeight()));
+            imageElement.setHeight(settings.getAsFloat("height", imageElement.getHeight()));
         }
         if (settings.containsSetting("scale")) {
             imageElement.setScale(settings.getAsFloat("scale", imageElement.getScale()));
@@ -35,6 +37,6 @@ public class ImageCommand implements Command {
         float margintop = Float.parseFloat(margins[2]);
         float marginbottom = Float.parseFloat(margins[3]);
         VerticalLayoutHint verticalLayoutHint = new VerticalLayoutHint(alignment, marginleft, marginright, margintop, marginbottom, true);
-        state.elements.peek().add(imageElement);
+        state.elements.peek().add(imageElement, verticalLayoutHint);
     }
 }

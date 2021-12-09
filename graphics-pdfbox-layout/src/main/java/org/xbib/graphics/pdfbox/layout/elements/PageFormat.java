@@ -6,12 +6,12 @@ import org.xbib.graphics.pdfbox.layout.elements.render.VerticalLayout;
 import java.util.Locale;
 import java.util.Objects;
 
+import static org.xbib.graphics.pdfbox.layout.util.PdfUtil.MM_TO_UNITS;
+
 /**
  * Defines the size and orientation of a page. The default is A4 portrait without margins.
  */
 public class PageFormat implements Element {
-
-    public static final float MM_TO_UNITS = 1.0f / 25.4f * 72.0f;
 
     public static final PDRectangle A0 = new PDRectangle(Math.round(841f * MM_TO_UNITS), Math.round(1189f * MM_TO_UNITS));
 

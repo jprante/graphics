@@ -87,20 +87,20 @@ public class SVGRendererTest {
     }
 
     private void test(AbstractSymbol symbol,
-                      double magnification,
+                      double scale,
                       Color paper,
                       Color ink,
                       int margin,
                       String expectationFile) throws IOException {
         symbol.setQuietZoneHorizontal(margin);
         symbol.setQuietZoneVertical(margin);
-        int width = (int) (symbol.getWidth() * magnification);
-        int height = (int) (symbol.getHeight() * magnification);
+        int width = (int) (symbol.getWidth() * scale);
+        int height = (int) (symbol.getHeight() * scale);
         Rectangle rectangle = new Rectangle(0, 0, width, height);
         SVGGraphics2D svgGraphics2D = new SVGGraphics2D(rectangle);
         svgGraphics2D.setFont(Font.decode("Dialog"));
         BarcodeGraphicsRenderer barcodeGraphicsRenderer = new BarcodeGraphicsRenderer(svgGraphics2D,
-                rectangle, magnification, paper, ink, false, false);
+                rectangle, scale, scale, paper, ink, false, false);
         barcodeGraphicsRenderer.render(symbol);
         barcodeGraphicsRenderer.close();
         byte[] actualBytes = svgGraphics2D.getBytes();

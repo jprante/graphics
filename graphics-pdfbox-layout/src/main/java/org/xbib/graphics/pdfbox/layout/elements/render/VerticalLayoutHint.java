@@ -13,20 +13,22 @@ import org.xbib.graphics.pdfbox.layout.text.Alignment;
  */
 public class VerticalLayoutHint implements LayoutHint {
 
-    public final static VerticalLayoutHint LEFT = new VerticalLayoutHint(
-            Alignment.LEFT);
+    public final static VerticalLayoutHint LEFT = new VerticalLayoutHint(Alignment.LEFT);
 
-    public final static VerticalLayoutHint CENTER = new VerticalLayoutHint(
-            Alignment.CENTER);
+    public final static VerticalLayoutHint CENTER = new VerticalLayoutHint(Alignment.CENTER);
 
-    public final static VerticalLayoutHint RIGHT = new VerticalLayoutHint(
-            Alignment.RIGHT);
+    public final static VerticalLayoutHint RIGHT = new VerticalLayoutHint(Alignment.RIGHT);
 
     private final Alignment alignment;
+
     private final float marginLeft;
+
     private final float marginRight;
+
     private final float marginTop;
+
     private final float marginBottom;
+
     private final boolean resetY;
 
     /**
@@ -54,8 +56,7 @@ public class VerticalLayoutHint implements LayoutHint {
      * @param marginTop    the top alignment.
      * @param marginBottom the bottom alignment.
      */
-    public VerticalLayoutHint(Alignment alignment, float marginLeft,
-                              float marginRight, float marginTop, float marginBottom) {
+    public VerticalLayoutHint(Alignment alignment, float marginLeft, float marginRight, float marginTop, float marginBottom) {
         this(alignment, marginLeft, marginRight, marginTop, marginBottom, false);
     }
 
@@ -70,8 +71,7 @@ public class VerticalLayoutHint implements LayoutHint {
      * @param resetY       if <code>true</code>, the y coordinate will be reset to the
      *                     point before layouting the element.
      */
-    public VerticalLayoutHint(Alignment alignment, float marginLeft,
-                              float marginRight, float marginTop, float marginBottom,
+    public VerticalLayoutHint(Alignment alignment, float marginLeft, float marginRight, float marginTop, float marginBottom,
                               boolean resetY) {
         this.alignment = alignment;
         this.marginLeft = marginLeft;
@@ -126,40 +126,45 @@ public class VerticalLayoutHint implements LayoutHint {
      * {@link VerticalLayoutHint} using a fluent API.
      */
     public static class VerticalLayoutHintBuilder {
+
         protected Alignment alignment = Alignment.LEFT;
-        protected float marginLeft = 0;
-        protected float marginRight = 0;
-        protected float marginTop = 0;
-        protected float marginBottom = 0;
+
+        protected float marginLeft = 0f;
+
+        protected float marginRight = 0f;
+
+        protected float marginTop = 0f;
+
+        protected float marginBottom = 0f;
+
         protected boolean resetY = false;
 
-        public VerticalLayoutHintBuilder alignment(final Alignment alignment) {
+        public VerticalLayoutHintBuilder alignment(Alignment alignment) {
             this.alignment = alignment;
             return this;
         }
 
-        public VerticalLayoutHintBuilder marginLeft(final float marginLeft) {
+        public VerticalLayoutHintBuilder marginLeft(float marginLeft) {
             this.marginLeft = marginLeft;
             return this;
         }
 
-        public VerticalLayoutHintBuilder marginRight(final float marginRight) {
+        public VerticalLayoutHintBuilder marginRight(float marginRight) {
             this.marginRight = marginRight;
             return this;
         }
 
-        public VerticalLayoutHintBuilder marginTop(final float marginTop) {
+        public VerticalLayoutHintBuilder marginTop(float marginTop) {
             this.marginTop = marginTop;
             return this;
         }
 
-        public VerticalLayoutHintBuilder marginBottom(final float marginBottom) {
+        public VerticalLayoutHintBuilder marginBottom(float marginBottom) {
             this.marginBottom = marginBottom;
             return this;
         }
 
-        public VerticalLayoutHintBuilder margins(float marginLeft,
-                                                 float marginRight, float marginTop, float marginBottom) {
+        public VerticalLayoutHintBuilder margins(float marginLeft, float marginRight, float marginTop, float marginBottom) {
             this.marginLeft = marginLeft;
             this.marginRight = marginRight;
             this.marginTop = marginTop;
@@ -167,16 +172,13 @@ public class VerticalLayoutHint implements LayoutHint {
             return this;
         }
 
-        public VerticalLayoutHintBuilder resetY(final boolean resetY) {
+        public VerticalLayoutHintBuilder resetY(boolean resetY) {
             this.resetY = resetY;
             return this;
         }
 
         public VerticalLayoutHint build() {
-            return new VerticalLayoutHint(alignment, marginLeft, marginRight,
-                    marginTop, marginBottom, resetY);
+            return new VerticalLayoutHint(alignment, marginLeft, marginRight, marginTop, marginBottom, resetY);
         }
-
     }
-
 }

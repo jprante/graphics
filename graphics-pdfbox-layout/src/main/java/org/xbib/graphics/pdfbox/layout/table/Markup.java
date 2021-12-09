@@ -3,34 +3,35 @@ package org.xbib.graphics.pdfbox.layout.table;
 import org.xbib.graphics.pdfbox.layout.elements.Paragraph;
 import org.xbib.graphics.pdfbox.layout.font.Font;
 
-import java.io.IOException;
-
 public class Markup implements ParagraphProcessor {
 
-    private String markup;
+    private String value;
 
     private Font font;
 
     private Float fontSize;
 
-    public void setMarkup(String markup) {
-        this.markup = markup;
+    public Markup setValue(String value) {
+        this.value = value;
+        return this;
     }
 
-    public String getMarkup() {
-        return markup;
+    public String getValue() {
+        return value;
     }
 
-    public void setFont(Font font) {
+    public Markup setFont(Font font) {
         this.font = font;
+        return this;
     }
 
     public Font getFont() {
         return font;
     }
 
-    public void setFontSize(Float fontSize) {
+    public Markup setFontSize(Float fontSize) {
         this.fontSize = fontSize;
+        return this;
     }
 
     public Float getFontSize() {
@@ -40,7 +41,7 @@ public class Markup implements ParagraphProcessor {
     @Override
     public void process(Paragraph paragraph, Parameters parameters) {
         float fontSize = getFontSize() != null ? getFontSize() : parameters.getFontSize();
-        paragraph.addMarkup(getMarkup(), fontSize, font);
+        paragraph.addMarkup(getValue(), fontSize, font);
     }
 
 }

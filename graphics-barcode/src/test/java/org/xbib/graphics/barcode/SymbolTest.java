@@ -219,7 +219,7 @@ public class SymbolTest {
         // make sure the barcode images match
         if (pngFile.exists()) {
             BufferedImage expected = ImageIO.read(pngFile);
-            BufferedImage actual = draw(symbol, 10.0d);
+            BufferedImage actual = draw(symbol, 10.0d, 10.0d);
             if (expected != null && actual != null) {
                 assertEqualImage(pngFile.getName(), expected, actual);
             }
@@ -358,20 +358,18 @@ public class SymbolTest {
      * @throws IOException if there is any I/O error
      */
     private void generateCodewordsExpectationFile(AbstractSymbol symbol) throws IOException {
-        //if (!codewordsFile.exists()) {
-            PrintWriter writer = new PrintWriter(codewordsFile);
-            try {
-                int[] codewords = symbol.getCodewords();
-                for (int codeword : codewords) {
-                    writer.println(codeword);
-                }
-            } catch (UnsupportedOperationException e) {
-                for (String pattern : symbol.pattern) {
-                    writer.println(pattern);
-                }
+        PrintWriter writer = new PrintWriter(codewordsFile);
+        try {
+            int[] codewords = symbol.getCodewords();
+            for (int codeword : codewords) {
+                writer.println(codeword);
             }
-            writer.close();
-        //}
+        } catch (UnsupportedOperationException e) {
+            for (String pattern : symbol.pattern) {
+                writer.println(pattern);
+            }
+        }
+        writer.close();
     }
 
     /**
@@ -381,7 +379,7 @@ public class SymbolTest {
      * @throws IOException if there is any I/O error
      */
     private void generatePngExpectationFile(AbstractSymbol symbol) throws IOException {
-        BufferedImage img = draw(symbol, 10.0d);
+        BufferedImage img = draw(symbol, 10.0d, 10.0d);
         if (img != null) {
             ImageIO.write(img, "png", pngFile);
         }
@@ -408,15 +406,15 @@ public class SymbolTest {
      * @param symbol the symbol to draw
      * @return the resultant image
      */
-    private static BufferedImage draw(AbstractSymbol symbol, double scalingFactor) {
-        int width = (int) (symbol.getWidth() * scalingFactor);
-        int height = (int) (symbol.getHeight() * scalingFactor);
+    private static BufferedImage draw(AbstractSymbol symbol, double scalingFactorX, double scalingFactorY) {
+        int width = (int) (symbol.getWidth() * scalingFactorX);
+        int height = (int) (symbol.getHeight() * scalingFactorY);
         if (width > 0 && height > 0) {
             BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
             Rectangle rectangle = new Rectangle(0, 0, img.getWidth(), img.getHeight());
             Graphics2D g2d = img.createGraphics();
             BarcodeGraphicsRenderer renderer = new BarcodeGraphicsRenderer(g2d, rectangle,
-                    scalingFactor, Color.WHITE, Color.BLACK, true, false);
+                    scalingFactorX, scalingFactorY, Color.WHITE, Color.BLACK, true, false);
             renderer.render(symbol);
             g2d.dispose();
             return img;

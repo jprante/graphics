@@ -17,31 +17,40 @@ public class BarcodeElement implements Element, Drawable, Dividable, WidthRespec
 
     private final Symbol symbol;
 
-    private float width;
+    private Float width;
 
-    private float height;
+    private Float height;
 
-    private float scale;
+    private float scaleX = 1.0f;
+
+    private float scaleY = 1.0f;
 
     private float maxWidth = -1;
 
     private Position absolutePosition;
 
+    private Color color = Color.BLACK;
+
+    private Color backgroundColor = Color.WHITE;
+
     public BarcodeElement(Symbol symbol) {
         this.symbol = symbol;
-        setWidth(symbol.getWidth());
-        setHeight(symbol.getHeight());
-        setScale(1.0f);
     }
 
-    public void setScale(float scale) {
-        this.scale = scale;
-        setWidth(width * scale);
-        setHeight(height * scale);
+    public void setScaleX(float scaleX) {
+        this.scaleX = scaleX;
     }
 
-    public float getScale() {
-        return scale;
+    public float getScaleX() {
+        return scaleX;
+    }
+
+    public void setScaleY(float scaleY) {
+        this.scaleY = scaleY;
+    }
+
+    public float getScaleY() {
+        return scaleY;
     }
 
     public void setWidth(float width) {
@@ -50,7 +59,7 @@ public class BarcodeElement implements Element, Drawable, Dividable, WidthRespec
 
     @Override
     public float getWidth() throws IOException {
-        return width;
+        return width != null ? width * scaleX : symbol.getWidth() * scaleX;
     }
 
     public void setHeight(float height) {
@@ -59,7 +68,7 @@ public class BarcodeElement implements Element, Drawable, Dividable, WidthRespec
 
     @Override
     public float getHeight() throws IOException {
-        return height;
+        return height != null ? height * scaleY : symbol.getHeight() * scaleY;
     }
 
     @Override
@@ -95,14 +104,22 @@ public class BarcodeElement implements Element, Drawable, Dividable, WidthRespec
         this.absolutePosition = absolutePosition;
     }
 
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public void setBackgroundColor(Color backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
+
     @Override
     public void draw(PDDocument pdDocument, PDPageContentStream contentStream,
                      Position upperLeft, DrawListener drawListener) throws IOException {
         float x = upperLeft.getX();
-        float y = upperLeft.getY() - height;
-        PdfBoxGraphics2D pdfBoxGraphics2D = new PdfBoxGraphics2D(pdDocument, width, height);
-        BarcodeGraphicsRenderer renderer = new BarcodeGraphicsRenderer(pdfBoxGraphics2D, null, 1.0d,
-                Color.WHITE, Color.BLACK, false, false);
+        float y = upperLeft.getY() - getHeight();
+        PdfBoxGraphics2D pdfBoxGraphics2D = new PdfBoxGraphics2D(pdDocument, getWidth(), getHeight());
+        BarcodeGraphicsRenderer renderer = new BarcodeGraphicsRenderer(pdfBoxGraphics2D, null, scaleX, scaleY,
+                backgroundColor, color, false, false);
         renderer.render(symbol);
         renderer.close();
         PDFormXObject xFormObject = pdfBoxGraphics2D.getXFormObject();

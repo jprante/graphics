@@ -11,7 +11,7 @@ import org.xbib.graphics.pdfbox.layout.font.BaseFont;
 import org.xbib.graphics.pdfbox.layout.text.Position;
 import org.xbib.graphics.pdfbox.layout.text.TextFlow;
 import org.xbib.graphics.pdfbox.layout.text.TextFlowUtil;
-import org.xbib.graphics.pdfbox.layout.text.TextSequenceUtil;
+import org.xbib.graphics.pdfbox.layout.util.TextSequenceUtil;
 import java.io.FileOutputStream;
 
 public class ListenerTest {

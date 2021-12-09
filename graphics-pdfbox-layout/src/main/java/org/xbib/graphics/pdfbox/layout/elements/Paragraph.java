@@ -6,7 +6,7 @@ import org.xbib.graphics.pdfbox.layout.text.Alignment;
 import org.xbib.graphics.pdfbox.layout.text.DrawListener;
 import org.xbib.graphics.pdfbox.layout.text.Position;
 import org.xbib.graphics.pdfbox.layout.text.TextFlow;
-import org.xbib.graphics.pdfbox.layout.text.TextSequenceUtil;
+import org.xbib.graphics.pdfbox.layout.util.TextSequenceUtil;
 import org.xbib.graphics.pdfbox.layout.text.WidthRespecting;
 
 /**

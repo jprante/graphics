@@ -100,8 +100,7 @@ public class RenderContext implements Renderer, Closeable, DrawContext, DrawList
      * {@link Document document} margins.
      */
     public Position getUpperLeft() {
-        return new Position(getPageFormat().getMarginLeft(), getPageHeight()
-                - getPageFormat().getMarginTop());
+        return new Position(getPageFormat().getMarginLeft(), getPageHeight() - getPageFormat().getMarginTop());
     }
 
     /**
@@ -109,8 +108,7 @@ public class RenderContext implements Renderer, Closeable, DrawContext, DrawList
      * {@link Document document} margins.
      */
     public Position getLowerRight() {
-        return new Position(getPageWidth() - getPageFormat().getMarginRight(),
-                getPageFormat().getMarginBottom());
+        return new Position(getPageWidth() - getPageFormat().getMarginRight(), getPageFormat().getMarginBottom());
     }
 
     /**

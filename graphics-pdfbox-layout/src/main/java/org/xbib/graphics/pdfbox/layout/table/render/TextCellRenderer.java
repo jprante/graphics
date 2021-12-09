@@ -6,6 +6,7 @@ import static org.xbib.graphics.pdfbox.layout.table.HorizontalAlignment.RIGHT;
 import org.xbib.graphics.pdfbox.layout.font.Font;
 import org.xbib.graphics.pdfbox.layout.table.AbstractTextCell;
 import org.xbib.graphics.pdfbox.layout.util.PdfUtil;
+import org.xbib.graphics.pdfbox.layout.util.RenderUtil;
 
 import java.awt.Color;
 import java.io.IOException;
@@ -43,9 +44,9 @@ public class TextCellRenderer<T extends AbstractTextCell> extends AbstractCellRe
                     throw new UncheckedIOException(exception);
                 }
             }
-            PositionedStyledText text = new PositionedStyledText(xOffset, yOffset,
-                    line, currentFont, currentFontSize, currentTextColor);
-            drawText(renderContext, text);
+            PositionedStyledText positionedStyledText = new PositionedStyledText(xOffset, yOffset, line,
+                    currentFont, currentFontSize, currentTextColor);
+            RenderUtil.drawText(renderContext.getContentStream(), positionedStyledText);
         }
     }
 
@@ -54,17 +55,16 @@ public class TextCellRenderer<T extends AbstractTextCell> extends AbstractCellRe
         return cell.getTextHeight();
     }
 
-
     private float calculateYOffset(Font currentFont, float currentFontSize, int lineIndex) {
         return PdfUtil.getFontHeight(currentFont, currentFontSize) +
                 (lineIndex > 0 ? PdfUtil.getFontHeight(currentFont, currentFontSize) * cell.getLineSpacing() : 0f);
     }
 
-    static boolean isNotLastLine(List<String> lines, int i) {
+    private static boolean isNotLastLine(List<String> lines, int i) {
         return i != lines.size() - 1;
     }
 
-    protected float calculateCharSpacingFor(String line) {
+    private float calculateCharSpacingFor(String line) {
         float charSpacing = 0;
         if (line.length() > 1) {
             float size = PdfUtil.getStringWidth(line, cell.getFont(), cell.getFontSize());
@@ -76,13 +76,9 @@ public class TextCellRenderer<T extends AbstractTextCell> extends AbstractCellRe
         return charSpacing;
     }
 
-    protected List<String> calculateAndGetLines(Font currentFont, float currentFontSize, float maxWidth) {
+    private List<String> calculateAndGetLines(Font currentFont, float currentFontSize, float maxWidth) {
         return cell.isWordBreak()
                 ? PdfUtil.getOptimalTextBreakLines(cell.getText(), currentFont, currentFontSize, maxWidth)
                 : Collections.singletonList(cell.getText());
-    }
-
-    protected void drawText(RenderContext renderContext, PositionedStyledText positionedStyledText) {
-        RenderUtil.drawText(renderContext.getContentStream(), positionedStyledText);
     }
 }

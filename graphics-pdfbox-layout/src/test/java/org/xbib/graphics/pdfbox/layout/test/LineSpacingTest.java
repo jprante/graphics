@@ -22,7 +22,7 @@ public class LineSpacingTest {
 
         // create document without margins
         Document document = new Document();
-        document.add(new ColumnLayout(2, 5));
+        document.add(new ColumnLayout().setColumnCount(2).setColumnSpacing(5f));
 
         Paragraph left = new Paragraph();
         // no line spacing for the first line

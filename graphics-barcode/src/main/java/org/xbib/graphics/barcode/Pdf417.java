@@ -457,7 +457,7 @@ public class Pdf417 extends AbstractSymbol {
      * Creates a new PDF417 symbol instance.
      */
     public Pdf417() {
-        setBarHeight(3);
+        defaultHeight = 3;
     }
 
     private static EncodingMode chooseMode(int codeascii) {
@@ -587,16 +587,6 @@ public class Pdf417 extends AbstractSymbol {
                 i--;
             }
         }
-    }
-
-    /**
-     * Sets the default bar height (height of a single row) for this symbol (default value is <code>3</code>).
-     *
-     * @param barHeight the default bar height for this symbol
-     */
-    @Override
-    public void setBarHeight(int barHeight) {
-        super.setBarHeight(barHeight);
     }
 
     /**

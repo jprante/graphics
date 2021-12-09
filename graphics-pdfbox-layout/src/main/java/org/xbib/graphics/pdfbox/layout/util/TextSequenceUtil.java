@@ -1,11 +1,21 @@
-package org.xbib.graphics.pdfbox.layout.text;
+package org.xbib.graphics.pdfbox.layout.util;
 
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.xbib.graphics.pdfbox.layout.elements.Dividable.Divided;
 import org.xbib.graphics.pdfbox.layout.elements.Paragraph;
 import org.xbib.graphics.pdfbox.layout.font.FontDescriptor;
-import org.xbib.graphics.pdfbox.layout.util.Pair;
-import org.xbib.graphics.pdfbox.layout.util.WordBreakerFactory;
+import org.xbib.graphics.pdfbox.layout.text.Alignment;
+import org.xbib.graphics.pdfbox.layout.text.DrawListener;
+import org.xbib.graphics.pdfbox.layout.text.Indent;
+import org.xbib.graphics.pdfbox.layout.text.NewLine;
+import org.xbib.graphics.pdfbox.layout.text.Position;
+import org.xbib.graphics.pdfbox.layout.text.ReplacedWhitespace;
+import org.xbib.graphics.pdfbox.layout.text.StyledText;
+import org.xbib.graphics.pdfbox.layout.text.TextFlow;
+import org.xbib.graphics.pdfbox.layout.text.TextFragment;
+import org.xbib.graphics.pdfbox.layout.text.TextLine;
+import org.xbib.graphics.pdfbox.layout.text.TextSequence;
+import org.xbib.graphics.pdfbox.layout.text.WrappingNewLine;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
@@ -134,71 +144,47 @@ public class TextSequenceUtil {
         return result;
     }
 
-    private static WordWrapContext wordWrap(final WordWrapContext context,
-                                            final float maxWidth, final TextFlow result) {
+    private static WordWrapContext wordWrap(WordWrapContext context, float maxWidth, TextFlow result) {
         TextFragment word = context.getWord();
         TextFragment moreToWrap = null;
         float indentation = context.getIndentation();
         float lineLength = context.getLineLength();
         boolean isWrappedLine = context.isWrappedLine();
-
         if (isWrappedLine && lineLength == indentation) {
-            // start of line, replace leading blanks if
             TextFragment[] replaceLeadingBlanks = replaceLeadingBlanks(word);
             word = replaceLeadingBlanks[0];
             if (replaceLeadingBlanks.length > 1) {
                 result.add(replaceLeadingBlanks[1]);
             }
         }
-
         FontDescriptor fontDescriptor = word.getFontDescriptor();
         float length = word.getWidth();
-
         if (maxWidth > 0 && lineLength + length > maxWidth) {
-            // word exceeds max width, so create new line
-
-            // break hard, if the text does not fit in a full (next) line
             boolean breakHard = indentation + length > maxWidth;
-
             Pair<TextFragment> brokenWord = breakWord(word, length, maxWidth
                     - lineLength, maxWidth - indentation, breakHard);
             if (brokenWord != null) {
-                // word is broken
                 word = brokenWord.getFirst();
                 length = word.getWidth();
                 moreToWrap = brokenWord.getSecond();
-
                 result.add(word);
                 if (length > 0) {
                     lineLength += length;
                 }
-
             } else {
                 if (lineLength == indentation) {
-                    // Begin of line and word could now be broke...
-                    // Well, so we have to use it as it is,
-                    // it won't get any better in the next line
                     result.add(word);
                     if (length > 0) {
                         lineLength += length;
                     }
-
                 } else {
-                    // give it another try in a new line, there
-                    // will be more space.
                     moreToWrap = word;
                     if (result.getLast() != null) {
-                        // since the current word is not used, take
-                        // font descriptor of last line. Otherwise
-                        // the line break might be to high
                         fontDescriptor = result.getLast().getFontDescriptor();
                     }
                 }
             }
-
-            // wrap line only if not empty
             if (lineLength > indentation) {
-                // and terminate it with a new line
                 result.add(new WrappingNewLine(fontDescriptor));
                 isWrappedLine = true;
                 if (indentation > 0) {
@@ -206,24 +192,20 @@ public class TextSequenceUtil {
                 }
                 lineLength = indentation;
             }
-
         } else {
-            // word fits, so just add it
             result.add(word);
             if (length > 0) {
                 lineLength += length;
             }
         }
-
-        return new WordWrapContext(moreToWrap, lineLength, indentation,
-                isWrappedLine);
+        return new WordWrapContext(moreToWrap, lineLength, indentation, isWrappedLine);
     }
 
     /**
      * Replaces leading whitespace by {@link ReplacedWhitespace}.
      *
      * @param word the fragment to replace
-     * @return
+     * @return text fragments
      */
     private static TextFragment[] replaceLeadingBlanks(final TextFragment word) {
         String text = word.getText();
@@ -232,7 +214,6 @@ public class TextSequenceUtil {
                 && Character.isWhitespace(text.charAt(splitIndex))) {
             ++splitIndex;
         }
-
         if (splitIndex == 0) {
             return new TextFragment[]{word};
         } else {
@@ -257,7 +238,7 @@ public class TextSequenceUtil {
      * @param text the text to de-wrap.
      * @return the de-wrapped text.
      */
-    public static TextFlow deWrap(final TextSequence text) {
+    public static TextFlow deWrap(TextSequence text) {
         TextFlow result = new TextFlow();
         for (TextFragment fragment : text) {
             if (fragment instanceof WrappingNewLine) {
@@ -268,7 +249,6 @@ public class TextSequenceUtil {
                 result.add(fragment);
             }
         }
-
         if (text instanceof TextFlow) {
             result.setLineSpacing(((TextFlow) text).getLineSpacing());
         }
@@ -283,8 +263,7 @@ public class TextSequenceUtil {
      * @param maxWidth the max width to fit.
      * @return the word-wrapped text lines.
      */
-    public static List<TextLine> wordWrapToLines(final TextSequence text,
-                                                 final float maxWidth) {
+    public static List<TextLine> wordWrapToLines(TextSequence text, float maxWidth) {
         return getLines(wordWrap(text, maxWidth));
     }
 
@@ -305,11 +284,9 @@ public class TextSequenceUtil {
                 leftMargin = ((StyledText) text).getLeftMargin();
                 rightMargin = ((StyledText) text).getRightMargin();
             }
-
             String[] words = text.getText().split(" ", -1);
             for (int index = 0; index < words.length; ++index) {
                 String newWord = index == 0 ? words[index] : " " + words[index];
-
                 float currentLeftMargin = 0;
                 float currentRightMargin = 0;
                 if (index == 0) {
@@ -336,15 +313,13 @@ public class TextSequenceUtil {
      * @param rightMargin  the new right margin.
      * @return the derived text fragment.
      */
-    protected static TextFragment deriveFromExisting(
-            final TextFragment toDeriveFrom, final String text,
-            final float leftMargin, final float rightMargin) {
+    protected static TextFragment deriveFromExisting(TextFragment toDeriveFrom, String text, float leftMargin,
+                                                     float rightMargin) {
         if (toDeriveFrom instanceof StyledText) {
             return ((StyledText) toDeriveFrom).inheritAttributes(text,
                     leftMargin, rightMargin);
         }
-        return new StyledText(text, toDeriveFrom.getFontDescriptor(),
-                toDeriveFrom.getColor(), 0, leftMargin, rightMargin);
+        return new StyledText(text, toDeriveFrom.getFontDescriptor(), toDeriveFrom.getColor(), 0, leftMargin, rightMargin);
     }
 
     private static Pair<TextFragment> breakWord(TextFragment word,

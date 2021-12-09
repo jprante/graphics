@@ -9,7 +9,14 @@ import java.util.List;
 
 public abstract class AbstractTextCell extends AbstractCell {
 
-    protected float lineSpacing = 1f;
+    private Float textHeight;
+
+    private float lineSpacing = 1f;
+
+    @Override
+    public float getMinHeight() {
+        return Math.max((getVerticalPadding() + getTextHeight()), super.getMinHeight());
+    }
 
     public Font getFont() {
         return parameters.getFont();
@@ -23,17 +30,14 @@ public abstract class AbstractTextCell extends AbstractCell {
         return parameters.getTextColor();
     }
 
-    private Float textHeight;
-
     public abstract String getText();
+
+    public void setLineSpacing(float lineSpacing) {
+        this.lineSpacing = lineSpacing;
+    }
 
     public float getLineSpacing() {
         return lineSpacing;
-    }
-
-    @Override
-    public float getMinHeight() {
-        return Math.max((getVerticalPadding() + getTextHeight()), super.getMinHeight());
     }
 
     public float getTextHeight() {
@@ -66,7 +70,7 @@ public abstract class AbstractTextCell extends AbstractCell {
 
     private float getMaxWidthOfText() {
         float columnsWidth = getColumn().getWidth();
-        if (getColSpan() > 1) {
+        if (getColSpan() > 0) {
             Column currentColumn = getColumn();
             for (int i = 1; i < getColSpan(); i++) {
                 columnsWidth += currentColumn.getNext().getWidth();

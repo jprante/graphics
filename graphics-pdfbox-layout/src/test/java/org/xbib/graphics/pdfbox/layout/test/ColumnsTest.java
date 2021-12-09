@@ -8,7 +8,6 @@ import org.xbib.graphics.pdfbox.layout.elements.render.ColumnLayout;
 import org.xbib.graphics.pdfbox.layout.elements.render.VerticalLayoutHint;
 import org.xbib.graphics.pdfbox.layout.font.BaseFont;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
 
 public class ColumnsTest {
 
@@ -33,27 +32,20 @@ public class ColumnsTest {
                 + "gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.\n";
 
         Document document = new Document(40, 50, 40, 60);
-
         Paragraph title = new Paragraph();
         title.addMarkup("*This Text is organized in Colums*", 20, BaseFont.TIMES);
         document.add(title, VerticalLayoutHint.CENTER);
         document.add(new VerticalSpacer(5));
-
-        // use column layout from now on
-        document.add(new ColumnLayout(2, 10));
-
+        document.add(new ColumnLayout().setColumnCount(2).setColumnSpacing(10f));
         Paragraph paragraph1 = new Paragraph();
         paragraph1.addMarkup(text1, 11, BaseFont.TIMES);
         document.add(paragraph1);
-
         Paragraph paragraph2 = new Paragraph();
         paragraph2.addMarkup(text2, 12, BaseFont.HELVETICA);
         document.add(paragraph2);
-
         Paragraph paragraph3 = new Paragraph();
         paragraph3.addMarkup(text1, 8, BaseFont.COURIER);
         document.add(paragraph3);
-
         document.add(paragraph1);
         document.add(paragraph3);
         document.add(paragraph1);

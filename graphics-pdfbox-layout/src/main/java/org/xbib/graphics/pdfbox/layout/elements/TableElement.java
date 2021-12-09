@@ -29,6 +29,9 @@ public class TableElement implements Element, Drawable, Dividable {
         if (element instanceof Row.Builder) {
             Row row = ((Row.Builder) element).build();
             table.addRow(row);
+        } else if (element instanceof HorizontalRuler) {
+            Row row = Row.builder().add(element).build();
+            table.addRow(row);
         } else {
             throw new UnsupportedOperationException();
         }

@@ -3,12 +3,13 @@ package org.xbib.graphics.pdfbox.layout.table.render;
 import static org.xbib.graphics.pdfbox.layout.table.VerticalAlignment.BOTTOM;
 import static org.xbib.graphics.pdfbox.layout.table.VerticalAlignment.MIDDLE;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.xbib.graphics.pdfbox.layout.table.AbstractCell;
+import org.xbib.graphics.pdfbox.layout.table.Cell;
+import org.xbib.graphics.pdfbox.layout.util.RenderUtil;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
 
-public abstract class AbstractCellRenderer<T extends AbstractCell> implements Renderer {
+public abstract class AbstractCellRenderer<T extends Cell> implements Renderer {
 
     protected T cell;
 

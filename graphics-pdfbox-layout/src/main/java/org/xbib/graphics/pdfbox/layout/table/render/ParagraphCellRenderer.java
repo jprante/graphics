@@ -3,7 +3,6 @@ package org.xbib.graphics.pdfbox.layout.table.render;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.xbib.graphics.pdfbox.layout.elements.Paragraph;
 import org.xbib.graphics.pdfbox.layout.table.HorizontalAlignment;
 import org.xbib.graphics.pdfbox.layout.table.ParagraphCell;
@@ -12,8 +11,6 @@ import org.xbib.graphics.pdfbox.layout.text.DrawContext;
 import org.xbib.graphics.pdfbox.layout.text.Position;
 import org.xbib.graphics.pdfbox.layout.text.annotations.AnnotationDrawListener;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -33,30 +30,20 @@ public class ParagraphCellRenderer extends AbstractCellRenderer<ParagraphCell> {
 
     @Override
     public void renderContent(RenderContext renderContext) {
-        if (renderContext.getPage() == null) {
-            throw new PageNotSetException("Page is not set in drawing context. Please ensure the page is set on table drawer.");
-        }
-        Paragraph paragraph = cell.getParagraph().getWrappedParagraph();
-        AnnotationDrawListener annotationDrawListener = createAndGetAnnotationDrawListenerWith(renderContext);
+        Paragraph paragraph = cell.getCellParagraph().getParagraph();
         float x = renderContext.getStartingPoint().x + cell.getPaddingLeft();
         float y = renderContext.getStartingPoint().y + getAdaptionForVerticalAlignment();
+        AnnotationDrawListener annotationDrawListener = createAndGetAnnotationDrawListenerWith(renderContext);
         paragraph.drawText(renderContext.getContentStream(),
                 new Position(x, y),
                 ALIGNMENT_MAP.getOrDefault(cell.getParameters().getHorizontalAlignment(), Alignment.LEFT),
                 annotationDrawListener
         );
-        annotationDrawListener.afterPage(null);
-        annotationDrawListener.afterRender();
-        try {
-            renderContext.getPage().getAnnotations().forEach(PDAnnotation::constructAppearances);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
     }
 
     @Override
     protected float calculateInnerHeight() {
-        return cell.getParagraph().getWrappedParagraph().getHeight();
+        return cell.getCellParagraph().getParagraph().getHeight();
     }
 
     private AnnotationDrawListener createAndGetAnnotationDrawListenerWith(RenderContext renderContext) {

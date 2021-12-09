@@ -1,6 +1,8 @@
 package org.xbib.graphics.pdfbox.layout.table;
 
+import org.xbib.graphics.pdfbox.layout.elements.Drawable;
 import org.xbib.graphics.pdfbox.layout.elements.Element;
+import org.xbib.graphics.pdfbox.layout.elements.HorizontalRuler;
 import org.xbib.graphics.pdfbox.layout.font.Font;
 
 import java.awt.Color;
@@ -15,7 +17,7 @@ public class Row {
 
     private Table table;
 
-    private List<AbstractCell> cells;
+    private List<Cell> cells;
 
     private Parameters parameters;
 
@@ -23,7 +25,7 @@ public class Row {
 
     private Row next;
 
-    private Row(List<AbstractCell> cells) {
+    private Row(List<Cell> cells) {
         this.cells = cells;
     }
 
@@ -43,15 +45,19 @@ public class Row {
         return DEFAULT_HEIGHT;
     }
 
-    public List<AbstractCell> getCells() {
+    public List<Cell> getCells() {
         return cells;
+    }
+
+    public void setTable(Table table) {
+        this.table = table;
     }
 
     public Table getTable() {
         return table;
     }
 
-    public void setCells(List<AbstractCell> cells) {
+    public void setCells(List<Cell> cells) {
         this.cells = cells;
     }
 
@@ -63,10 +69,6 @@ public class Row {
         this.next = next;
     }
 
-    public void setTable(Table table) {
-        this.table = table;
-    }
-
     public float getHeight() {
         if (table == null) {
             throw new TableNotYetBuiltException();
@@ -74,7 +76,7 @@ public class Row {
         if (height == null) {
             this.height = getCells().stream()
                     .filter(cell -> cell.getRowSpan() == 1)
-                    .map(AbstractCell::getHeight)
+                    .map(Cell::getHeight)
                     .max(naturalOrder())
                     .orElse(DEFAULT_HEIGHT);
         }
@@ -92,7 +94,7 @@ public class Row {
 
     public static class Builder implements Element {
 
-        private final List<AbstractCell> cells = new ArrayList<>();
+        private final List<Cell> cells = new ArrayList<>();
 
         private final Parameters parameters = new Parameters();
 
@@ -101,7 +103,14 @@ public class Row {
 
         @Override
         public Builder add(Element element) {
-            cells.add((AbstractCell) element);
+            if (element instanceof Cell) {
+                cells.add((Cell) element);
+            } else if (element instanceof HorizontalRuler) {
+                Cell cell = DrawableCell.builder()
+                        .drawable((Drawable) element)
+                        .build();
+                cells.add(cell);
+            }
             return this;
         }
 

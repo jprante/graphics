@@ -15,7 +15,7 @@ import org.xbib.graphics.pdfbox.layout.text.DrawContext;
 import org.xbib.graphics.pdfbox.layout.text.Position;
 import org.xbib.graphics.pdfbox.layout.text.TextFlow;
 import org.xbib.graphics.pdfbox.layout.text.TextFlowUtil;
-import org.xbib.graphics.pdfbox.layout.text.TextSequenceUtil;
+import org.xbib.graphics.pdfbox.layout.util.TextSequenceUtil;
 import org.xbib.graphics.pdfbox.layout.text.annotations.AnnotationDrawListener;
 import java.awt.Color;
 import java.io.FileOutputStream;

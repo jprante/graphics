@@ -162,12 +162,12 @@ public class TableRenderer {
     protected void drawRow(Point2D.Float start, Row row, int rowIndex, BiConsumer<Renderer, RenderContext> consumer) {
         float x = start.x;
         int columnCounter = 0;
-        for (AbstractCell cell : row.getCells()) {
+        for (Cell cell : row.getCells()) {
             while (table.isRowSpanAt(rowIndex, columnCounter)) {
                 x += table.getColumns().get(columnCounter).getWidth();
                 columnCounter++;
             }
-            consumer.accept(cell.getDrawer(), new RenderContext(pdDocument, contentStream, page, new Point2D.Float(x, start.y)));
+            consumer.accept(cell.getRenderer(), new RenderContext(pdDocument, contentStream, page, new Point2D.Float(x, start.y)));
             x += cell.getWidth();
             columnCounter += cell.getColSpan();
         }
@@ -179,7 +179,7 @@ public class TableRenderer {
 
     private Float getHighestCellOf(Row row) {
         return row.getCells().stream()
-                .map(AbstractCell::getHeight)
+                .map(Cell::getHeight)
                 .max(Comparator.naturalOrder())
                 .orElse(row.getHeight());
     }

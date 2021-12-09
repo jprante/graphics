@@ -8,18 +8,17 @@ import org.xbib.graphics.pdfbox.layout.text.Alignment;
  */
 public class ColumnLayoutHint extends VerticalLayoutHint {
 
-    public final static ColumnLayoutHint LEFT = new ColumnLayoutHint(
-            Alignment.LEFT);
-    public final static ColumnLayoutHint CENTER = new ColumnLayoutHint(
-            Alignment.CENTER);
-    public final static ColumnLayoutHint RIGHT = new ColumnLayoutHint(
-            Alignment.RIGHT);
+    public final static ColumnLayoutHint LEFT = new ColumnLayoutHint(Alignment.LEFT);
+
+    public final static ColumnLayoutHint CENTER = new ColumnLayoutHint(Alignment.CENTER);
+
+    public final static ColumnLayoutHint RIGHT = new ColumnLayoutHint(Alignment.RIGHT);
 
     /**
      * Creates a layout hint with {@link Alignment#LEFT left alignment}.
      */
     public ColumnLayoutHint() {
-        super();
+        super(Alignment.LEFT);
     }
 
     /**
@@ -40,8 +39,7 @@ public class ColumnLayoutHint extends VerticalLayoutHint {
      * @param marginTop    the top alignment.
      * @param marginBottom the bottom alignment.
      */
-    public ColumnLayoutHint(Alignment alignment, float marginLeft,
-                            float marginRight, float marginTop, float marginBottom) {
+    public ColumnLayoutHint(Alignment alignment, float marginLeft, float marginRight, float marginTop, float marginBottom) {
         super(alignment, marginLeft, marginRight, marginTop, marginBottom);
     }
 
@@ -56,13 +54,10 @@ public class ColumnLayoutHint extends VerticalLayoutHint {
      * @param resetY       if <code>true</code>, the y coordinate will be reset to the
      *                     point before layouting the element.
      */
-    public ColumnLayoutHint(Alignment alignment, float marginLeft,
-                            float marginRight, float marginTop, float marginBottom,
+    public ColumnLayoutHint(Alignment alignment, float marginLeft, float marginRight, float marginTop, float marginBottom,
                             boolean resetY) {
-        super(alignment, marginLeft, marginRight, marginTop, marginBottom,
-                resetY);
+        super(alignment, marginLeft, marginRight, marginTop, marginBottom, resetY);
     }
-
 
     /**
      * @return a {@link VerticalLayoutHintBuilder} for creating a

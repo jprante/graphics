@@ -3,6 +3,8 @@ package org.xbib.graphics.pdfbox.layout.text;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.xbib.graphics.pdfbox.layout.font.Font;
 import org.xbib.graphics.pdfbox.layout.font.FontDescriptor;
+import org.xbib.graphics.pdfbox.layout.util.TextSequenceUtil;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -223,9 +225,8 @@ public class TextFlow implements TextSequence, WidthRespecting {
     @Override
     public void drawText(PDPageContentStream contentStream, Position upperLeft,
                          Alignment alignment, DrawListener drawListener) {
-        TextSequenceUtil.drawText(this, contentStream, upperLeft, drawListener, alignment,
-                getMaxWidth(), getLineSpacing(),
-                isApplyLineSpacingToFirstLine());
+        TextSequenceUtil.drawText(this, contentStream, upperLeft, drawListener,
+                alignment, getMaxWidth(), getLineSpacing(), isApplyLineSpacingToFirstLine());
     }
 
     public void drawTextRightAligned(PDPageContentStream contentStream,

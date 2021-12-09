@@ -49,11 +49,9 @@ public class LandscapeTest {
         PageFormat a5_landscape = PageFormat.builder().A5().landscape().margins(10, 50, 0, 30).build();
         PageFormat a4_portrait = PageFormat.builder().margins(40, 50, 40, 60).build();
         Document document = new Document(a4_portrait);
-
         document.add(titleA4, VerticalLayoutHint.CENTER);
         document.add(new VerticalSpacer(5));
-        document.add(new ColumnLayout(2, 10));
-
+        document.add(new ColumnLayout().setColumnCount(2).setColumnSpacing(10f));
         document.add(paragraph2);
         document.add(paragraph1);
         document.add(paragraph1);
@@ -68,7 +66,7 @@ public class LandscapeTest {
         document.add(new VerticalLayout());
         document.add(titleA5, VerticalLayoutHint.CENTER);
         document.add(new VerticalSpacer(5));
-        document.add(new ColumnLayout(2, 10));
+        document.add(new ColumnLayout().setColumnCount(2).setColumnSpacing(10f));
 
         document.add(paragraph1);
         document.add(paragraph3);
@@ -80,7 +78,7 @@ public class LandscapeTest {
         document.add(new VerticalLayout());
         document.add(titleA4, VerticalLayoutHint.CENTER);
         document.add(new VerticalSpacer(5));
-        document.add(new ColumnLayout(2, 10));
+        document.add(new ColumnLayout().setColumnCount(2).setColumnSpacing(10f));
 
         document.add(paragraph2);
         document.add(paragraph1);
@@ -96,7 +94,7 @@ public class LandscapeTest {
         document.add(new VerticalLayout());
         document.add(titleA5, VerticalLayoutHint.CENTER);
         document.add(new VerticalSpacer(5));
-        document.add(new ColumnLayout(2, 10));
+        document.add(new ColumnLayout().setColumnCount(2).setColumnSpacing(10f));
 
         document.add(paragraph1);
         document.add(paragraph3);

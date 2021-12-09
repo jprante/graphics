@@ -22,4 +22,19 @@ public class ScriptTest {
         }
         engine.close();
     }
+
+
+    @Test
+    public void deckblatt() throws Exception {
+        Settings settings = Settings.settingsBuilder()
+                .loadFromResource("json", getClass().getResourceAsStream("deckblatt.json"))
+                .build();
+        Engine engine = new Engine();
+        engine.execute(settings);
+        int i = 0;
+        for (Document document : engine.getState().getDocuments()) {
+            document.render().save(new FileOutputStream("build/deckblatt" + (i++) + ".pdf")).close();
+        }
+        engine.close();
+    }
 }

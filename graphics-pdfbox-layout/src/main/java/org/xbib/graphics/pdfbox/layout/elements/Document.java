@@ -35,7 +35,7 @@ public class Document implements Element, Closeable, RenderListener {
 
     private final List<RenderListener> renderListener = new ArrayList<>();
 
-    private final PageFormat pageFormat;
+    private PageFormat pageFormat;
 
     private final PDDocument pdDocument;
 
@@ -56,13 +56,6 @@ public class Document implements Element, Closeable, RenderListener {
      */
     public Document(PageFormat pageFormat) {
         this(pageFormat, true);
-    }
-
-    public Document(PageFormat pageFormat, boolean memory) {
-        this.pageFormat = pageFormat;
-        this.pdDocument = new PDDocument(memory ?
-                MemoryUsageSetting.setupMainMemoryOnly() : MemoryUsageSetting.setupTempFileOnly());
-        this.pdDocumentInformation = new PDDocumentInformation();
     }
 
     /**
@@ -86,6 +79,16 @@ public class Document implements Element, Closeable, RenderListener {
                     float marginTop,
                     float marginBottom, boolean memory) {
         this(PageFormat.builder().margins(marginLeft, marginRight, marginTop, marginBottom).build(), memory);
+    }
+
+    public Document(PageFormat pageFormat, boolean memory) {
+        this.pdDocument = new PDDocument(memory ? MemoryUsageSetting.setupMainMemoryOnly() : MemoryUsageSetting.setupTempFileOnly());
+        this.pdDocumentInformation = new PDDocumentInformation();
+        setPageFormat(pageFormat);
+    }
+
+    public void setPageFormat(PageFormat pageFormat) {
+        this.pageFormat = pageFormat;
     }
 
     public PDDocument getPdDocument() {
@@ -153,8 +156,9 @@ public class Document implements Element, Closeable, RenderListener {
      * @param element    the element to add
      * @param layoutHint the hint for the {@link Layout}.
      */
-    public void add(Element element, LayoutHint layoutHint) {
+    public Element add(Element element, LayoutHint layoutHint) {
         elements.add(Map.entry(element, layoutHint));
+        return this;
     }
 
     /**

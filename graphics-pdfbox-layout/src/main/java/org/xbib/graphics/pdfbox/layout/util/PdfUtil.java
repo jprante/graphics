@@ -19,6 +19,12 @@ public final class PdfUtil {
 
     public static final String NEW_LINE_REGEX = "\\r?\\n";
 
+    public static final float MM_TO_UNITS = 1.0f / 25.4f * 72.0f;
+
+    public static float mmToPt(float number) {
+        return number * MM_TO_UNITS;
+    }
+
     /**
      * Computes the width of a String (in points).
      *

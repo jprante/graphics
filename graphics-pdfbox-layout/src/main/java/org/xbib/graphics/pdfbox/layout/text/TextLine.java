@@ -3,6 +3,8 @@ package org.xbib.graphics.pdfbox.layout.text;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.util.Matrix;
 import org.xbib.graphics.pdfbox.layout.font.FontDescriptor;
+import org.xbib.graphics.pdfbox.layout.util.TextSequenceUtil;
+
 import java.awt.Color;
 import java.io.IOException;
 import java.io.UncheckedIOException;

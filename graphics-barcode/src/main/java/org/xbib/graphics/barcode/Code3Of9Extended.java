@@ -42,21 +42,17 @@ public class Code3Of9Extended extends AbstractSymbol {
         int l = content.length();
         int asciicode;
         Code3Of9 c = new Code3Of9();
-
         if (checkOption == CheckDigit.MOD43) {
             c.setCheckDigit(Code3Of9.CheckDigit.MOD43);
         }
-
         if (!content.matches("[\u0000-\u007F]+")) {
             errorMsg.append("Invalid characters in input data");
             return false;
         }
-
         for (int i = 0; i < l; i++) {
             asciicode = content.charAt(i);
             buffer.append(ECode39[asciicode]);
         }
-
         try {
             c.setContent(buffer.toString());
         } catch (Exception e) {
@@ -68,7 +64,7 @@ public class Code3Of9Extended extends AbstractSymbol {
         pattern[0] = c.pattern[0];
         rowCount = 1;
         rowHeight = new int[1];
-        rowHeight[0] = -1;
+        rowHeight[0] = defaultHeight;
         plotSymbol();
         return true;
     }

@@ -643,7 +643,6 @@ public abstract class AbstractSymbol implements Symbol {
             encodeInfo.append("Encoding in Shift-JIS character set\n");
             return;
         }
-
         /* default */
         qmarksAfter = eciEncode("UTF8");
         eciMode = 26;
@@ -902,8 +901,7 @@ public abstract class AbstractSymbol implements Symbol {
                     errorLatch = 2;
                     break;
             }
-            if (
-                    ((aiValue[i] >= 100) && (aiValue[i] <= 179))
+            if (((aiValue[i] >= 100) && (aiValue[i] <= 179))
                             || ((aiValue[i] >= 1000) && (aiValue[i] <= 1799))
                             || ((aiValue[i] >= 200) && (aiValue[i] <= 229))
                             || ((aiValue[i] >= 2000) && (aiValue[i] <= 2299))
@@ -916,8 +914,7 @@ public abstract class AbstractSymbol implements Symbol {
             if ((aiValue[i] >= 3100) && (aiValue[i] <= 3699) && dataLength[i] != 6) {
                 errorLatch = 1;
             }
-            if (
-                    ((aiValue[i] >= 370) && (aiValue[i] <= 379))
+            if (((aiValue[i] >= 370) && (aiValue[i] <= 379))
                             || ((aiValue[i] >= 3700) && (aiValue[i] <= 3799))) {
                 errorLatch = 2;
             }
@@ -926,8 +923,7 @@ public abstract class AbstractSymbol implements Symbol {
                     errorLatch = 1;
                 }
             }
-            if (
-                    ((aiValue[i] >= 4100) && (aiValue[i] <= 4199))
+            if (((aiValue[i] >= 4100) && (aiValue[i] <= 4199))
                             || ((aiValue[i] >= 700) && (aiValue[i] <= 703))
                             || ((aiValue[i] >= 800) && (aiValue[i] <= 810))
                             || ((aiValue[i] >= 900) && (aiValue[i] <= 999))
@@ -945,7 +941,6 @@ public abstract class AbstractSymbol implements Symbol {
                 return "";
             }
         }
-        aiLatch = false;
         for (i = 0; i < srcLen; i++) {
             if ((source.charAt(i) != '[') && (source.charAt(i) != ']')) {
                 reduced.append(source.charAt(i));

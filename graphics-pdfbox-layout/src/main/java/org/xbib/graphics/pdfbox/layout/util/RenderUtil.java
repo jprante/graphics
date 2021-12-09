@@ -1,7 +1,10 @@
-package org.xbib.graphics.pdfbox.layout.table.render;
+package org.xbib.graphics.pdfbox.layout.util;
 
 import static org.xbib.graphics.pdfbox.layout.table.BorderStyle.SOLID;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.xbib.graphics.pdfbox.layout.table.render.PositionedLine;
+import org.xbib.graphics.pdfbox.layout.table.render.PositionedRectangle;
+import org.xbib.graphics.pdfbox.layout.table.render.PositionedStyledText;
 
 import java.awt.Color;
 import java.io.IOException;

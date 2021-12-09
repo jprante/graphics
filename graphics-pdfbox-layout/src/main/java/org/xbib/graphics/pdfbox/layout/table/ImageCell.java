@@ -40,7 +40,7 @@ public class ImageCell extends AbstractCell {
     }
 
     @Override
-    protected Renderer createDefaultDrawer() {
+    protected Renderer createDefaultRenderer() {
         return new ImageCellRenderer(this);
     }
 
@@ -49,21 +49,16 @@ public class ImageCell extends AbstractCell {
         float scaledWidth = image.getWidth() * getScale();
         float scaledHeight = image.getHeight() * getScale();
         final float resultingWidth = getWidth() - getHorizontalPadding();
-
-        // maybe reduce the image to fit in column
         if (scaledWidth > resultingWidth) {
             scaledHeight = (resultingWidth / scaledWidth) * scaledHeight;
             scaledWidth = resultingWidth;
         }
-
         if (maxHeight > 0.0f && scaledHeight > maxHeight) {
             scaledWidth = (maxHeight / scaledHeight) * scaledWidth;
             scaledHeight = maxHeight;
         }
-
         sizes.x = scaledWidth;
         sizes.y = scaledHeight;
-
         return sizes;
     }
 

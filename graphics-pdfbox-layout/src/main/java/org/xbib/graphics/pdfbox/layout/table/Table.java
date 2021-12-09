@@ -162,12 +162,10 @@ public class Table {
             // Store how many cells can or better have to be omitted in the next rows
             // due to cells in this row that declare row spanning
             updateRowSpanCellsSet(row.getCells());
-
             if (!rows.isEmpty()) {
                 rows.get(rows.size() - 1).setNext(row);
             }
             rows.add(row);
-
             return this;
         }
 
@@ -183,19 +181,14 @@ public class Table {
         // Put every cell coordinate in the set which needs to be skipped because it is
         // "contained" in another cell due to row spanning.
         // The coordinates are those of the table how it would look like without any spanning.
-        private void updateRowSpanCellsSet(List<AbstractCell> cells) {
+        private void updateRowSpanCellsSet(List<Cell> cells) {
             int currentColumn = 0;
-
-            for (AbstractCell cell : cells) {
-
+            for (Cell cell : cells) {
                 while (rowSpanCells.contains(new Point(rows.size(), currentColumn))) {
                     currentColumn++;
                 }
-
                 if (cell.getRowSpan() > 1) {
-
                     for (int rowsToSpan = 0; rowsToSpan < cell.getRowSpan(); rowsToSpan++) {
-
                         // Skip first row's cell, because that is a regular cell
                         if (rowsToSpan >= 1) {
                             for (int colSpan = 0; colSpan < cell.getColSpan(); colSpan++) {
@@ -204,7 +197,6 @@ public class Table {
                         }
                     }
                 }
-
                 currentColumn += cell.getColSpan();
             }
         }
@@ -310,7 +302,7 @@ public class Table {
                     row.getParameters().fillingMergeBy(table.getSettings());
                 }
                 int columnIndex = 0;
-                for (AbstractCell cell : row.getCells()) {
+                for (Cell cell : row.getCells()) {
                     cell.getParameters().fillingMergeBy(row.getParameters());
                     cell.setRow(row);
                     while (table.isRowSpanAt(rowIndex, columnIndex)) {
@@ -333,9 +325,9 @@ public class Table {
 
         private void correctHeightOfCellsDueToRowSpanningIfNecessaryFor(Table table) {
             for (int i = 0; i < table.getRows().size(); i++) {
-                final Optional<AbstractCell> highestSpanningCell = rows.get(i).getCells().stream()
+                final Optional<Cell> highestSpanningCell = rows.get(i).getCells().stream()
                         .filter(x -> x.getRowSpan() > 1)
-                        .max(Comparator.comparing(AbstractCell::getMinHeight));
+                        .max(Comparator.comparing(Cell::getMinHeight));
                 if (highestSpanningCell.isPresent()) {
                     final float heightOfHighestCell = highestSpanningCell.get().getMinHeight();
                     float regularHeightOfRows = 0;

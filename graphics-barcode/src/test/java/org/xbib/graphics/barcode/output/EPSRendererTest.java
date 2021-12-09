@@ -87,20 +87,20 @@ public class EPSRendererTest {
     }
 
     private void test(AbstractSymbol symbol,
-                      double magnification,
+                      double scale,
                       Color paper,
                       Color ink,
                       int margin,
                       String expectationFile) throws IOException {
         symbol.setQuietZoneHorizontal(margin);
         symbol.setQuietZoneVertical(margin);
-        int width = (int) (symbol.getWidth() * magnification);
-        int height = (int) (symbol.getHeight() * magnification);
+        int width = (int) (symbol.getWidth() * scale);
+        int height = (int) (symbol.getHeight() * scale);
         Rectangle rectangle = new Rectangle(0, 0, width, height);
         EPSGraphics2D epsGraphics2D = new EPSGraphics2D(rectangle);
         epsGraphics2D.setFont(Font.decode("Dialog"));
         BarcodeGraphicsRenderer barcodeGraphicsRenderer = new BarcodeGraphicsRenderer(epsGraphics2D, rectangle,
-                magnification, paper, ink, false, false);
+                scale, scale, paper, ink, false, false);
         barcodeGraphicsRenderer.render(symbol);
         barcodeGraphicsRenderer.close();
         byte[] actualBytes = epsGraphics2D.getBytes();

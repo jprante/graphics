@@ -53,7 +53,7 @@ public class RotationTest {
 
         document.add(titleA4, VerticalLayoutHint.CENTER);
         document.add(new VerticalSpacer(5));
-        document.add(new ColumnLayout(2, 10));
+        document.add(new ColumnLayout().setColumnCount(2).setColumnSpacing(10f));
 
         document.add(paragraph2);
         document.add(paragraph1);
@@ -68,7 +68,7 @@ public class RotationTest {
         document.add(new VerticalLayout());
         document.add(titleA5, VerticalLayoutHint.CENTER);
         document.add(new VerticalSpacer(5));
-        document.add(new ColumnLayout(2, 10));
+        document.add(new ColumnLayout().setColumnCount(2).setColumnSpacing(10f));
 
         document.add(paragraph2);
         document.add(paragraph1);
@@ -83,7 +83,7 @@ public class RotationTest {
         document.add(new VerticalLayout());
         document.add(titleA4, VerticalLayoutHint.CENTER);
         document.add(new VerticalSpacer(5));
-        document.add(new ColumnLayout(2, 10));
+        document.add(new ColumnLayout().setColumnCount(2).setColumnSpacing(10f));
 
         document.add(paragraph2);
         document.add(paragraph1);
@@ -98,7 +98,7 @@ public class RotationTest {
         document.add(new VerticalLayout());
         document.add(titleA5, VerticalLayoutHint.CENTER);
         document.add(new VerticalSpacer(5));
-        document.add(new ColumnLayout(2, 10));
+        document.add(new ColumnLayout().setColumnCount(2).setColumnSpacing(10f));
 
         document.add(paragraph2);
         document.add(paragraph1);

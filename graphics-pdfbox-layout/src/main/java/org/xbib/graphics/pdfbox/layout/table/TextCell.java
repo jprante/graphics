@@ -9,7 +9,8 @@ public class TextCell extends AbstractTextCell {
 
     protected String text;
 
-    protected Renderer createDefaultDrawer() {
+    @Override
+    protected Renderer createDefaultRenderer() {
         return new TextCellRenderer<>(this);
     }
 

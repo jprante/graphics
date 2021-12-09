@@ -1,11 +1,10 @@
 package org.xbib.graphics.pdfbox.layout.table;
 
-import org.xbib.graphics.pdfbox.layout.elements.Element;
 import org.xbib.graphics.pdfbox.layout.table.render.AbstractCellRenderer;
 import org.xbib.graphics.pdfbox.layout.table.render.Renderer;
 import java.awt.Color;
 
-public abstract class AbstractCell implements Element {
+public abstract class AbstractCell implements Cell {
 
     private static final float DEFAULT_MIN_HEIGHT = 10f;
 
@@ -13,7 +12,7 @@ public abstract class AbstractCell implements Element {
 
     private int rowSpan = 1;
 
-    protected AbstractCellRenderer<AbstractCell> drawer;
+    protected AbstractCellRenderer<Cell> renderer;
 
     private Row row;
 
@@ -29,24 +28,88 @@ public abstract class AbstractCell implements Element {
         this.colSpan = colSpan;
     }
 
+    @Override
+    public int getColSpan() {
+        return colSpan;
+    }
+
     public void setRowSpan(int rowSpan) {
         this.rowSpan = rowSpan;
     }
 
-    public float getPaddingBottom() {
-        return parameters.getPaddingBottom();
+    @Override
+    public int getRowSpan() {
+        return rowSpan;
+    }
+    @Override
+    public void setColumn(Column column) {
+        this.column = column;
     }
 
-    public float getPaddingTop() {
-        return parameters.getPaddingTop();
+    public Column getColumn() {
+        return column;
     }
 
+    @Override
+    public void setRow(Row row) {
+        this.row = row;
+    }
+
+    public Row getRow() {
+        return row;
+    }
+
+    @Override
+    public void setWidth(float width) {
+        this.width = width;
+    }
+
+    public float getWidth() {
+        return width;
+    }
+
+    public void setMinHeight(float minHeight) {
+        this.minHeight = minHeight;
+    }
+
+    @Override
+    public float getMinHeight() {
+        return minHeight;
+    }
+
+    @Override
+    public float getHeight() {
+        assertIsRendered();
+        return getRowSpan() > 1 ? calculateHeightForRowSpan() : getMinHeight();
+    }
+
+    public void setParameters(Parameters parameters) {
+        this.parameters = parameters;
+    }
+
+    @Override
+    public Parameters getParameters() {
+        return parameters;
+    }
+
+    @Override
     public float getPaddingLeft() {
         return parameters.getPaddingLeft();
     }
 
+    @Override
     public float getPaddingRight() {
         return parameters.getPaddingRight();
+    }
+
+    @Override
+    public float getPaddingTop() {
+        return parameters.getPaddingTop();
+    }
+
+    @Override
+    public float getPaddingBottom() {
+        return parameters.getPaddingBottom();
     }
 
     public float getHorizontalPadding() {
@@ -57,137 +120,105 @@ public abstract class AbstractCell implements Element {
         return parameters.getPaddingTop() + parameters.getPaddingBottom();
     }
 
+    @Override
     public float getBorderWidthTop() {
         return hasBorderTop() ? parameters.getBorderWidthTop() : 0;
     }
 
+    @Override
     public boolean hasBorderTop() {
         return parameters.getBorderWidthTop() != null && parameters.getBorderWidthTop() > 0;
     }
 
+    @Override
     public float getBorderWidthBottom() {
         return hasBorderBottom() ? parameters.getBorderWidthBottom() : 0;
     }
 
+    @Override
     public boolean hasBorderBottom() {
         return parameters.getBorderWidthBottom() != null && parameters.getBorderWidthBottom() > 0;
     }
 
+    @Override
     public float getBorderWidthLeft() {
         return hasBorderLeft() ? parameters.getBorderWidthLeft() : 0;
     }
 
+    @Override
     public boolean hasBorderLeft() {
         return parameters.getBorderWidthLeft() != null && parameters.getBorderWidthLeft() > 0;
     }
 
+    @Override
     public float getBorderWidthRight() {
         return hasBorderRight() ? parameters.getBorderWidthRight() : 0;
     }
 
+    @Override
     public boolean hasBorderRight() {
         return parameters.getBorderWidthRight() != null && parameters.getBorderWidthRight() > 0;
     }
 
+    @Override
     public BorderStyleInterface getBorderStyleTop() {
         return parameters.getBorderStyleTop();
     }
 
+    @Override
     public BorderStyleInterface getBorderStyleBottom() {
         return parameters.getBorderStyleBottom();
     }
 
+    @Override
     public BorderStyleInterface getBorderStyleLeft() {
         return parameters.getBorderStyleLeft();
     }
 
+    @Override
     public BorderStyleInterface getBorderStyleRight() {
         return parameters.getBorderStyleRight();
     }
 
+    @Override
     public boolean hasBackgroundColor() {
         return parameters.getBackgroundColor() != null;
     }
 
+    @Override
     public Color getBackgroundColor() {
         return parameters.getBackgroundColor();
     }
 
+    @Override
     public Color getBorderColor() {
         return parameters.getBorderColor();
+    }
+
+    @Override
+    public boolean isHorizontallyAligned(HorizontalAlignment alignment) {
+        return parameters.getHorizontalAlignment() == alignment;
+    }
+
+    @Override
+    public boolean isVerticallyAligned(VerticalAlignment alignment) {
+        return parameters.getVerticalAlignment() == alignment;
     }
 
     public boolean isWordBreak() {
         return parameters.isWordBreak();
     }
 
-    public Column getColumn() {
-        return column;
+    public void setRenderer(AbstractCellRenderer<Cell> renderer) {
+        this.renderer = renderer;
     }
 
-    public static float getDefaultMinHeight() {
-        return DEFAULT_MIN_HEIGHT;
+    @Override
+    public Renderer getRenderer() {
+        return this.renderer != null ? this.renderer.withCell(this) : createDefaultRenderer();
     }
 
-    public float getMinHeight() {
-        return minHeight;
-    }
-
-    public float getWidth() {
-        return width;
-    }
-
-    public int getColSpan() {
-        return colSpan;
-    }
-
-    public int getRowSpan() {
-        return rowSpan;
-    }
-
-    public Row getRow() {
-        return row;
-    }
-
-    public Parameters getParameters() {
-        return parameters;
-    }
-
-    public void setColumn(Column column) {
-        this.column = column;
-    }
-
-    public void setDrawer(AbstractCellRenderer<AbstractCell> drawer) {
-        this.drawer = drawer;
-    }
-
-    public void setMinHeight(float minHeight) {
-        this.minHeight = minHeight;
-    }
-
-    public void setRow(Row row) {
-        this.row = row;
-    }
-
-    public void setParameters(Parameters parameters) {
-        this.parameters = parameters;
-    }
-
-    public void setWidth(float width) {
-        this.width = width;
-    }
-
-    public float getHeight() {
-        assertIsRendered();
-        return getRowSpan() > 1 ? calculateHeightForRowSpan() : getMinHeight();
-    }
-
-    public Renderer getDrawer() {
-        return this.drawer != null ? this.drawer.withCell(this) : createDefaultDrawer();
-    }
-
-    protected abstract Renderer createDefaultDrawer();
-
+    @Override
     public float calculateHeightForRowSpan() {
         Row currentRow = row;
         float result = currentRow.getHeight();
@@ -204,11 +235,5 @@ public abstract class AbstractCell implements Element {
         }
     }
 
-    public boolean isHorizontallyAligned(HorizontalAlignment alignment) {
-        return getParameters().getHorizontalAlignment() == alignment;
-    }
-
-    public boolean isVerticallyAligned(VerticalAlignment alignment) {
-        return getParameters().getVerticalAlignment() == alignment;
-    }
+    protected abstract Renderer createDefaultRenderer();
 }

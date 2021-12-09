@@ -130,7 +130,7 @@ public class Code3Of9 extends AbstractSymbol {
         }
         pattern = new String[]{dest.toString()};
         rowCount = 1;
-        rowHeight = new int[]{-1};
+        rowHeight = new int[]{defaultHeight};
         plotSymbol();
         return true;
     }

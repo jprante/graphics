@@ -11,7 +11,9 @@ public class ColumnlayoutCommand implements Command {
 
     @Override
     public void execute(Engine engine, State state, Settings settings) throws IOException {
-        ColumnLayout columnLayout = new ColumnLayout(settings.getAsInt("columns", 2), settings.getAsFloat("spacing", 10f));
+        ColumnLayout columnLayout = new ColumnLayout();
+        columnLayout.setColumnCount(settings.getAsInt("columns", 2));
+        columnLayout.setColumnSpacing(settings.getAsFloat("spacing", 10f));
         state.elements.peek().add(columnLayout);
     }
 }

@@ -7,7 +7,7 @@ public class VerticalTextCell extends AbstractTextCell {
 
     private String text;
 
-    protected Renderer createDefaultDrawer() {
+    protected Renderer createDefaultRenderer() {
         return new VerticalTextCellRenderer(this);
     }
 
