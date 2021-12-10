@@ -23,7 +23,6 @@ public class ScriptTest {
         engine.close();
     }
 
-
     @Test
     public void deckblatt() throws Exception {
         Settings settings = Settings.settingsBuilder()

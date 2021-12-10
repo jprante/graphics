@@ -113,8 +113,10 @@ public class BarcodeElement implements Element, Drawable, Dividable, WidthRespec
     }
 
     @Override
-    public void draw(PDDocument pdDocument, PDPageContentStream contentStream,
-                     Position upperLeft, DrawListener drawListener) throws IOException {
+    public void draw(PDDocument pdDocument,
+                     PDPageContentStream contentStream,
+                     Position upperLeft,
+                     DrawListener drawListener) throws IOException {
         float x = upperLeft.getX();
         float y = upperLeft.getY() - getHeight();
         PdfBoxGraphics2D pdfBoxGraphics2D = new PdfBoxGraphics2D(pdDocument, getWidth(), getHeight());

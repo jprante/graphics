@@ -8,6 +8,8 @@ import org.xbib.graphics.io.vector.filters.StateChangeGroupingFilter;
 import org.xbib.graphics.io.vector.PageSize;
 
 public class SVGProcessor implements Processor {
+
+    @Override
     public ProcessorResult process(Iterable<Command<?>> commands, PageSize pageSize) {
         FillPaintedShapeAsImageFilter shapesAsImages = new FillPaintedShapeAsImageFilter(commands);
         Iterable<Command<?>> filtered = new StateChangeGroupingFilter(shapesAsImages);

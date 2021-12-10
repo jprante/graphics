@@ -8,7 +8,7 @@ public class SVGGraphics2DProvider implements VectorGraphics2DProvider<SVGGraphi
 
     @Override
     public String name() {
-        return "eps";
+        return "svg";
     }
 
     @Override

@@ -25,10 +25,12 @@ public class LetterTest {
         ImageElement image;
         if (new File("arrow.png").exists()) {
             BufferedImage arrowImage = ImageIO.read(new File("arrow.png"));
-            image = new ImageElement(arrowImage);
+            image = new ImageElement();
+            image.setImage(arrowImage);
         } else {
             BufferedImage arrowImage = ImageIO.read(getClass().getResourceAsStream("arrow.png"));
-            image = new ImageElement(arrowImage);
+            image = new ImageElement();
+            image.setImage(arrowImage);
         }
         image.setWidth(image.getWidth() / 7);
         image.setHeight(image.getHeight() / 7);

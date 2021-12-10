@@ -18,4 +18,6 @@ module org.xbib.graphics.layout.pdfbox {
     requires org.xbib.settings.datastructures;
     requires transitive java.desktop;
     requires java.logging;
+    requires io.sf.carte.echosvg.anim;
+    requires io.sf.carte.echosvg.bridge;
 }

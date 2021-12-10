@@ -1,6 +1,7 @@
 package org.xbib.graphics.pdfbox.layout.script.command;
 
 import org.xbib.graphics.pdfbox.layout.elements.ImageElement;
+import org.xbib.graphics.pdfbox.layout.elements.SVGElement;
 import org.xbib.graphics.pdfbox.layout.elements.render.VerticalLayoutHint;
 import org.xbib.graphics.pdfbox.layout.script.Engine;
 import org.xbib.graphics.pdfbox.layout.script.State;
@@ -16,7 +17,14 @@ import static org.xbib.graphics.pdfbox.layout.util.PdfUtil.mmToPt;
 public class ImageCommand implements Command {
     @Override
     public void execute(Engine engine, State state, Settings settings) throws IOException {
-        ImageElement imageElement = new ImageElement(settings.get("value"));
+        ImageElement imageElement = new ImageElement();
+        if (settings.containsSetting("value")) {
+            imageElement.setImage(settings.get("value"));
+        }
+        if (settings.containsSetting("svg")) {
+            imageElement = new SVGElement();
+            imageElement.setImage(settings.get("svg"));
+        }
         if (settings.containsSetting("x") && settings.containsSetting("y")) {
             imageElement.setAbsolutePosition(new Position(mmToPt(settings.getAsFloat("x", 0f)), mmToPt(settings.getAsFloat("y", 0f))));
         }
@@ -26,8 +34,11 @@ public class ImageCommand implements Command {
         if (settings.containsSetting("height")) {
             imageElement.setHeight(settings.getAsFloat("height", imageElement.getHeight()));
         }
-        if (settings.containsSetting("scale")) {
-            imageElement.setScale(settings.getAsFloat("scale", imageElement.getScale()));
+        if (settings.containsSetting("scalex")) {
+            imageElement.setScaleX(settings.getAsFloat("scalex", 1.0f));
+        }
+        if (settings.containsSetting("scaley")) {
+            imageElement.setScaleY(settings.getAsFloat("scaley", 1.0f));
         }
         Alignment alignment = Alignment.valueOf(settings.get("alignment", "left").toUpperCase(Locale.ROOT));
         String margin = settings.get("margin", "0 0 0 0");

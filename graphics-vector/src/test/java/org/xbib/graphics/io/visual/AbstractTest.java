@@ -5,10 +5,11 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import javax.imageio.ImageIO;
 
 public abstract class AbstractTest {
@@ -41,9 +42,8 @@ public abstract class AbstractTest {
         referenceGraphics.clearRect(0, 0, reference.getWidth(), reference.getHeight());
         referenceGraphics.setColor(Color.BLACK);
         draw(referenceGraphics);
-        File referenceImage = File.createTempFile(getClass().getName() + ".reference", ".png");
-        referenceImage.deleteOnExit();
-        ImageIO.write(reference, "png", referenceImage);
+        Path path = Files.createTempFile(Paths.get("build"), getClass().getName() + ".reference", "png");
+        ImageIO.write(reference, "png", path.toFile());
     }
 
     public abstract void draw(Graphics2D g);

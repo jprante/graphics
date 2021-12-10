@@ -74,15 +74,15 @@ class PdfBoxGraphics2DTestBase {
                 }
                 exporter.draw(pdfBoxGraphics2D);
                 pdfBoxGraphics2D.dispose();
-                PDFormXObject appearanceStream = pdfBoxGraphics2D.getXFormObject();
+                PDFormXObject xFormObject = pdfBoxGraphics2D.getXFormObject();
                 Matrix matrix = new Matrix();
                 matrix.translate(0, 20);
                 contentStream.transform(matrix);
-                contentStream.drawForm(appearanceStream);
+                contentStream.drawForm(xFormObject);
                 matrix.scale(1.5f, 1.5f);
                 matrix.translate(0, 100);
                 contentStream.transform(matrix);
-                contentStream.drawForm(appearanceStream);
+                contentStream.drawForm(xFormObject);
                 contentStream.close();
             }
             document.save(new File(parentDir, name + ".pdf"));

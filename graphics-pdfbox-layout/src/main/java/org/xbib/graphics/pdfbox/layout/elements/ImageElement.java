@@ -22,36 +22,47 @@ public class ImageElement implements Element, Drawable, Dividable, WidthRespecti
      */
     public final static float SCALE_TO_RESPECT_WIDTH = -1f;
 
-    private final BufferedImage image;
+    private BufferedImage image;
 
     private float width;
 
     private float height;
 
-    private float scale;
+    private float scaleX = 1.0f;
+
+    private float scaleY = 1.0f;
 
     private float maxWidth = -1;
 
     private Position absolutePosition;
 
-    public ImageElement(String base64) throws IOException {
-        this(ImageIO.read(new ByteArrayInputStream(Base64.getDecoder().decode(base64))));
+    public ImageElement() {
     }
 
-    public ImageElement(BufferedImage image) {
+    public void setImage(String base64) throws IOException {
+        setImage(ImageIO.read(new ByteArrayInputStream(Base64.getDecoder().decode(base64))));
+    }
+
+    public void setImage(BufferedImage image) {
         this.image = image;
         this.width = image.getWidth();
         this.height = image.getHeight();
     }
 
-    public void setScale(float scale) {
-        this.scale = scale;
-        setWidth(width * scale);
-        setHeight(height * scale);
+    public void setScaleX(float scaleX) {
+        this.scaleX = scaleX;
     }
 
-    public float getScale() {
-        return scale;
+    public float getScaleX() {
+        return scaleX;
+    }
+
+    public void setScaleY(float scaleY) {
+        this.scaleY = scaleY;
+    }
+
+    public float getScaleY() {
+        return scaleY;
     }
 
     /**
@@ -73,7 +84,7 @@ public class ImageElement implements Element, Drawable, Dividable, WidthRespecti
             }
             return image.getWidth();
         }
-        return width;
+        return width * scaleX;
     }
 
     /**
@@ -96,7 +107,7 @@ public class ImageElement implements Element, Drawable, Dividable, WidthRespecti
             }
             return image.getHeight();
         }
-        return height;
+        return height * scaleY;
     }
 
     @Override
@@ -135,9 +146,9 @@ public class ImageElement implements Element, Drawable, Dividable, WidthRespecti
     public void draw(PDDocument pdDocument, PDPageContentStream contentStream,
                      Position upperLeft, DrawListener drawListener) throws IOException {
         float x = upperLeft.getX();
-        float y = upperLeft.getY() - height;
+        float y = upperLeft.getY() - getHeight();
         PDImageXObject imageXObject = LosslessFactory.createFromImage(pdDocument, image);
-        contentStream.drawImage(imageXObject, x, y, width, height);
+        contentStream.drawImage(imageXObject, x, y, getWidth(), getHeight());
         if (drawListener != null) {
             drawListener.drawn(this, upperLeft, getWidth(), getHeight());
         }

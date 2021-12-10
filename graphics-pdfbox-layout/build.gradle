@@ -2,6 +2,7 @@ dependencies {
     api project(':graphics-pdfbox')
     api project(':graphics-barcode')
     api "org.xbib:settings-datastructures:${project.property('xbib-content.version')}"
+    //api "io.sf.carte:echosvg-bridge:${project.property('echosvg.version')}"
     runtimeOnly "org.xbib:settings-datastructures-json:${project.property('xbib-content.version')}"
     runtimeOnly "org.xbib:settings-datastructures-yaml:${project.property('xbib-content.version')}"
 }
