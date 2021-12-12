@@ -1,11 +1,9 @@
 package org.xbib.graphics.pdfbox.groovy.render
 
-import groovy.util.logging.Log4j2
 import org.xbib.graphics.pdfbox.groovy.TextBlock
 import org.xbib.graphics.pdfbox.groovy.render.element.ImageElement
 import org.xbib.graphics.pdfbox.groovy.render.element.TextElement
 
-@Log4j2
 class ParagraphLine {
 
     final BigDecimal maxWidth

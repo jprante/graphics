@@ -1,6 +1,5 @@
 package org.xbib.graphics.pdfbox.groovy.render
 
-import groovy.util.logging.Log4j2
 import org.apache.pdfbox.pdmodel.PDPageContentStream
 import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject
 import org.apache.pdfbox.pdmodel.graphics.image.JPEGFactory
@@ -23,7 +22,6 @@ import org.xbib.graphics.pdfbox.groovy.render.element.TextElement
 import javax.imageio.ImageIO
 import java.awt.image.BufferedImage
 
-@Log4j2
 class ParagraphRenderer implements Renderable {
 
     TextBlock node

@@ -1,7 +1,6 @@
 package org.xbib.graphics.pdfbox.groovy.analyze
 
-import groovy.util.logging.Log4j2
-import org.apache.logging.log4j.Level
+import groovy.util.logging.Log
 import org.apache.pdfbox.contentstream.PDFGraphicsStreamEngine
 import org.apache.pdfbox.cos.COSName
 import org.apache.pdfbox.cos.COSStream
@@ -13,8 +12,9 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImage
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject
 
 import java.awt.geom.Point2D
+import java.util.logging.Level
 
-@Log4j2
+@Log
 class DocumentAnalyzer {
 
     private final Map result = [:]
@@ -47,7 +47,7 @@ class DocumentAnalyzer {
                  *         at org.apache.pdfbox.cos.COSDictionary.getDate(COSDictionary.java:790) ~[pdfbox-2.0.12.jar:2.0.12]
                  *         at org.apache.pdfbox.pdmodel.PDDocumentInformation.getCreationDate(PDDocumentInformation.java:212) ~[pdfbox-2.0.12.jar:2.0.12]
                  */
-                log.log(Level.WARN, e.getMessage() as String, e)
+                log.log(Level.SEVERE, e.getMessage() as String, e)
             }
             result."pages" = []
             document.withCloseable {

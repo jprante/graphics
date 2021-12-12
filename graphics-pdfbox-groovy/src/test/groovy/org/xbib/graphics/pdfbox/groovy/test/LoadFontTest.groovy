@@ -1,6 +1,6 @@
 package org.xbib.graphics.pdfbox.groovy.test
 
-import groovy.util.logging.Log4j2
+import groovy.util.logging.Log
 import org.apache.fontbox.ttf.CmapSubtable
 import org.apache.fontbox.ttf.NamingTable
 import org.apache.fontbox.ttf.TTFParser
@@ -10,7 +10,7 @@ import org.junit.Test
 import java.nio.file.Files
 import java.nio.file.Paths
 
-@Log4j2
+@Log
 class LoadFontTest {
 
     @Test
@@ -33,7 +33,7 @@ class LoadFontTest {
         try {
             NamingTable nameTable = trueTypeFont.getNaming()
             if (!nameTable) {
-                log.warn("Missing 'name' table in font " + name)
+                log.warning("Missing 'name' table in font " + name)
             } else {
                 if (nameTable.getPostScriptName()) {
                     String psName = nameTable.getPostScriptName()
@@ -48,12 +48,12 @@ class LoadFontTest {
                     log.info(format + ": '" + psName + "' / '" + nameTable.getFontFamily() +
                                 "' / '" + nameTable.getFontSubFamily() + "'")
                 } else {
-                    log.warn("Missing 'name' entry for PostScript name in font " + inputStream)
+                    log.warning("Missing 'name' entry for PostScript name in font " + inputStream)
                 }
             }
             CmapSubtable cmapSubtable = trueTypeFont.getUnicodeCmap(true)
             if (!cmapSubtable) {
-                log.warn('missing cmap table in ' + name)
+                log.warning('missing cmap table in ' + name)
             } else {
                 log.info("cmap table present: " + name)
             }

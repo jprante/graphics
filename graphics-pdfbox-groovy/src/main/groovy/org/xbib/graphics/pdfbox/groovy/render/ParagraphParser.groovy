@@ -1,6 +1,5 @@
 package org.xbib.graphics.pdfbox.groovy.render
 
-import groovy.util.logging.Log4j2
 import org.apache.pdfbox.pdmodel.font.PDFont
 import org.xbib.graphics.pdfbox.groovy.Barcode
 import org.xbib.graphics.pdfbox.groovy.Font
@@ -15,7 +14,6 @@ import org.xbib.graphics.pdfbox.groovy.render.element.ImageElement
 import org.xbib.graphics.pdfbox.groovy.render.element.LineElement
 import org.xbib.graphics.pdfbox.groovy.render.element.TextElement
 
-@Log4j2
 class ParagraphParser {
 
     static List<ParagraphLine> getLines(TextBlock paragraph, BigDecimal maxLineWidth) {

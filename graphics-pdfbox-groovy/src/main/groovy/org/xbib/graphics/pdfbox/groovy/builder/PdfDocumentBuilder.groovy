@@ -1,7 +1,7 @@
 package org.xbib.graphics.pdfbox.groovy.builder
 
 import groovy.transform.InheritConstructors
-import groovy.util.logging.Log4j2
+import groovy.util.logging.Log
 import groovy.xml.MarkupBuilder
 import org.apache.pdfbox.pdmodel.common.PDMetadata
 import org.xbib.graphics.pdfbox.groovy.Barcode
@@ -17,7 +17,7 @@ import org.xbib.graphics.pdfbox.groovy.TextBlock
 import org.xbib.graphics.pdfbox.groovy.render.ParagraphRenderer
 import org.xbib.graphics.pdfbox.groovy.render.TableRenderer
 
-@Log4j2
+@Log
 @InheritConstructors
 class PdfDocumentBuilder extends DocumentBuilder {
 
@@ -38,13 +38,13 @@ class PdfDocumentBuilder extends DocumentBuilder {
                     inputStream.withCloseable {
                         boolean loaded = PdfFont.addFont(pdfDocument.pdDocument, fd.name, inputStream, fd.bold, fd.italic)
                         if (!loaded) {
-                            log.warn("font ${fd.name} not loaded")
+                            log.warning("font ${fd.name} not loaded")
                         } else {
                             log.info("font ${fd.name} added")
                         }
                     }
                 } else {
-                    log.warn("font ${fd.name} not found in class path")
+                    log.warning("font ${fd.name} not found in class path")
                 }
             }
         }

@@ -1,52 +1,20 @@
-
 apply from: rootProject.file('gradle/compile/groovy.gradle')
 
 dependencies {
     api project(':graphics-pdfbox')
     api project(':graphics-barcode')
-    api("org.codehaus.groovy:groovy-xml:${project.property('groovy.version')}:indy") {
-        exclude group: 'org.codehaus.groovy', module: 'groovy'
-    }
-    // in groovyland, we need log4j-core for @Log4j2 annotations
-    implementation "org.apache.logging.log4j:log4j-core:${project.property('log4j.version')}"
-
+    api("org.codehaus.groovy:groovy-xml:${project.property('groovy.version')}")
     // spock need junit vintage
     testRuntimeOnly "org.junit.vintage:junit-vintage-engine:${project.property('junit.version')}"
-
-    testImplementation("org.codehaus.groovy:groovy:${project.property('groovy.version')}:indy") {
-        exclude group: 'org.codehaus.groovy', module: 'groovy'
-    }
-    testImplementation("org.codehaus.groovy:groovy-json:${project.property('groovy.version')}:indy") {
-        exclude group: 'org.codehaus.groovy', module: 'groovy'
-    }
-    testImplementation("org.codehaus.groovy:groovy-nio:${project.property('groovy.version')}:indy"){
-        exclude group: 'org.codehaus.groovy', module: 'groovy'
-    }
-    testImplementation("org.codehaus.groovy:groovy-sql:${project.property('groovy.version')}:indy") {
-        exclude group: 'org.codehaus.groovy', module: 'groovy'
-    }
-    testImplementation("org.codehaus.groovy:groovy-xml:${project.property('groovy.version')}:indy") {
-        exclude group: 'org.codehaus.groovy', module: 'groovy'
-    }
-    testImplementation("org.codehaus.groovy:groovy-macro:${project.property('groovy.version')}:indy") {
-        exclude group: 'org.codehaus.groovy', module: 'groovy'
-    }
-    testImplementation("org.codehaus.groovy:groovy-templates:${project.property('groovy.version')}:indy") {
-        exclude group: 'org.codehaus.groovy', module: 'groovy'
-    }
-    testImplementation("org.codehaus.groovy:groovy-test:${project.property('groovy.version')}:indy") {
-        exclude group: 'org.codehaus.groovy', module: 'groovy'
-    }
-    testImplementation("org.spockframework:spock-core:${project.property('spock.version')}") {
-        exclude group: 'org.codehaus.groovy', module: 'groovy'
-        exclude group: 'org.codehaus.groovy', module: 'groovy-json'
-        exclude group: 'org.codehaus.groovy', module: 'groovy-macro'
-        exclude group: 'org.codehaus.groovy', module: 'groovy-nio'
-        exclude group: 'org.codehaus.groovy', module: 'groovy-sql'
-        exclude group: 'org.codehaus.groovy', module: 'groovy-templates'
-        exclude group: 'org.codehaus.groovy', module: 'groovy-test'
-        exclude group: 'org.codehaus.groovy', module: 'groovy-xml'
-    }
+    testImplementation("org.codehaus.groovy:groovy:${project.property('groovy.version')}")
+    testImplementation("org.codehaus.groovy:groovy-json:${project.property('groovy.version')}")
+    testImplementation("org.codehaus.groovy:groovy-nio:${project.property('groovy.version')}")
+    testImplementation("org.codehaus.groovy:groovy-sql:${project.property('groovy.version')}")
+    testImplementation("org.codehaus.groovy:groovy-xml:${project.property('groovy.version')}")
+    testImplementation("org.codehaus.groovy:groovy-macro:${project.property('groovy.version')}")
+    testImplementation("org.codehaus.groovy:groovy-templates:${project.property('groovy.version')}")
+    testImplementation("org.codehaus.groovy:groovy-test:${project.property('groovy.version')}")
+    testImplementation("org.spockframework:spock-core:${project.property('spock.version')}")
     testImplementation "cglib:cglib-nodep:${project.property('cglib.version')}" // for spock mock
     testImplementation "org.objenesis:objenesis:${project.property('objenesis.version')}" // for spock mock
 }

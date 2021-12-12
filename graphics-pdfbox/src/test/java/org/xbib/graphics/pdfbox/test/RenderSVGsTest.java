@@ -1,5 +1,6 @@
 package org.xbib.graphics.pdfbox.test;
 
+/*
 import io.sf.carte.echosvg.anim.dom.SAXSVGDocumentFactory;
 import io.sf.carte.echosvg.bridge.BridgeContext;
 import io.sf.carte.echosvg.bridge.DocumentLoader;
@@ -7,6 +8,8 @@ import io.sf.carte.echosvg.bridge.GVTBuilder;
 import io.sf.carte.echosvg.bridge.UserAgent;
 import io.sf.carte.echosvg.bridge.UserAgentAdapter;
 import io.sf.carte.echosvg.gvt.GraphicsNode;
+*/
+
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -61,7 +64,7 @@ public class RenderSVGsTest extends PdfBoxGraphics2DTestBase {
     }
 
     private void renderSVG(String name, final double scale) throws IOException {
-        String uri = RenderSVGsTest.class.getResource(name).toString();
+        /*String uri = RenderSVGsTest.class.getResource(name).toString();
         SAXSVGDocumentFactory f = new SAXSVGDocumentFactory();
         Document document = f.createDocument(uri, RenderSVGsTest.class.getResourceAsStream(name));
         UserAgent userAgent = new UserAgentAdapter();
@@ -73,11 +76,11 @@ public class RenderSVGsTest extends PdfBoxGraphics2DTestBase {
         this.exportGraphic("svg", name.replace(".svg", ""), gfx -> {
             gfx.scale(scale, scale);
             gvtRoot.paint(gfx);
-        });
+        });*/
     }
 
     private void renderSVGCMYK(String name, double scale) throws IOException {
-        String uri = RenderSVGsTest.class.getResource(name).toString();
+        /*String uri = RenderSVGsTest.class.getResource(name).toString();
         SAXSVGDocumentFactory documentFactory = new SAXSVGDocumentFactory();
         Document document = documentFactory.createDocument(uri, RenderSVGsTest.class.getResourceAsStream(name));
         UserAgent userAgent = new UserAgentAdapter();
@@ -117,6 +120,6 @@ public class RenderSVGsTest extends PdfBoxGraphics2DTestBase {
         contentStream.close();
         String baseName = name.substring(0, name.lastIndexOf('.'));
         pdfDocument.save(new File(parentDir, baseName + ".pdf"));
-        pdfDocument.close();
+        pdfDocument.close();*/
     }
 }

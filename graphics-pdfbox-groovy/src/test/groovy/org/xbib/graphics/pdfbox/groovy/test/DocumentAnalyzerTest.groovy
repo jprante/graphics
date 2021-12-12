@@ -1,10 +1,10 @@
 package org.xbib.graphics.pdfbox.groovy.test
 
-import groovy.util.logging.Log4j2
+import groovy.util.logging.Log
 import org.junit.Test
 import org.xbib.graphics.pdfbox.groovy.analyze.DocumentAnalyzer
 
-@Log4j2
+@Log
 class DocumentAnalyzerTest {
 
     @Test
@@ -12,17 +12,16 @@ class DocumentAnalyzerTest {
         InputStream inputStream = getClass().getResourceAsStream("/ghost.pdf")
         if (inputStream) {
             DocumentAnalyzer documentAnalyzer = new DocumentAnalyzer(inputStream)
-            log.info(documentAnalyzer.result)
+            log.info(documentAnalyzer.result as String)
         }
     }
 
     @Test(expected = IOException.class)
     void analyzeNonPDF() {
-        InputStream inputStream = getClass().getResourceAsStream("/log4j2-test.xml")
+        InputStream inputStream = getClass().getResourceAsStream("/logging.properties")
         if (inputStream) {
             DocumentAnalyzer documentAnalyzer = new DocumentAnalyzer(inputStream)
-            log.info(documentAnalyzer.result)
+            log.info(documentAnalyzer.result as String)
         }
     }
-
 }

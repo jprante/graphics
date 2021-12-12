@@ -1,11 +1,11 @@
 package org.xbib.graphics.pdfbox.groovy.test
 
-import groovy.util.logging.Log4j2
+import groovy.util.logging.Log
 import org.xbib.graphics.pdfbox.groovy.Font
 import org.xbib.graphics.pdfbox.groovy.builder.PdfFont
 import spock.lang.Specification
 
-@Log4j2
+@Log
 class FontSpec extends Specification {
 
     def "override properties with left shift"() {

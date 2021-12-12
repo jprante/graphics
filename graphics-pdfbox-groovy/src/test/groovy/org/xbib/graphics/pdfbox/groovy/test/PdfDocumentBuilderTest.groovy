@@ -1,6 +1,6 @@
 package org.xbib.graphics.pdfbox.groovy.test
 
-import groovy.util.logging.Log4j2
+import groovy.util.logging.Log
 import org.junit.Test
 import org.xbib.graphics.barcode.SymbolType
 import org.xbib.graphics.pdfbox.groovy.builder.PdfDocumentBuilder
@@ -11,7 +11,7 @@ import java.util.regex.Pattern
 
 import static org.junit.Assert.assertTrue
 
-@Log4j2
+@Log
 class PdfDocumentBuilderTest {
 
     @Test
