@@ -7,7 +7,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -35,7 +35,7 @@ public class CSVImporter {
                                              Theme theme) throws IOException {
         XYChart chart = new XYChart(width, height, theme);
         final PathMatcher pathMatcher = path.getFileSystem().getPathMatcher("glob:*.csv");
-        Files.walkFileTree(path, EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE, new SimpleFileVisitor<Path>() {
+        Files.walkFileTree(path, EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE, new SimpleFileVisitor<>() {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                 if (pathMatcher.matches(file.getFileName())) {
@@ -45,12 +45,11 @@ public class CSVImporter {
                     } else {
                         xAndYData = getSeriesDataFromCSVColumns(Files.newInputStream(file));
                     }
+                    String base = file.toString().substring(0, file.toString().indexOf(".csv"));
                     if (xAndYData[2] == null || xAndYData[2].trim().equalsIgnoreCase("")) {
-                        chart.addSeries(file.toString().substring(0, file.toString().indexOf(".csv")),
-                                getAxisData(xAndYData[0]), getAxisData(xAndYData[1]));
+                        chart.addSeries(base, getAxisData(xAndYData[0]), getAxisData(xAndYData[1]));
                     } else {
-                        chart.addSeries(file.toString().substring(0, file.toString().indexOf(".csv")),
-                                getAxisData(xAndYData[0]), getAxisData(xAndYData[1]), getAxisData(xAndYData[2]));
+                        chart.addSeries(base, getAxisData(xAndYData[0]), getAxisData(xAndYData[1]), getAxisData(xAndYData[2]));
                     }
                 }
                 return FileVisitResult.CONTINUE;
@@ -62,7 +61,7 @@ public class CSVImporter {
     private static String[] getSeriesDataFromCSVRows(InputStream inputStream) throws IOException {
         String[] xAndYData = new String[3];
         try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,
-                Charset.forName("UTF-8")))) {
+                StandardCharsets.UTF_8))) {
             int counter = 0;
             String line = null;
             while ((line = bufferedReader.readLine()) != null) {
@@ -78,7 +77,7 @@ public class CSVImporter {
         xAndYData[1] = "";
         xAndYData[2] = "";
         try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,
-                Charset.forName("UTF-8")))) {
+                StandardCharsets.UTF_8))) {
             String line = null;
             while ((line = bufferedReader.readLine()) != null) {
                 String[] dataArray = line.split(",");
