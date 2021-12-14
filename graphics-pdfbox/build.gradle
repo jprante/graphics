@@ -1,5 +1,4 @@
 dependencies {
     api "org.apache.pdfbox:pdfbox:${project.property('pdfbox.version')}"
     testImplementation "org.jfree:jfreechart:${project.property('jfreechart.version')}"
-    //testImplementation "io.sf.carte:echosvg-bridge:${project.property('echosvg.version')}"
 }

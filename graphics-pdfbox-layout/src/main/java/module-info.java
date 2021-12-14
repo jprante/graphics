@@ -18,4 +18,5 @@ module org.xbib.graphics.layout.pdfbox {
     requires org.xbib.settings.datastructures;
     requires transitive java.desktop;
     requires java.logging;
+    requires org.xbib.graphics.chart;
 }
