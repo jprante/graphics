@@ -16,7 +16,7 @@ public class QuickChartTest {
         double[] xData = new double[] { 0.0, 1.0, 2.0 };
         double[] yData = new double[] { 2.0, 1.0, 0.0 };
         XYChart chart = QuickChart.getChart("Sample Chart",
-                "X", "Y", "y(x)", xData, yData);
+                "X", "Y", "y(x)", xData, yData, 640, 480);
         chart.write(Files.newOutputStream(Paths.get("build/quickchart1.pdf")),
                 VectorGraphicsFormat.PDF);
     }

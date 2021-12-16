@@ -11,10 +11,6 @@ import java.util.List;
  */
 public final class QuickChart {
 
-    private final static int WIDTH = 600;
-
-    private final static int HEIGHT = 400;
-
     private QuickChart() {
     }
 
@@ -23,12 +19,14 @@ public final class QuickChart {
                                    String yTitle,
                                    String seriesName,
                                    double[] xData,
-                                   double[] yData) {
+                                   double[] yData,
+                                   int width,
+                                   int height) {
         double[][] yData2d = { yData };
         if (seriesName == null) {
-            return getChart(chartTitle, xTitle, yTitle, null, xData, yData2d);
+            return getChart(chartTitle, xTitle, yTitle, null, xData, yData2d, width, height);
         } else {
-            return getChart(chartTitle, xTitle, yTitle, new String[]{seriesName}, xData, yData2d);
+            return getChart(chartTitle, xTitle, yTitle, new String[]{seriesName}, xData, yData2d, width, height);
         }
     }
 
@@ -37,8 +35,10 @@ public final class QuickChart {
                                    String yTitle,
                                    String[] seriesNames,
                                    double[] xData,
-                                   double[][] yData) {
-        XYChart chart = new XYChart(WIDTH, HEIGHT);
+                                   double[][] yData,
+                                   int width,
+                                   int height) {
+        XYChart chart = new XYChart(width, height);
         chart.setTitle(chartTitle);
         chart.setXAxisTitle(xTitle);
         chart.setYAxisTitle(yTitle);
@@ -60,8 +60,10 @@ public final class QuickChart {
                                    String yTitle,
                                    String seriesName,
                                    List<? extends Double> xData,
-                                   List<? extends Double> yData) {
-        XYChart chart = new XYChart(WIDTH, HEIGHT);
+                                   List<? extends Double> yData,
+                                   int width,
+                                   int height) {
+        XYChart chart = new XYChart(width, height);
         chart.setTitle(chartTitle);
         chart.setXAxisTitle(xTitle);
         chart.setYAxisTitle(yTitle);

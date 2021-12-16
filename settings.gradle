@@ -1,4 +1,5 @@
 include 'graphics-png'
+include 'graphics-svg'
 include 'graphics-vector'
 include 'graphics-vector-eps'
 include 'graphics-vector-pdf'

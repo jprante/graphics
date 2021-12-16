@@ -115,18 +115,16 @@ public class ChartElement implements Element, Drawable, Dividable, WidthRespecti
         float x = upperLeft.getX();
         float y = upperLeft.getY() - getHeight();
         PdfBoxGraphics2D pdfBoxGraphics2D = new PdfBoxGraphics2D(pdDocument, getWidth(), getHeight());
-        Logger.getLogger("").info("x=" + x + " y=" + y);
-        Logger.getLogger("").info("xData=" + Arrays.toString(xData));
-        Logger.getLogger("").info("yData=" + Arrays.toString(xData));
-        XYChart chart = QuickChart.getChart("Sample Chart",
-                "X", "Y", "y(x)", xData, yData);
-        chart.paint(pdfBoxGraphics2D, 600, 480);
+        XYChart chart = QuickChart.getChart("Hello Jörg",
+                "X", "Y", "y(x)", xData, yData, (int) getWidth(), (int) getHeight());
+        chart.paint(pdfBoxGraphics2D, (int) getWidth(), (int) getHeight());
         PDFormXObject xFormObject = pdfBoxGraphics2D.getXFormObject();
         xFormObject.setMatrix(AffineTransform.getTranslateInstance(x, y));
-        //Matrix matrix = new Matrix();
-        //matrix.translate(x, y);
+        Matrix matrix = new Matrix();
+        matrix.translate(x, y);
+        matrix.scale(scaleX, scaleY);
         contentStream.saveGraphicsState();
-        //contentStream.transform(matrix);
+        contentStream.transform(matrix);
         contentStream.drawForm(xFormObject);
         contentStream.restoreGraphicsState();
         if (drawListener != null) {
