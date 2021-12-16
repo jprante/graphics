@@ -1,62 +1,19 @@
-/*
- * SVG Salamander
- * Copyright (c) 2004, Mark McKay
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or 
- * without modification, are permitted provided that the following
- * conditions are met:
- *
- *   - Redistributions of source code must retain the above 
- *     copyright notice, this list of conditions and the following
- *     disclaimer.
- *   - Redistributions in binary form must reproduce the above
- *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/or other materials 
- *     provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
- * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- * COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE. 
- * 
- * Mark McKay can be contacted at mark@kitfox.com.  Salamander and other
- * projects can be found at http://www.kitfox.com
- *
- * Created on January 26, 2004, 4:34 AM
- */
-
 package org.xbib.graphics.svg.xml;
 
-import java.awt.*;
-import java.util.*;
+import java.awt.Color;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * @author Mark McKay
- * @author <a href="mailto:mark@kitfox.com">Mark McKay</a>
- */
-public class ColorTable 
-{
+public class ColorTable {
 
     static final Map<String, Color> colorTable;
+
     static {
-        HashMap<String, Color> table = new HashMap<String, Color>();
-
-	//We really should be interpreting the currentColor keyword as 
-        // a reference to the referring node's color, but this quick hack 
-        // will stop the program from crashing.
+        Map<String, Color> table = new HashMap<>();
         table.put("currentcolor", new Color(0x0));
-
         table.put("aliceblue", new Color(0xf0f8ff));
         table.put("antiquewhite", new Color(0xfaebd7));
         table.put("aqua", new Color(0x00ffff));
@@ -200,52 +157,42 @@ public class ColorTable
         table.put("whitesmoke", new Color(0xf5f5f5));
         table.put("yellow", new Color(0xffff00));
         table.put("yellowgreen", new Color(0x9acd32));
-        
+
         colorTable = Collections.unmodifiableMap(table);
     }
 
     static ColorTable singleton = new ColorTable();
 
-    /** Creates a new instance of ColorTable */
     protected ColorTable() {
-//        buildColorList();
     }
 
-    static public ColorTable instance() { return singleton; }
+    static public ColorTable instance() {
+        return singleton;
+    }
 
     public Color lookupColor(String name) {
         return colorTable.get(name.toLowerCase());
     }
 
-    public static Color parseColor(String val)
-    {
+    public static Color parseColor(String val) {
         Color retVal = null;
-
-        if ("".equals(val))
-        {
+        if ("".equals(val)) {
             return null;
         }
-        
-        if (val.charAt(0) == '#')
-        {
+        if (val.charAt(0) == '#') {
             String hexStrn = val.substring(1);
-            
-            if (hexStrn.length() == 3)
-            {
-                hexStrn = "" + hexStrn.charAt(0) + hexStrn.charAt(0) + hexStrn.charAt(1) + hexStrn.charAt(1) + hexStrn.charAt(2) + hexStrn.charAt(2);
+            if (hexStrn.length() == 3) {
+                hexStrn = "" + hexStrn.charAt(0) + hexStrn.charAt(0) + hexStrn.charAt(1) + hexStrn.charAt(1) +
+                        hexStrn.charAt(2) + hexStrn.charAt(2);
             }
             int hexVal = parseHex(hexStrn);
-
             retVal = new Color(hexVal);
-        }
-        else
-        {
+        } else {
             final String number = "\\s*(((\\d+)(\\.\\d*)?)|(\\.\\d+))(%)?\\s*";
-            final Matcher rgbMatch = Pattern.compile("rgb\\(" + number + "," + number + "," + number + "\\)", Pattern.CASE_INSENSITIVE).matcher("");
-
+            final Matcher rgbMatch = Pattern.compile("rgb\\(" + number + "," + number + "," + number + "\\)",
+                    Pattern.CASE_INSENSITIVE).matcher("");
             rgbMatch.reset(val);
-            if (rgbMatch.matches())
-            {
+            if (rgbMatch.matches()) {
                 float rr = Float.parseFloat(rgbMatch.group(1));
                 float gg = Float.parseFloat(rgbMatch.group(7));
                 float bb = Float.parseFloat(rgbMatch.group(13));
@@ -253,42 +200,27 @@ public class ColorTable
                 gg /= "%".equals(rgbMatch.group(12)) ? 100 : 255;
                 bb /= "%".equals(rgbMatch.group(18)) ? 100 : 255;
                 retVal = new Color(rr, gg, bb);
-            }
-            else
-            {
+            } else {
                 Color lookupCol = ColorTable.instance().lookupColor(val);
                 if (lookupCol != null) retVal = lookupCol;
             }
         }
-
         return retVal;
     }
 
-    public static int parseHex(String val)
-    {
+    public static int parseHex(String val) {
         int retVal = 0;
-        
-        for (int i = 0; i < val.length(); i++)
-        {
+        for (int i = 0; i < val.length(); i++) {
             retVal <<= 4;
-            
             char ch = val.charAt(i);
-            if (ch >= '0' && ch <= '9')
-            {
+            if (ch >= '0' && ch <= '9') {
                 retVal |= ch - '0';
-            }
-            else if (ch >= 'a' && ch <= 'z')
-            {
+            } else if (ch >= 'a' && ch <= 'z') {
                 retVal |= ch - 'a' + 10;
-            }
-            else if (ch >= 'A' && ch <= 'Z')
-            {
+            } else if (ch >= 'A' && ch <= 'Z') {
                 retVal |= ch - 'A' + 10;
-            }
-            else throw new RuntimeException();
+            } else throw new RuntimeException();
         }
-        
         return retVal;
     }
-
 }

@@ -6,105 +6,78 @@ import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class BufferPainter
-{
+public class BufferPainter {
     public static final boolean DEBUG_PAINT = false;
 
-    public static class Cache
-    {
+    public static class Cache {
         private final BufferedImage img;
         private final Rectangle bounds;
         private final AffineTransform transform;
 
-        public Cache(BufferedImage img, Rectangle bounds, AffineTransform transform)
-        {
+        public Cache(BufferedImage img, Rectangle bounds, AffineTransform transform) {
             this.img = img;
             this.bounds = bounds;
             this.transform = transform;
         }
 
-        boolean isCompatible(AffineTransform tx)
-        {
+        boolean isCompatible(AffineTransform tx) {
             return tx.getScaleX() == transform.getScaleX()
-                && tx.getScaleY() == transform.getScaleY()
-                && tx.getShearX() == transform.getShearX()
-                && tx.getShearY() == transform.getShearY();
+                    && tx.getScaleY() == transform.getScaleY()
+                    && tx.getShearX() == transform.getShearX()
+                    && tx.getShearY() == transform.getShearY();
         }
 
-        Rectangle getBoundsForTransform(AffineTransform tx)
-        {
+        Rectangle getBoundsForTransform(AffineTransform tx) {
             double dx = tx.getTranslateX() - transform.getTranslateX();
             double dy = tx.getTranslateY() - transform.getTranslateY();
             return new Rectangle((int) (bounds.x + dx), (int) (bounds.y + dy),
-                                 bounds.width, bounds.height);
+                    bounds.width, bounds.height);
         }
     }
 
-    public static void paintElement(Graphics2D g, RenderableElement element) throws SVGException
-    {
+    public static void paintElement(Graphics2D g, RenderableElement element) throws SVGException, IOException {
         if (element.cachedMask != null
-            || (element.filter != null && !element.filter.filterEffects.isEmpty()))
-        {
+                || (element.filter != null && !element.filter.filterEffects.isEmpty())) {
             renderElement(g, element);
-        } else
-        {
+        } else {
             element.doRender(g);
         }
     }
 
     private static float getTransformScale(Point2D.Float origin, Point2D.Float testPoint,
-                                           AffineTransform transform)
-    {
+                                           AffineTransform transform) {
         transform.transform(testPoint, testPoint);
         float dx = testPoint.x - origin.x;
         float dy = testPoint.y - origin.y;
         return (float) Math.sqrt(dx * dx + dy * dy);
     }
 
-    private static void renderElement(Graphics2D g, RenderableElement element) throws SVGException
-    {
+    private static void renderElement(Graphics2D g, RenderableElement element) throws SVGException, IOException {
         AffineTransform transform = g.getTransform();
-
         Graphics2D gg = (Graphics2D) g.create();
         Rectangle elementBounds = element.getBoundingBox().getBounds();
         Rectangle transformedBounds = transform.createTransformedShape(elementBounds).getBounds();
         Rectangle dstBounds = new Rectangle(transformedBounds);
-
-        ImageObserver observer = element.diagram.getCurrentRenderTarget();
-
         Cache cache = element.getBufferCache();
         BufferedImage elementImage;
-
-        if (cache == null || observer == null || !cache.isCompatible(transform))
-        {
+        if (cache == null || !cache.isCompatible(transform)) {
             elementImage = renderToBuffer(gg, element, transform, transformedBounds, dstBounds);
-            if (observer != null)
-            {
-                // Only do caching if we are painting to a component.
-                Cache cacheEntry = new Cache(elementImage, new Rectangle(dstBounds), transform);
-                element.setBufferImage(cacheEntry);
-            }
-        } else
-        {
+        } else {
             elementImage = cache.img;
             dstBounds.setBounds(cache.getBoundsForTransform(transform));
         }
-
-        // Reset the transform. We already accounted for it in the buffer image.
         gg.setTransform(new AffineTransform());
-        gg.drawImage(elementImage, dstBounds.x, dstBounds.y, observer);
-        if (DEBUG_PAINT)
-        {
+        gg.drawImage(elementImage, dstBounds.x, dstBounds.y, null);
+        if (DEBUG_PAINT) {
             gg.setColor(Color.GREEN);
             gg.drawRect(dstBounds.x, dstBounds.y, dstBounds.width, dstBounds.height);
-            if (!dstBounds.equals(transformedBounds))
-            {
+            if (!dstBounds.equals(transformedBounds)) {
                 gg.setColor(Color.PINK);
                 gg.drawRect(transformedBounds.x, transformedBounds.y, transformedBounds.width, transformedBounds.height);
             }
@@ -114,8 +87,7 @@ public class BufferPainter
 
     private static BufferedImage renderToBuffer(Graphics2D gg, RenderableElement element,
                                                 AffineTransform transform, Rectangle transformedBounds,
-                                                Rectangle dstBounds) throws SVGException
-    {
+                                                Rectangle dstBounds) throws SVGException, IOException {
         Point2D.Float origin = new Point2D.Float(0, 0);
         transform.transform(origin, origin);
 
@@ -129,16 +101,15 @@ public class BufferPainter
         List<FilterEffects.FilterOp> filterOps = element.filter == null
                 ? Collections.emptyList()
                 : element.filter.filterEffects.stream()
-                        .flatMap(f -> f.getOperations(dstBounds, xScale, yScale).stream())
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toList());
+                .flatMap(f -> f.getOperations(dstBounds, xScale, yScale).stream())
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
 
-        for (FilterEffects.FilterOp filterOp : filterOps)
-        {
+        for (FilterEffects.FilterOp filterOp : filterOps) {
             int right = Math.max(dstBounds.x + dstBounds.width,
-                                 filterOp.requiredImageBounds.x + filterOp.requiredImageBounds.width);
+                    filterOp.requiredImageBounds.x + filterOp.requiredImageBounds.width);
             int bottom = Math.max(dstBounds.y + dstBounds.height,
-                                  filterOp.requiredImageBounds.y + filterOp.requiredImageBounds.height);
+                    filterOp.requiredImageBounds.y + filterOp.requiredImageBounds.height);
             dstBounds.x = Math.min(dstBounds.x, filterOp.requiredImageBounds.x);
             dstBounds.y = Math.min(dstBounds.y, filterOp.requiredImageBounds.y);
             dstBounds.width = right - dstBounds.x;
@@ -147,25 +118,19 @@ public class BufferPainter
 
 
         BufferedImage elementImage = BufferPainter.paintToBuffer(gg, transform, dstBounds, transformedBounds,
-                                                                 element, null, true);
+                element, null, true);
 
-        for (FilterEffects.FilterOp filterOp : filterOps)
-        {
+        for (FilterEffects.FilterOp filterOp : filterOps) {
             elementImage = filterOp.op.filter(elementImage, null);
         }
 
-        if (element.cachedMask != null)
-        {
-            // Draw the mask image. Implicitly the mask is empty i.e. has a completely black background.
-            // We can't draw the mask directly to the elementImage using the mask composite as
-            // masks may change the mask value a location at any time during mask realization.
+        if (element.cachedMask != null) {
             BufferedImage maskImage = BufferPainter.paintToBuffer(gg, transform, dstBounds, transformedBounds,
-                                                                  element.cachedMask, Color.BLACK, false);
-
+                    element.cachedMask, Color.BLACK, false);
             Graphics2D elementGraphics = (Graphics2D) elementImage.getGraphics();
             elementGraphics.setRenderingHints(gg.getRenderingHints());
             elementGraphics.setComposite(element.cachedMask.createMaskComposite());
-            elementGraphics.drawImage(maskImage, 0, 0, element.diagram.getCurrentRenderTarget());
+            elementGraphics.drawImage(maskImage, 0, 0, null);
             elementGraphics.dispose();
         }
         return elementImage;
@@ -173,29 +138,22 @@ public class BufferPainter
 
     public static BufferedImage paintToBuffer(Graphics2D g, AffineTransform transform,
                                               Rectangle srcBounds, RenderableElement element,
-                                              Color bgColor) throws SVGException
-    {
+                                              Color bgColor) throws SVGException, IOException {
         return paintToBuffer(g, transform, srcBounds, srcBounds, element, bgColor, false);
     }
 
-    /*
-     * The srcBounds parameter is expected to be pre-transformed by the given transform.
-     */
     public static BufferedImage paintToBuffer(Graphics2D g, AffineTransform transform,
                                               Rectangle dstBounds, Rectangle srcBounds,
                                               RenderableElement element,
-                                              Color bgColor, boolean preMultiplied) throws SVGException
-    {
+                                              Color bgColor, boolean preMultiplied) throws SVGException, IOException {
         int type = preMultiplied
                 ? BufferedImage.TYPE_INT_ARGB_PRE
                 : BufferedImage.TYPE_INT_ARGB;
         BufferedImage img = new BufferedImage(dstBounds.width, dstBounds.height, type);
         Graphics2D imgGraphics = (Graphics2D) img.getGraphics();
-        if (g != null)
-        {
+        if (g != null) {
             imgGraphics.setRenderingHints(g.getRenderingHints());
-        } else if (bgColor != null)
-        {
+        } else if (bgColor != null) {
             imgGraphics.setColor(bgColor);
             imgGraphics.fillRect(0, 0, img.getWidth(), img.getHeight());
         }
@@ -203,9 +161,6 @@ public class BufferPainter
         int yRelative = srcBounds.y - dstBounds.y;
         imgGraphics.translate(xRelative, yRelative);
         imgGraphics.clipRect(0, 0, srcBounds.width, srcBounds.height);
-
-        // Because we blit the image at the transformed location we have to compensate for the
-        // element location.
         imgGraphics.translate(-srcBounds.x, -srcBounds.y);
         imgGraphics.transform(transform);
         element.doRender(imgGraphics);

@@ -3,16 +3,16 @@
  * Copyright (c) 2004, Mark McKay
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or 
+ * Redistribution and use in source and binary forms, with or
  * without modification, are permitted provided that the following
  * conditions are met:
  *
- *   - Redistributions of source code must retain the above 
+ *   - Redistributions of source code must retain the above
  *     copyright notice, this list of conditions and the following
  *     disclaimer.
  *   - Redistributions in binary form must reproduce the above
  *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/or other materials 
+ *     disclaimer in the documentation and/or other materials
  *     provided with the distribution.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -26,8 +26,8 @@
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE. 
- * 
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
  * Mark McKay can be contacted at mark@kitfox.com.  Salamander and other
  * projects can be found at http://www.kitfox.com
  *
@@ -37,11 +37,14 @@
 package org.xbib.graphics.svg.pathcmd;
 
 //import org.apache.batik.ext.awt.geom.ExtendedGeneralPath;
-import java.awt.*;
-import java.awt.geom.*;
+
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Arc2D;
+import java.awt.geom.GeneralPath;
 
 /**
- * This is a little used SVG function, as most editors will save curves as 
+ * This is a little used SVG function, as most editors will save curves as
  * Beziers.  To reduce the need to rely on the Batik library, this functionallity
  * is being bypassed for the time being.  In the future, it would be nice to
  * extend the GeneralPath command to include the arcTo ability provided by Batik.
@@ -49,8 +52,7 @@ import java.awt.geom.*;
  * @author Mark McKay
  * @author <a href="mailto:mark@kitfox.com">Mark McKay</a>
  */
-public class Arc extends PathCommand 
-{
+public class Arc extends PathCommand {
 
     public float rx = 0f;
     public float ry = 0f;
@@ -60,7 +62,9 @@ public class Arc extends PathCommand
     public float x = 0f;
     public float y = 0f;
 
-    /** Creates a new instance of MoveTo */
+    /**
+     * Creates a new instance of MoveTo
+     */
     public Arc() {
     }
 
@@ -75,16 +79,15 @@ public class Arc extends PathCommand
         this.y = y;
     }
 
-//    public void appendPath(ExtendedGeneralPath path, BuildHistory hist)
+    //    public void appendPath(ExtendedGeneralPath path, BuildHistory hist)
     @Override
-    public void appendPath(GeneralPath path, BuildHistory hist)
-    {
+    public void appendPath(GeneralPath path, BuildHistory hist) {
         float offx = isRelative ? hist.lastPoint.x : 0f;
         float offy = isRelative ? hist.lastPoint.y : 0f;
 
         arcTo(path, rx, ry, xAxisRot, largeArc, sweep,
-            x + offx, y + offy,
-            hist.lastPoint.x, hist.lastPoint.y);
+                x + offx, y + offy,
+                hist.lastPoint.x, hist.lastPoint.y);
 //        path.lineTo(x + offx, y + offy);
 //        hist.setPoint(x + offx, y + offy);
         hist.setLastPoint(x + offx, y + offy);
@@ -92,8 +95,7 @@ public class Arc extends PathCommand
     }
 
     @Override
-    public int getNumKnotsAdded()
-    {
+    public int getNumKnotsAdded() {
         return 6;
     }
 
@@ -103,37 +105,31 @@ public class Arc extends PathCommand
      * indicate if we increase or decrease the angles and the final
      * point of the arc.
      *
-     * @param path The path that the arc will be appended to.
-     * 
-     * @param rx the x radius of the ellipse
-     * @param ry the y radius of the ellipse
-     *
-     * @param angle the angle from the x-axis of the current
-     * coordinate system to the x-axis of the ellipse in degrees.
-     *
+     * @param path         The path that the arc will be appended to.
+     * @param rx           the x radius of the ellipse
+     * @param ry           the y radius of the ellipse
+     * @param angle        the angle from the x-axis of the current
+     *                     coordinate system to the x-axis of the ellipse in degrees.
      * @param largeArcFlag the large arc flag. If true the arc
-     * spanning less than or equal to 180 degrees is chosen, otherwise
-     * the arc spanning greater than 180 degrees is chosen
-     *
-     * @param sweepFlag the sweep flag. If true the line joining
-     * center to arc sweeps through decreasing angles otherwise it
-     * sweeps through increasing angles
-     *
-     * @param x the absolute x coordinate of the final point of the arc.
-     * @param y the absolute y coordinate of the final point of the arc.
-     * @param x0 - The absolute x coordinate of the initial point of the arc.
-     * @param y0 - The absolute y coordinate of the initial point of the arc.
+     *                     spanning less than or equal to 180 degrees is chosen, otherwise
+     *                     the arc spanning greater than 180 degrees is chosen
+     * @param sweepFlag    the sweep flag. If true the line joining
+     *                     center to arc sweeps through decreasing angles otherwise it
+     *                     sweeps through increasing angles
+     * @param x            the absolute x coordinate of the final point of the arc.
+     * @param y            the absolute y coordinate of the final point of the arc.
+     * @param x0           - The absolute x coordinate of the initial point of the arc.
+     * @param y0           - The absolute y coordinate of the initial point of the arc.
      */
     public void arcTo(GeneralPath path, float rx, float ry,
-                                   float angle,
-                                   boolean largeArcFlag,
-                                   boolean sweepFlag,
-                                   float x, float y, float x0, float y0) 
-    {
+                      float angle,
+                      boolean largeArcFlag,
+                      boolean sweepFlag,
+                      float x, float y, float x0, float y0) {
 
         // Ensure radii are valid
         if (rx == 0 || ry == 0) {
-            path.lineTo((float) x, (float) y);
+            path.lineTo(x, y);
             return;
         }
 
@@ -143,36 +139,35 @@ public class Arc extends PathCommand
             return;
         }
 
-        Arc2D arc = computeArc(x0, y0, rx, ry, angle, 
-                               largeArcFlag, sweepFlag, x, y);
+        Arc2D arc = computeArc(x0, y0, rx, ry, angle,
+                largeArcFlag, sweepFlag, x, y);
         if (arc == null) return;
 
         AffineTransform t = AffineTransform.getRotateInstance
-            (Math.toRadians(angle), arc.getCenterX(), arc.getCenterY());
+                (Math.toRadians(angle), arc.getCenterX(), arc.getCenterY());
         Shape s = t.createTransformedShape(arc);
         path.append(s, true);
     }
 
 
-    /** 
-     * This constructs an unrotated Arc2D from the SVG specification of an 
+    /**
+     * This constructs an unrotated Arc2D from the SVG specification of an
      * Elliptical arc.  To get the final arc you need to apply a rotation
      * transform such as:
-     * 
+     * <p>
      * AffineTransform.getRotateInstance
-     *     (angle, arc.getX()+arc.getWidth()/2, arc.getY()+arc.getHeight()/2);
-     * 
-     * @param x0 origin of arc in x
-     * @param y0 origin of arc in y
-     * @param rx radius of arc in x
-     * @param ry radius of arc in y
-     * @param angle number of radians in arc
+     * (angle, arc.getX()+arc.getWidth()/2, arc.getY()+arc.getHeight()/2);
+     *
+     * @param x0           origin of arc in x
+     * @param y0           origin of arc in y
+     * @param rx           radius of arc in x
+     * @param ry           radius of arc in y
+     * @param angle        number of radians in arc
      * @param largeArcFlag
      * @param sweepFlag
-     * @param x ending coordinate of arc in x
-     * @param y ending coordinate of arc in y
+     * @param x            ending coordinate of arc in x
+     * @param y            ending coordinate of arc in y
      * @return arc shape
-     * 
      */
     public static Arc2D computeArc(double x0, double y0,
                                    double rx, double ry,
@@ -205,7 +200,7 @@ public class Arc extends PathCommand
         double Px1 = x1 * x1;
         double Py1 = y1 * y1;
         // check that radii are large enough
-        double radiiCheck = Px1/Prx + Py1/Pry;
+        double radiiCheck = Px1 / Prx + Py1 / Pry;
         if (radiiCheck > 1) {
             rx = Math.sqrt(radiiCheck) * rx;
             ry = Math.sqrt(radiiCheck) * ry;
@@ -217,7 +212,7 @@ public class Arc extends PathCommand
         // Step 2 : Compute (cx1, cy1)
         //
         double sign = (largeArcFlag == sweepFlag) ? -1 : 1;
-        double sq = ((Prx*Pry)-(Prx*Py1)-(Pry*Px1)) / ((Prx*Py1)+(Pry*Px1));
+        double sq = ((Prx * Pry) - (Prx * Py1) - (Pry * Px1)) / ((Prx * Py1) + (Pry * Px1));
         sq = (sq < 0) ? 0 : sq;
         double coef = (sign * Math.sqrt(sq));
         double cx1 = coef * ((rx * y1) / ry);
@@ -250,7 +245,7 @@ public class Arc extends PathCommand
         p = ux * vx + uy * vy;
         sign = (ux * vy - uy * vx < 0) ? -1d : 1d;
         double angleExtent = Math.toDegrees(sign * Math.acos(p / n));
-        if(!sweepFlag && angleExtent > 0) {
+        if (!sweepFlag && angleExtent > 0) {
             angleExtent -= 360f;
         } else if (sweepFlag && angleExtent < 0) {
             angleExtent += 360f;
@@ -273,11 +268,10 @@ public class Arc extends PathCommand
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "A " + rx + " " + ry
-             + " " + xAxisRot + " " + largeArc
-             + " " + sweep
-             + " " + x + " " + y;
+                + " " + xAxisRot + " " + largeArc
+                + " " + sweep
+                + " " + x + " " + y;
     }
 }

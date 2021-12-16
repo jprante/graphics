@@ -42,8 +42,7 @@ import java.util.List;
  *
  * @author Jannis Weis
  */
-public class PathParser
-{
+public class PathParser {
     private final String input;
     private final int inputLength;
     private int index;
@@ -54,55 +53,45 @@ public class PathParser
         this.inputLength = this.input.length();
     }
 
-    private boolean isCommandChar(char c)
-    {
+    private boolean isCommandChar(char c) {
         return c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z';
     }
 
-    private boolean isWhiteSpaceOrSeparator(char c)
-    {
+    private boolean isWhiteSpaceOrSeparator(char c) {
         return c <= ' ' || c == ',';
     }
 
-    private char peek()
-    {
+    private char peek() {
         return input.charAt(index);
     }
 
-    private void consume()
-    {
+    private void consume() {
         index++;
     }
 
-    private boolean hasNext()
-    {
+    private boolean hasNext() {
         return index < inputLength;
     }
 
     // This only checks for the rough structure of a number as we need to know
     // when to separate the next token.
     // Explicit parsing is done by Float#parseFloat.
-    private boolean isValidNumberChar(char c, NumberCharState state)
-    {
+    private boolean isValidNumberChar(char c, NumberCharState state) {
         boolean valid = '0' <= c && c <= '9';
-        if (valid && state.iteration == 1 && input.charAt(index - 1) == '0')
-        {
+        if (valid && state.iteration == 1 && input.charAt(index - 1) == '0') {
             // Break up combined zeros into multiple numbers.
             return false;
         }
         state.signAllowed = state.signAllowed && !valid;
-        if (state.dotAllowed && !valid)
-        {
+        if (state.dotAllowed && !valid) {
             valid = c == '.';
             state.dotAllowed = !valid;
         }
-        if (state.signAllowed && !valid)
-        {
+        if (state.signAllowed && !valid) {
             valid = c == '+' || c == '-';
             state.signAllowed = valid;
         }
-        if (state.exponentAllowed && !valid)
-        {
+        if (state.exponentAllowed && !valid) {
             // Possible exponent notation. Needs at least one preceding number
             valid = c == 'e' || c == 'E';
             state.exponentAllowed = !valid;
@@ -118,8 +107,7 @@ public class PathParser
         }
     }
 
-    private float nextFloat()
-    {
+    private float nextFloat() {
         int start = index;
         NumberCharState state = new NumberCharState();
         while (hasNext() && isValidNumberChar(peek(), state)) {
@@ -128,11 +116,9 @@ public class PathParser
         int end = index;
         consumeWhiteSpaceOrSeparator();
         String token = input.substring(start, end);
-        try
-        {
+        try {
             return Float.parseFloat(token);
-        } catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             String msg = "Unexpected element while parsing cmd '" + currentCommand
                     + "' encountered token '" + token + "' rest=" + input.substring(start, Math.min(input.length(), start + 10))
                     + " (index=" + index + " in input=" + input + ")";
@@ -140,24 +126,20 @@ public class PathParser
         }
     }
 
-    public PathCommand[] parsePathCommand()
-    {
+    public PathCommand[] parsePathCommand() {
         List<PathCommand> commands = new ArrayList<>();
-        
+
         currentCommand = 'Z';
-        while (hasNext())
-        {
+        while (hasNext()) {
             char peekChar = peek();
-            if (isCommandChar(peekChar))
-            {
+            if (isCommandChar(peekChar)) {
                 consume();
                 currentCommand = peekChar;
             }
             consumeWhiteSpaceOrSeparator();
 
             PathCommand cmd;
-            switch (currentCommand)
-            {
+            switch (currentCommand) {
                 case 'M':
                     cmd = new MoveTo(false, nextFloat(), nextFloat());
                     currentCommand = 'L';
@@ -186,23 +168,23 @@ public class PathParser
                     break;
                 case 'A':
                     cmd = new Arc(false, nextFloat(), nextFloat(),
-                                  nextFloat(),
-                                  nextFloat() == 1f, nextFloat() == 1f,
-                                  nextFloat(), nextFloat());
+                            nextFloat(),
+                            nextFloat() == 1f, nextFloat() == 1f,
+                            nextFloat(), nextFloat());
                     break;
                 case 'a':
                     cmd = new Arc(true, nextFloat(), nextFloat(),
-                                  nextFloat(),
-                                  nextFloat() == 1f, nextFloat() == 1f,
-                                  nextFloat(), nextFloat());
+                            nextFloat(),
+                            nextFloat() == 1f, nextFloat() == 1f,
+                            nextFloat(), nextFloat());
                     break;
                 case 'Q':
                     cmd = new Quadratic(false, nextFloat(), nextFloat(),
-                                        nextFloat(), nextFloat());
+                            nextFloat(), nextFloat());
                     break;
                 case 'q':
                     cmd = new Quadratic(true, nextFloat(), nextFloat(),
-                                        nextFloat(), nextFloat());
+                            nextFloat(), nextFloat());
                     break;
                 case 'T':
                     cmd = new QuadraticSmooth(false, nextFloat(), nextFloat());
@@ -212,21 +194,21 @@ public class PathParser
                     break;
                 case 'C':
                     cmd = new Cubic(false, nextFloat(), nextFloat(),
-                                    nextFloat(), nextFloat(),
-                                    nextFloat(), nextFloat());
+                            nextFloat(), nextFloat(),
+                            nextFloat(), nextFloat());
                     break;
                 case 'c':
                     cmd = new Cubic(true, nextFloat(), nextFloat(),
-                                    nextFloat(), nextFloat(),
-                                    nextFloat(), nextFloat());
+                            nextFloat(), nextFloat(),
+                            nextFloat(), nextFloat());
                     break;
                 case 'S':
                     cmd = new CubicSmooth(false, nextFloat(), nextFloat(),
-                                          nextFloat(), nextFloat());
+                            nextFloat(), nextFloat());
                     break;
                 case 's':
                     cmd = new CubicSmooth(true, nextFloat(), nextFloat(),
-                                          nextFloat(), nextFloat());
+                            nextFloat(), nextFloat());
                     break;
                 case 'Z':
                 case 'z':
@@ -241,8 +223,7 @@ public class PathParser
         return commands.toArray(new PathCommand[0]);
     }
 
-    private static class NumberCharState
-    {
+    private static class NumberCharState {
         int iteration = 0;
         boolean dotAllowed = true;
         boolean signAllowed = true;

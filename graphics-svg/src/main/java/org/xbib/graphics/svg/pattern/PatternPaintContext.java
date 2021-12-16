@@ -3,16 +3,16 @@
  * Copyright (c) 2004, Mark McKay
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or 
+ * Redistribution and use in source and binary forms, with or
  * without modification, are permitted provided that the following
  * conditions are met:
  *
- *   - Redistributions of source code must retain the above 
+ *   - Redistributions of source code must retain the above
  *     copyright notice, this list of conditions and the following
  *     disclaimer.
  *   - Redistributions in binary form must reproduce the above
  *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/or other materials 
+ *     disclaimer in the documentation and/or other materials
  *     provided with the distribution.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -26,8 +26,8 @@
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE. 
- * 
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
  * Mark McKay can be contacted at mark@kitfox.com.  Salamander and other
  * projects can be found at http://www.kitfox.com
  *
@@ -37,9 +37,14 @@
 package org.xbib.graphics.svg.pattern;
 
 import org.xbib.graphics.svg.SVGConst;
-import java.awt.*;
-import java.awt.geom.*;
-import java.awt.image.*;
+
+import java.awt.PaintContext;
+import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.Raster;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,8 +52,7 @@ import java.util.logging.Logger;
  * @author Mark McKay
  * @author <a href="mailto:mark@kitfox.com">Mark McKay</a>
  */
-public class PatternPaintContext implements PaintContext
-{
+public class PatternPaintContext implements PaintContext {
     BufferedImage source;  //Image we're rendering from
     Rectangle deviceBounds;  //int size of rectangle we're rendering to
 //    AffineTransform userXform;  //xform from user space to device space
@@ -62,9 +66,10 @@ public class PatternPaintContext implements PaintContext
     //Raster we use to build tile
     BufferedImage buf;
 
-    /** Creates a new instance of PatternPaintContext */
-    public PatternPaintContext(BufferedImage source, Rectangle deviceBounds, AffineTransform userXform, AffineTransform distortXform)
-    {
+    /**
+     * Creates a new instance of PatternPaintContext
+     */
+    public PatternPaintContext(BufferedImage source, Rectangle deviceBounds, AffineTransform userXform, AffineTransform distortXform) {
 //System.err.println("Bounds " + deviceBounds);
         this.source = source;
         this.deviceBounds = deviceBounds;
@@ -76,9 +81,7 @@ public class PatternPaintContext implements PaintContext
 //            xform.concatenate(distortXform.createInverse());
             xform = distortXform.createInverse();
             xform.concatenate(userXform.createInverse());
-        }
-        catch (Exception e) 
-        {
+        } catch (Exception e) {
             Logger.getLogger(SVGConst.SVG_LOGGER).log(Level.WARNING, null, e);
         }
 
@@ -93,20 +96,16 @@ public class PatternPaintContext implements PaintContext
         return source.getColorModel();
     }
 
-    public Raster getRaster(int x, int y, int w, int h)
-    {
+    public Raster getRaster(int x, int y, int w, int h) {
 //System.err.println("" + x + ", " + y + ", " + w + ", " + h);
-        if (buf == null || buf.getWidth() != w || buf.getHeight() != h)
-        {
+        if (buf == null || buf.getWidth() != w || buf.getHeight() != h) {
             buf = new BufferedImage(w, h, source.getType());
         }
 
 //        Point2D.Float srcPt = new Point2D.Float(), srcPt2 = new Point2D.Float(), destPt = new Point2D.Float();
         Point2D.Float srcPt = new Point2D.Float(), destPt = new Point2D.Float();
-        for (int j = 0; j < h; j++)
-        {
-            for (int i = 0; i < w; i++)
-            {
+        for (int j = 0; j < h; j++) {
+            for (int i = 0; i < w; i++) {
                 destPt.setLocation(i + x, j + y);
 
                 xform.transform(destPt, srcPt);
@@ -114,9 +113,9 @@ public class PatternPaintContext implements PaintContext
 //                userXform.transform(destPt, srcPt2);
 //                distortXform.transform(srcPt2, srcPt);
 
-                int ii = ((int)srcPt.x) % sourceWidth;
+                int ii = ((int) srcPt.x) % sourceWidth;
                 if (ii < 0) ii += sourceWidth;
-                int jj = ((int)srcPt.y) % sourceHeight;
+                int jj = ((int) srcPt.y) % sourceHeight;
                 if (jj < 0) jj += sourceHeight;
 
                 buf.setRGB(i, j, source.getRGB(ii, jj));
@@ -126,8 +125,7 @@ public class PatternPaintContext implements PaintContext
         return buf.getData();
     }
 
-    public static void main(String[] argv)
-    {
+    public static void main(String[] argv) {
         int i = -4;
         System.err.println("Hello " + (i % 4));
     }

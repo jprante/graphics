@@ -3,16 +3,16 @@
  * Copyright (c) 2004, Mark McKay
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or 
+ * Redistribution and use in source and binary forms, with or
  * without modification, are permitted provided that the following
  * conditions are met:
  *
- *   - Redistributions of source code must retain the above 
+ *   - Redistributions of source code must retain the above
  *     copyright notice, this list of conditions and the following
  *     disclaimer.
  *   - Redistributions in binary form must reproduce the above
  *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/or other materials 
+ *     disclaimer in the documentation and/or other materials
  *     provided with the distribution.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -26,8 +26,8 @@
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE. 
- * 
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
  * Mark McKay can be contacted at mark@kitfox.com.  Salamander and other
  * projects can be found at http://www.kitfox.com
  *
@@ -37,6 +37,7 @@ package org.xbib.graphics.svg;
 
 import org.xbib.graphics.svg.pattern.PatternPaint;
 import org.xbib.graphics.svg.xml.StyleAttribute;
+
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.RenderingHints;
@@ -45,6 +46,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.net.URI;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -53,10 +55,9 @@ import java.util.logging.Logger;
  * @author Mark McKay
  * @author <a href="mailto:mark@kitfox.com">Mark McKay</a>
  */
-public class PatternSVG extends FillElement
-{
+public class PatternSVG extends FillElement {
     public static final String TAG_NAME = "pattern";
-    
+
     public static final int GU_OBJECT_BOUNDING_BOX = 0;
     public static final int GU_USER_SPACE_ON_USE = 1;
     int gradientUnits = GU_OBJECT_BOUNDING_BOX;
@@ -71,13 +72,11 @@ public class PatternSVG extends FillElement
     /**
      * Creates a new instance of Gradient
      */
-    public PatternSVG()
-    {
+    public PatternSVG() {
     }
 
     @Override
-    public String getTagName()
-    {
+    public String getTagName() {
         return TAG_NAME;
     }
 
@@ -86,31 +85,26 @@ public class PatternSVG extends FillElement
      * each child tag that has been processed
      */
     @Override
-    public void loaderAddChild(SVGLoaderHelper helper, SVGElement child) throws SVGElementException
-    {
+    public void loaderAddChild(SVGLoaderHelper helper, SVGElement child) throws SVGElementException {
         super.loaderAddChild(helper, child);
     }
 
     @Override
-    protected void build() throws SVGException
-    {
+    protected void build() throws SVGException, IOException {
         super.build();
 
         StyleAttribute sty = new StyleAttribute();
 
         //Load style string
         String href = null;
-        if (getPres(sty.setName("xlink:href")))
-        {
+        if (getPres(sty.setName("xlink:href"))) {
             href = sty.getStringValue();
         }
         //String href = attrs.getValue("xlink:href");
         //If we have a link to another pattern, initialize ourselves with it's values
-        if (href != null)
-        {
+        if (href != null) {
 //System.err.println("Gradient.loaderStartElement() href '" + href + "'");
-            try
-            {
+            try {
                 URI src = getXMLBase().resolve(href);
                 PatternSVG patSrc = (PatternSVG) diagram.getUniverse().getElement(src);
 
@@ -122,56 +116,46 @@ public class PatternSVG extends FillElement
                 viewBox = patSrc.viewBox;
                 patternXform.setTransform(patSrc.patternXform);
                 children.addAll(patSrc.children);
-            } catch (Exception e)
-            {
+            } catch (Exception e) {
                 Logger.getLogger(SVGConst.SVG_LOGGER).log(Level.WARNING,
-                    "Could not parse xlink:href", e);
+                        "Could not parse xlink:href", e);
             }
         }
 
         String gradientUnits = "";
-        if (getPres(sty.setName("gradientUnits")))
-        {
+        if (getPres(sty.setName("gradientUnits"))) {
             gradientUnits = sty.getStringValue().toLowerCase();
         }
-        if (gradientUnits.equals("userspaceonuse"))
-        {
+        if (gradientUnits.equals("userspaceonuse")) {
             this.gradientUnits = GU_USER_SPACE_ON_USE;
-        } else
-        {
+        } else {
             this.gradientUnits = GU_OBJECT_BOUNDING_BOX;
         }
 
         String patternTransform = "";
-        if (getPres(sty.setName("patternTransform")))
-        {
+        if (getPres(sty.setName("patternTransform"))) {
             patternTransform = sty.getStringValue();
         }
         patternXform = parseTransform(patternTransform);
 
 
-        if (getPres(sty.setName("x")))
-        {
+        if (getPres(sty.setName("x"))) {
             x = sty.getFloatValueWithUnits();
         }
 
-        if (getPres(sty.setName("y")))
-        {
+        if (getPres(sty.setName("y"))) {
             y = sty.getFloatValueWithUnits();
         }
 
-        if (getPres(sty.setName("width")))
-        {
+        if (getPres(sty.setName("width"))) {
             width = sty.getFloatValueWithUnits();
         }
 
-        if (getPres(sty.setName("height")))
-        {
+        if (getPres(sty.setName("height"))) {
             height = sty.getFloatValueWithUnits();
         }
 
-        if (getPres(sty.setName("viewBox")))
-        {
+        if (getPres(sty.setName("viewBox"))) {
             float[] dim = sty.getFloatList();
             viewBox = new Rectangle2D.Float(dim[0], dim[1], dim[2], dim[3]);
         }
@@ -185,16 +169,14 @@ public class PatternSVG extends FillElement
      build();
      }
      */
-    protected void preparePattern() throws SVGException
-    {
+    protected void preparePattern() throws SVGException, IOException {
         //For now, treat all fills as UserSpaceOnUse.  Otherwise, we'll need
         // a different paint for every object.
         int tileWidth = (int) width;
         int tileHeight = (int) height;
 
         float stretchX = 1f, stretchY = 1f;
-        if (!patternXform.isIdentity())
-        {
+        if (!patternXform.isIdentity()) {
             //Scale our source tile so that we can have nice sampling from it.
             float xlateX = (float) patternXform.getTranslateX();
             float xlateY = (float) patternXform.getTranslateY();
@@ -217,8 +199,7 @@ public class PatternSVG extends FillElement
             tileHeight *= stretchY;
         }
 
-        if (tileWidth == 0 || tileHeight == 0)
-        {
+        if (tileWidth == 0 || tileHeight == 0) {
             //Use defaults if tile has degenerate size
             return;
         }
@@ -229,15 +210,12 @@ public class PatternSVG extends FillElement
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         for (SVGElement ele : children) {
-            if (ele instanceof RenderableElement)
-            {
+            if (ele instanceof RenderableElement) {
                 AffineTransform xform = new AffineTransform();
 
-                if (viewBox == null)
-                {
+                if (viewBox == null) {
                     xform.translate(-x, -y);
-                } else
-                {
+                } else {
                     xform.scale(tileWidth / viewBox.width, tileHeight / viewBox.height);
                     xform.translate(-viewBox.x, -viewBox.y);
                 }
@@ -253,19 +231,16 @@ public class PatternSVG extends FillElement
 //javax.imageio.ImageIO.write(buf, "png", new java.io.File("c:\\tmp\\texPaint.png"));
 //} catch (Exception e ) {}
 
-        if (patternXform.isIdentity())
-        {
+        if (patternXform.isIdentity()) {
             texPaint = new TexturePaint(buf, new Rectangle2D.Float(x, y, width, height));
-        } else
-        {
+        } else {
             patternXform.scale(1 / stretchX, 1 / stretchY);
             texPaint = new PatternPaint(buf, patternXform);
         }
     }
 
     @Override
-    public Paint getPaint(Rectangle2D bounds, AffineTransform xform)
-    {
+    public Paint getPaint(Rectangle2D bounds, AffineTransform xform) {
         return texPaint;
     }
 
@@ -277,8 +252,7 @@ public class PatternSVG extends FillElement
      * update
      */
     @Override
-    public boolean updateTime(double curTime) throws SVGException
-    {
+    public boolean updateTime(double curTime) throws SVGException {
         //Patterns don't change state
         return false;
     }

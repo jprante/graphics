@@ -3,16 +3,16 @@
  * Copyright (c) 2004, Mark McKay
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or 
+ * Redistribution and use in source and binary forms, with or
  * without modification, are permitted provided that the following
  * conditions are met:
  *
- *   - Redistributions of source code must retain the above 
+ *   - Redistributions of source code must retain the above
  *     copyright notice, this list of conditions and the following
  *     disclaimer.
  *   - Redistributions in binary form must reproduce the above
  *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/or other materials 
+ *     disclaimer in the documentation and/or other materials
  *     provided with the distribution.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -26,8 +26,8 @@
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE. 
- * 
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
  * Mark McKay can be contacted at mark@kitfox.com.  Salamander and other
  * projects can be found at http://www.kitfox.com
  *
@@ -36,9 +36,11 @@
 package org.xbib.graphics.svg;
 
 import org.xbib.graphics.svg.xml.StyleAttribute;
+
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
+import java.io.IOException;
 
 /**
  * Maintains bounding box for this element
@@ -46,19 +48,16 @@ import java.awt.geom.Rectangle2D;
  * @author Mark McKay
  * @author <a href="mailto:mark@kitfox.com">Mark McKay</a>
  */
-abstract public class TransformableElement extends SVGElement
-{
+abstract public class TransformableElement extends SVGElement {
     AffineTransform xform = null;
 
     /**
      * Creates a new instance of BoundedElement
      */
-    public TransformableElement()
-    {
+    public TransformableElement() {
     }
 
-    public TransformableElement(String id, SVGElement parent)
-    {
+    public TransformableElement(String id, SVGElement parent) {
         super(id, parent);
     }
 
@@ -68,8 +67,7 @@ abstract public class TransformableElement extends SVGElement
      *
      * @return
      */
-    public AffineTransform getXForm()
-    {
+    public AffineTransform getXForm() {
         return xform == null ? null : new AffineTransform(xform);
     }
     /*
@@ -87,31 +85,25 @@ abstract public class TransformableElement extends SVGElement
      */
 
     @Override
-    protected void build() throws SVGException
-    {
+    protected void build() throws SVGException, IOException {
         super.build();
 
         StyleAttribute sty = new StyleAttribute();
 
-        if (getPres(sty.setName("transform")))
-        {
+        if (getPres(sty.setName("transform"))) {
             xform = parseTransform(sty.getStringValue());
         }
     }
 
-    protected Shape shapeToParent(Shape shape)
-    {
-        if (xform == null)
-        {
+    protected Shape shapeToParent(Shape shape) {
+        if (xform == null) {
             return shape;
         }
         return xform.createTransformedShape(shape);
     }
 
-    protected Rectangle2D boundsToParent(Rectangle2D rect)
-    {
-        if (xform == null || rect == null)
-        {
+    protected Rectangle2D boundsToParent(Rectangle2D rect) {
+        if (xform == null || rect == null) {
             return rect;
         }
         return xform.createTransformedShape(rect).getBounds2D();
@@ -125,15 +117,12 @@ abstract public class TransformableElement extends SVGElement
      * update
      */
     @Override
-    public boolean updateTime(double curTime) throws SVGException
-    {
+    public boolean updateTime(double curTime) throws SVGException, IOException {
         StyleAttribute sty = new StyleAttribute();
 
-        if (getPres(sty.setName("transform")))
-        {
+        if (getPres(sty.setName("transform"))) {
             AffineTransform newXform = parseTransform(sty.getStringValue());
-            if (!newXform.equals(xform))
-            {
+            if (!newXform.equals(xform)) {
                 xform = newXform;
                 return true;
             }

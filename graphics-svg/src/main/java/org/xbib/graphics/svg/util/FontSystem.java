@@ -3,16 +3,16 @@
  * Copyright (c) 2004, Mark McKay
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or 
+ * Redistribution and use in source and binary forms, with or
  * without modification, are permitted provided that the following
  * conditions are met:
  *
- *   - Redistributions of source code must retain the above 
+ *   - Redistributions of source code must retain the above
  *     copyright notice, this list of conditions and the following
  *     disclaimer.
  *   - Redistributions in binary form must reproduce the above
  *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/or other materials 
+ *     disclaimer in the documentation and/or other materials
  *     provided with the distribution.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -26,8 +26,8 @@
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE. 
- * 
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
  * Mark McKay can be contacted at mark@kitfox.com.  Salamander and other
  * projects can be found at http://www.kitfox.com
  *
@@ -51,37 +51,29 @@ import java.util.HashSet;
 import java.util.Locale;
 
 /**
- *
  * @author kitfox
  */
-public class FontSystem extends Font
-{
+public class FontSystem extends Font {
     java.awt.Font sysFont;
 
     HashMap<String, Glyph> glyphCache = new HashMap<>();
-    
+
     static HashSet<String> sysFontNames = new HashSet<>();
-    
-    public static boolean checkIfSystemFontExists(String fontName)
-    {
-        if (sysFontNames.isEmpty())
-        {
-            for (String name: GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames(Locale.ENGLISH))
-            {
+
+    public static boolean checkIfSystemFontExists(String fontName) {
+        if (sysFontNames.isEmpty()) {
+            for (String name : GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames(Locale.ENGLISH)) {
                 sysFontNames.add(name);
             }
         }
-        
+
         return sysFontNames.contains(fontName);
     }
 
-    public static FontSystem createFont(String[] fontFamilies, int fontStyle, int fontWeight, float fontSize)
-    {
-        for (String fontName: fontFamilies)
-        {
+    public static FontSystem createFont(String[] fontFamilies, int fontStyle, int fontWeight, float fontSize) {
+        for (String fontName : fontFamilies) {
             String javaFontName = mapJavaFontName(fontName);
-            if (checkIfSystemFontExists(javaFontName))
-            {
+            if (checkIfSystemFontExists(javaFontName)) {
                 return new FontSystem(javaFontName, fontStyle, fontWeight, fontSize);
             }
         }
@@ -89,28 +81,20 @@ public class FontSystem extends Font
         return null;
     }
 
-    private static String mapJavaFontName(String fontName)
-    {
-        if ("serif".equals(fontName))
-        {
+    private static String mapJavaFontName(String fontName) {
+        if ("serif".equals(fontName)) {
             return java.awt.Font.SERIF;
-        }
-        else if ("sans-serif".equals(fontName))
-        {
+        } else if ("sans-serif".equals(fontName)) {
             return java.awt.Font.SANS_SERIF;
-        }
-        else if ("monospace".equals(fontName))
-        {
+        } else if ("monospace".equals(fontName)) {
             return java.awt.Font.MONOSPACED;
         }
         return fontName;
     }
 
-    private FontSystem(String fontFamily, int fontStyle, int fontWeight, float fontSize)
-    {
+    private FontSystem(String fontFamily, int fontStyle, int fontWeight, float fontSize) {
         int style;
-        switch (fontStyle)
-        {
+        switch (fontStyle) {
             case Text.TXST_ITALIC:
                 style = java.awt.Font.ITALIC;
                 break;
@@ -120,8 +104,7 @@ public class FontSystem extends Font
         }
 
         int weight;
-        switch (fontWeight)
-        {
+        switch (fontWeight) {
             case Text.TXWE_BOLD:
             case Text.TXWE_BOLDER:
                 weight = java.awt.Font.BOLD;
@@ -132,7 +115,7 @@ public class FontSystem extends Font
         }
 
         sysFont = new java.awt.Font(fontFamily, style | weight, 1).deriveFont(fontSize);
-        
+
         FontRenderContext fontRenderContext = new FontRenderContext(null, true, true);
         LineMetrics lineMetrics = sysFont.getLineMetrics("M", fontRenderContext);
 
@@ -144,14 +127,12 @@ public class FontSystem extends Font
     }
 
     @Override
-    public MissingGlyph getGlyph(String unicode)
-    {
+    public MissingGlyph getGlyph(String unicode) {
         FontRenderContext frc = new FontRenderContext(null, true, true);
         GlyphVector vec = sysFont.createGlyphVector(frc, unicode);
-        
-        Glyph glyph = (Glyph)glyphCache.get(unicode);
-        if (glyph == null)
-        {
+
+        Glyph glyph = glyphCache.get(unicode);
+        if (glyph == null) {
             glyph = new Glyph();
             glyph.setPath(vec.getGlyphOutline(0));
 
@@ -160,12 +141,12 @@ public class FontSystem extends Font
             glyph.setVertAdvY(gm.getAdvanceY());
             glyph.setVertOriginX(0);
             glyph.setVertOriginY(0);
-            
+
             glyphCache.put(unicode, glyph);
         }
 
         return glyph;
     }
-    
-    
+
+
 }

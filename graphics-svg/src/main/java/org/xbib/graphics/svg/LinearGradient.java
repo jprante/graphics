@@ -3,16 +3,16 @@
  * Copyright (c) 2004, Mark McKay
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or 
+ * Redistribution and use in source and binary forms, with or
  * without modification, are permitted provided that the following
  * conditions are met:
  *
- *   - Redistributions of source code must retain the above 
+ *   - Redistributions of source code must retain the above
  *     copyright notice, this list of conditions and the following
  *     disclaimer.
  *   - Redistributions in binary form must reproduce the above
  *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/or other materials 
+ *     disclaimer in the documentation and/or other materials
  *     provided with the distribution.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -26,8 +26,8 @@
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE. 
- * 
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
  * Mark McKay can be contacted at mark@kitfox.com.  Salamander and other
  * projects can be found at http://www.kitfox.com
  *
@@ -36,6 +36,7 @@
 package org.xbib.graphics.svg;
 
 import org.xbib.graphics.svg.xml.StyleAttribute;
+
 import java.awt.Color;
 import java.awt.LinearGradientPaint;
 import java.awt.MultipleGradientPaint;
@@ -43,15 +44,15 @@ import java.awt.Paint;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.io.IOException;
 
 /**
  * @author Mark McKay
  * @author <a href="mailto:mark@kitfox.com">Mark McKay</a>
  */
-public class LinearGradient extends Gradient
-{
+public class LinearGradient extends Gradient {
     public static final String TAG_NAME = "lineargradient";
-    
+
     float x1 = 0f;
     float y1 = 0f;
     float x2 = 1f;
@@ -60,50 +61,41 @@ public class LinearGradient extends Gradient
     /**
      * Creates a new instance of LinearGradient
      */
-    public LinearGradient()
-    {
+    public LinearGradient() {
     }
 
     @Override
-    public String getTagName()
-    {
+    public String getTagName() {
         return TAG_NAME;
     }
 
     @Override
-    protected void build() throws SVGException
-    {
+    protected void build() throws SVGException, IOException {
         super.build();
 
         StyleAttribute sty = new StyleAttribute();
 
-        if (getPres(sty.setName("x1")))
-        {
+        if (getPres(sty.setName("x1"))) {
             x1 = sty.getFloatValueWithUnits();
         }
 
-        if (getPres(sty.setName("y1")))
-        {
+        if (getPres(sty.setName("y1"))) {
             y1 = sty.getFloatValueWithUnits();
         }
 
-        if (getPres(sty.setName("x2")))
-        {
+        if (getPres(sty.setName("x2"))) {
             x2 = sty.getFloatValueWithUnits();
         }
 
-        if (getPres(sty.setName("y2")))
-        {
+        if (getPres(sty.setName("y2"))) {
             y2 = sty.getFloatValueWithUnits();
         }
     }
 
     @Override
-    public Paint getPaint(Rectangle2D bounds, AffineTransform xform)
-    {
+    public Paint getPaint(Rectangle2D bounds, AffineTransform xform) {
         MultipleGradientPaint.CycleMethod method;
-        switch (spreadMethod)
-        {
+        switch (spreadMethod) {
             default:
             case SM_PAD:
                 method = MultipleGradientPaint.CycleMethod.NO_CYCLE;
@@ -119,24 +111,21 @@ public class LinearGradient extends Gradient
         Paint paint;
         Point2D.Float pt1 = new Point2D.Float(x1, y1);
         Point2D.Float pt2 = new Point2D.Float(x2, y2);
-        if (pt1.equals(pt2))
-        {
+        if (pt1.equals(pt2)) {
             Color[] colors = getStopColors();
             paint = colors.length > 0 ? colors[0] : Color.black;
-        } else if (gradientUnits == GU_USER_SPACE_ON_USE)
-        {
+        } else if (gradientUnits == GU_USER_SPACE_ON_USE) {
             paint = new LinearGradientPaint(
-                pt1,
-                pt2,
-                getStopFractions(),
-                getStopColors(),
-                method,
-                MultipleGradientPaint.ColorSpaceType.SRGB,
-                gradientTransform == null
-                ? new AffineTransform()
-                : gradientTransform);
-        } else
-        {
+                    pt1,
+                    pt2,
+                    getStopFractions(),
+                    getStopColors(),
+                    method,
+                    MultipleGradientPaint.ColorSpaceType.SRGB,
+                    gradientTransform == null
+                            ? new AffineTransform()
+                            : gradientTransform);
+        } else {
             AffineTransform viewXform = new AffineTransform();
             viewXform.translate(bounds.getX(), bounds.getY());
 
@@ -145,19 +134,18 @@ public class LinearGradient extends Gradient
             double height = Math.max(1, bounds.getHeight());
             viewXform.scale(width, height);
 
-            if (gradientTransform != null)
-            {
+            if (gradientTransform != null) {
                 viewXform.concatenate(gradientTransform);
             }
 
             paint = new LinearGradientPaint(
-                pt1,
-                pt2,
-                getStopFractions(),
-                getStopColors(),
-                method,
-                MultipleGradientPaint.ColorSpaceType.SRGB,
-                viewXform);
+                    pt1,
+                    pt2,
+                    getStopFractions(),
+                    getStopColors(),
+                    method,
+                    MultipleGradientPaint.ColorSpaceType.SRGB,
+                    viewXform);
         }
 
         return paint;
@@ -171,8 +159,7 @@ public class LinearGradient extends Gradient
      * update
      */
     @Override
-    public boolean updateTime(double curTime) throws SVGException
-    {
+    public boolean updateTime(double curTime) throws SVGException {
 //        if (trackManager.getNumTracks() == 0) return stopChange;
         boolean changeState = super.updateTime(curTime);
 
@@ -180,41 +167,33 @@ public class LinearGradient extends Gradient
         StyleAttribute sty = new StyleAttribute();
         boolean shapeChange = false;
 
-        if (getPres(sty.setName("x1")))
-        {
+        if (getPres(sty.setName("x1"))) {
             float newVal = sty.getFloatValueWithUnits();
-            if (newVal != x1)
-            {
+            if (newVal != x1) {
                 x1 = newVal;
                 shapeChange = true;
             }
         }
 
-        if (getPres(sty.setName("y1")))
-        {
+        if (getPres(sty.setName("y1"))) {
             float newVal = sty.getFloatValueWithUnits();
-            if (newVal != y1)
-            {
+            if (newVal != y1) {
                 y1 = newVal;
                 shapeChange = true;
             }
         }
 
-        if (getPres(sty.setName("x2")))
-        {
+        if (getPres(sty.setName("x2"))) {
             float newVal = sty.getFloatValueWithUnits();
-            if (newVal != x2)
-            {
+            if (newVal != x2) {
                 x2 = newVal;
                 shapeChange = true;
             }
         }
 
-        if (getPres(sty.setName("y2")))
-        {
+        if (getPres(sty.setName("y2"))) {
             float newVal = sty.getFloatValueWithUnits();
-            if (newVal != y2)
-            {
+            if (newVal != y2) {
                 y2 = newVal;
                 shapeChange = true;
             }

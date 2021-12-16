@@ -47,6 +47,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -54,8 +55,7 @@ import java.util.List;
  *
  * @author Jannis Weis
  */
-public class Mask extends Group
-{
+public class Mask extends Group {
     public static final String TAG_NAME = "mask";
 
     @Override
@@ -64,53 +64,42 @@ public class Mask extends Group
     }
 
     @Override
-    public void render(Graphics2D g)
-    {
+    public void render(Graphics2D g) {
     }
 
-    public Composite createMaskComposite()
-    {
+    public Composite createMaskComposite() {
         return new MaskComposite();
     }
 
     @Override
-    void pick(Point2D point, boolean boundingBox, List<List<SVGElement>> retVec)
-    {
+    void pick(Point2D point, boolean boundingBox, List<List<SVGElement>> retVec) {
     }
 
     @Override
-    void pick(Rectangle2D pickArea, AffineTransform ltw, boolean boundingBox, List<List<SVGElement>> retVec)
-    {
+    void pick(Rectangle2D pickArea, AffineTransform ltw, boolean boundingBox, List<List<SVGElement>> retVec) {
     }
 
     public void pickElement(Point2D point, boolean boundingBox,
-                            List<List<SVGElement>> retVec, RenderableElement element) throws SVGException
-    {
-        if (boundingBox)
-        {
+                            List<List<SVGElement>> retVec, RenderableElement element) throws SVGException, IOException {
+        if (boundingBox) {
             element.doPick(point, true, retVec);
-        } else
-        {
+        } else {
             Rectangle pickPoint = new Rectangle((int) point.getX(), (int) point.getY(), 1, 1);
             BufferedImage img = BufferPainter.paintToBuffer(null, new AffineTransform(), pickPoint, this, Color.BLACK);
             // Only try picking the element if the picked point is visible.
-            if (luminanceToAlpha(img.getRGB(0, 0)) > 0)
-            {
+            if (luminanceToAlpha(img.getRGB(0, 0)) > 0) {
                 element.doPick(point, false, retVec);
             }
         }
     }
 
     public void pickElement(Rectangle2D pickArea, AffineTransform ltw, boolean boundingBox,
-                            List<List<SVGElement>> retVec, RenderableElement element) throws SVGException
-    {
+                            List<List<SVGElement>> retVec, RenderableElement element) throws SVGException, IOException {
         // If at any point the considered picking area becomes empty we break out early.
         if (pickArea.isEmpty()) return;
-        if (boundingBox)
-        {
-            element.doPick(pickArea, ltw,true, retVec);
-        } else
-        {
+        if (boundingBox) {
+            element.doPick(pickArea, ltw, true, retVec);
+        } else {
             // Clip with the element bounds to avoid creating a larger buffer than needed.
             Area transformedBounds = new Area(ltw.createTransformedShape(element.getBoundingBox()));
             transformedBounds.intersect(new Area(pickArea));
@@ -119,18 +108,16 @@ public class Mask extends Group
             Rectangle pickRect = transformedBounds.getBounds();
             if (pickRect.isEmpty()) return;
 
-            BufferedImage maskArea = BufferPainter.paintToBuffer(null, ltw, pickRect,this, Color.BLACK);
+            BufferedImage maskArea = BufferPainter.paintToBuffer(null, ltw, pickRect, this, Color.BLACK);
 
             // Pick if any pixel in the pick area is visible.
-            if (hasVisiblePixel(maskArea))
-            {
+            if (hasVisiblePixel(maskArea)) {
                 element.doPick(pickArea, ltw, false, retVec);
             }
         }
     }
 
-    private boolean hasVisiblePixel(BufferedImage img)
-    {
+    private boolean hasVisiblePixel(BufferedImage img) {
         Raster raster = img.getRaster();
         int x = raster.getMinX();
         int w = raster.getWidth();
@@ -138,13 +125,11 @@ public class Mask extends Group
         int h = raster.getHeight();
         int[] srcPix = raster.getPixels(x, y, w, h, (int[]) null);
         boolean hasVisiblePixel = false;
-        for (int i = 0; i < srcPix.length; i += 4)
-        {
+        for (int i = 0; i < srcPix.length; i += 4) {
             int sr = srcPix[i];
             int sg = srcPix[i + 1];
             int sb = srcPix[i + 2];
-            if (luminanceToAlpha(sr, sg, sb) > 0)
-            {
+            if (luminanceToAlpha(sr, sg, sb) > 0) {
                 hasVisiblePixel = true;
                 break;
             }
@@ -152,38 +137,31 @@ public class Mask extends Group
         return hasVisiblePixel;
     }
 
-    private static double luminanceToAlpha(int rgb)
-    {
+    private static double luminanceToAlpha(int rgb) {
         return luminanceToAlpha((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF);
     }
 
-    private static double luminanceToAlpha(int r, int g, int b)
-    {
+    private static double luminanceToAlpha(int r, int g, int b) {
         // Assuming 'linearRGB' as the 'color-interpolation' value of the mask.
         return 0.2125 * r + 0.7154 * g + 0.0721 * b;
     }
 
-    private static class MaskComposite implements Composite, CompositeContext
-    {
+    private static class MaskComposite implements Composite, CompositeContext {
 
         @Override
         public CompositeContext createContext(ColorModel srcColorModel,
-                                              ColorModel dstColorModel, RenderingHints hints)
-        {
+                                              ColorModel dstColorModel, RenderingHints hints) {
             return this;
         }
 
         @Override
-        public void dispose()
-        {
+        public void dispose() {
         }
 
-        public void composeRGB(int[] src, int[] dst)
-        {
+        public void composeRGB(int[] src, int[] dst) {
             int w = src.length;
 
-            for (int i = 0; i < w; i += 4)
-            {
+            for (int i = 0; i < w; i += 4) {
                 int sr = src[i];
                 int sg = src[i + 1];
                 int sb = src[i + 2];

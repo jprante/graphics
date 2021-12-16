@@ -3,16 +3,16 @@
  * Copyright (c) 2004, Mark McKay
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or 
+ * Redistribution and use in source and binary forms, with or
  * without modification, are permitted provided that the following
  * conditions are met:
  *
- *   - Redistributions of source code must retain the above 
+ *   - Redistributions of source code must retain the above
  *     copyright notice, this list of conditions and the following
  *     disclaimer.
  *   - Redistributions in binary form must reproduce the above
  *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/or other materials 
+ *     disclaimer in the documentation and/or other materials
  *     provided with the distribution.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -26,8 +26,8 @@
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE. 
- * 
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
  * Mark McKay can be contacted at mark@kitfox.com.  Salamander and other
  * projects can be found at http://www.kitfox.com
  *
@@ -45,10 +45,9 @@ import java.awt.geom.Point2D;
  * @author Mark McKay
  * @author <a href="mailto:mark@kitfox.com">Mark McKay</a>
  */
-public class BuildHistory
-{
+public class BuildHistory {
 
-//    Point2D.Float[] history = new Point2D.Float[2];
+    //    Point2D.Float[] history = new Point2D.Float[2];
 //    Point2D.Float[] history = {new Point2D.Float(), new Point2D.Float()};
 //    Point2D.Float start = new Point2D.Float();
     Point2D.Float startPoint = new Point2D.Float();
@@ -60,22 +59,18 @@ public class BuildHistory
     /**
      * Creates a new instance of BuildHistory
      */
-    public BuildHistory()
-    {
+    public BuildHistory() {
     }
-    
-    public void setStartPoint(float x, float y)
-    {
+
+    public void setStartPoint(float x, float y) {
         startPoint.setLocation(x, y);
     }
-    
-    public void setLastPoint(float x, float y)
-    {
+
+    public void setLastPoint(float x, float y) {
         lastPoint.setLocation(x, y);
     }
-    
-    public void setLastKnot(float x, float y)
-    {
+
+    public void setLastKnot(float x, float y) {
         lastKnot.setLocation(x, y);
     }
 //    public void setPoint(float x, float y)

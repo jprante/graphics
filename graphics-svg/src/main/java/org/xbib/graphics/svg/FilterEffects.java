@@ -3,16 +3,16 @@
  * Copyright (c) 2004, Mark McKay
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or 
+ * Redistribution and use in source and binary forms, with or
  * without modification, are permitted provided that the following
  * conditions are met:
  *
- *   - Redistributions of source code must retain the above 
+ *   - Redistributions of source code must retain the above
  *     copyright notice, this list of conditions and the following
  *     disclaimer.
  *   - Redistributions in binary form must reproduce the above
  *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/or other materials 
+ *     disclaimer in the documentation and/or other materials
  *     provided with the distribution.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -26,8 +26,8 @@
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE. 
- * 
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
  * Mark McKay can be contacted at mark@kitfox.com.  Salamander and other
  * projects can be found at http://www.kitfox.com
  *
@@ -39,6 +39,7 @@ import org.xbib.graphics.svg.xml.StyleAttribute;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImageOp;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
@@ -47,10 +48,9 @@ import java.util.List;
  * @author Mark McKay
  * @author <a href="mailto:mark@kitfox.com">Mark McKay</a>
  */
-public abstract class FilterEffects extends SVGElement
-{
+public abstract class FilterEffects extends SVGElement {
     public static final String TAG_NAME = "filtereffects";
-    
+
     public static final int FP_SOURCE_GRAPHIC = 0;
     public static final int FP_SOURCE_ALPHA = 1;
     public static final int FP_BACKGROUND_IMAGE = 2;
@@ -69,13 +69,11 @@ public abstract class FilterEffects extends SVGElement
     /**
      * Creates a new instance of FillElement
      */
-    public FilterEffects()
-    {
+    public FilterEffects() {
     }
 
     @Override
-    public String getTagName()
-    {
+    public String getTagName() {
         return TAG_NAME;
     }
 
@@ -84,19 +82,16 @@ public abstract class FilterEffects extends SVGElement
      * each child tag that has been processed
      */
     @Override
-    public void loaderAddChild(SVGLoaderHelper helper, SVGElement child) throws SVGElementException
-    {
+    public void loaderAddChild(SVGLoaderHelper helper, SVGElement child) throws SVGElementException {
         super.loaderAddChild(helper, child);
 
-        if (child instanceof FilterEffects)
-        {
+        if (child instanceof FilterEffects) {
 //            filterEffects.add(child);
         }
     }
 
     @Override
-    protected void build() throws SVGException
-    {
+    protected void build() throws SVGException, IOException {
         super.build();
 
         /*StyleAttribute sty = new StyleAttribute();
@@ -142,90 +137,73 @@ public abstract class FilterEffects extends SVGElement
         return null;
     }
 
-    public float getX()
-    {
+    public float getX() {
         return x;
     }
 
-    public float getY()
-    {
+    public float getY() {
         return y;
     }
 
-    public float getWidth()
-    {
+    public float getWidth() {
         return width;
     }
 
-    public float getHeight()
-    {
+    public float getHeight() {
         return height;
     }
 
     @Override
-    public boolean updateTime(double curTime) throws SVGException
-    {
+    public boolean updateTime(double curTime) throws SVGException {
 //        if (trackManager.getNumTracks() == 0) return false;
 
         //Get current values for parameters
         StyleAttribute sty = new StyleAttribute();
         boolean stateChange = false;
 
-        if (getPres(sty.setName("x")))
-        {
+        if (getPres(sty.setName("x"))) {
             float newVal = sty.getFloatValueWithUnits();
-            if (newVal != x)
-            {
+            if (newVal != x) {
                 x = newVal;
                 stateChange = true;
             }
         }
 
-        if (getPres(sty.setName("y")))
-        {
+        if (getPres(sty.setName("y"))) {
             float newVal = sty.getFloatValueWithUnits();
-            if (newVal != y)
-            {
+            if (newVal != y) {
                 y = newVal;
                 stateChange = true;
             }
         }
 
-        if (getPres(sty.setName("width")))
-        {
+        if (getPres(sty.setName("width"))) {
             float newVal = sty.getFloatValueWithUnits();
-            if (newVal != width)
-            {
+            if (newVal != width) {
                 width = newVal;
                 stateChange = true;
             }
         }
 
-        if (getPres(sty.setName("height")))
-        {
+        if (getPres(sty.setName("height"))) {
             float newVal = sty.getFloatValueWithUnits();
-            if (newVal != height)
-            {
+            if (newVal != height) {
                 height = newVal;
                 stateChange = true;
             }
         }
 
-        try
-        {
-            if (getPres(sty.setName("xlink:href")))
-            {
+        try {
+            if (getPres(sty.setName("xlink:href"))) {
                 URI src = sty.getURIValue(getXMLBase());
                 URL newVal = src.toURL();
 
-                if (!newVal.equals(href))
-                {
+                if (!newVal.equals(href)) {
                     href = newVal;
                     stateChange = true;
                 }
             }
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             throw new SVGException(e);
         }
 

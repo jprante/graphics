@@ -3,16 +3,16 @@
  * Copyright (c) 2004, Mark McKay
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or 
+ * Redistribution and use in source and binary forms, with or
  * without modification, are permitted provided that the following
  * conditions are met:
  *
- *   - Redistributions of source code must retain the above 
+ *   - Redistributions of source code must retain the above
  *     copyright notice, this list of conditions and the following
  *     disclaimer.
  *   - Redistributions in binary form must reproduce the above
  *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/or other materials 
+ *     disclaimer in the documentation and/or other materials
  *     provided with the distribution.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -26,8 +26,8 @@
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE. 
- * 
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
  * Mark McKay can be contacted at mark@kitfox.com.  Salamander and other
  * projects can be found at http://www.kitfox.com
  *
@@ -36,8 +36,10 @@
 package org.xbib.graphics.svg;
 
 import org.xbib.graphics.svg.xml.StyleAttribute;
+
 import java.awt.Color;
 import java.awt.geom.AffineTransform;
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -48,10 +50,9 @@ import java.util.logging.Logger;
  * @author Mark McKay
  * @author <a href="mailto:mark@kitfox.com">Mark McKay</a>
  */
-abstract public class Gradient extends FillElement
-{
+abstract public class Gradient extends FillElement {
     public static final String TAG_NAME = "gradient";
-    
+
     public static final int SM_PAD = 0;
     public static final int SM_REPEAT = 1;
     public static final int SM_REFLECT = 2;
@@ -64,7 +65,7 @@ abstract public class Gradient extends FillElement
     ArrayList<Stop> stops = new ArrayList<Stop>();
     URI stopRef = null;
     protected AffineTransform gradientTransform = null;
-    
+
     //Cache arrays of stop values here
     float[] stopFractions;
     Color[] stopColors;
@@ -72,13 +73,11 @@ abstract public class Gradient extends FillElement
     /**
      * Creates a new instance of Gradient
      */
-    public Gradient()
-    {
+    public Gradient() {
     }
 
     @Override
-    public String getTagName()
-    {
+    public String getTagName() {
         return TAG_NAME;
     }
 
@@ -87,104 +86,84 @@ abstract public class Gradient extends FillElement
      * each child tag that has been processed
      */
     @Override
-    public void loaderAddChild(SVGLoaderHelper helper, SVGElement child) throws SVGElementException
-    {
+    public void loaderAddChild(SVGLoaderHelper helper, SVGElement child) throws SVGElementException {
         super.loaderAddChild(helper, child);
 
-        if (!(child instanceof Stop))
-        {
+        if (!(child instanceof Stop)) {
             return;
         }
         appendStop((Stop) child);
     }
 
     @Override
-    protected void build() throws SVGException
-    {
+    protected void build() throws SVGException, IOException {
         super.build();
 
         StyleAttribute sty = new StyleAttribute();
         String strn;
 
-        if (getPres(sty.setName("spreadMethod")))
-        {
+        if (getPres(sty.setName("spreadMethod"))) {
             strn = sty.getStringValue().toLowerCase();
-            if (strn.equals("repeat"))
-            {
+            if (strn.equals("repeat")) {
                 spreadMethod = SM_REPEAT;
-            } else if (strn.equals("reflect"))
-            {
+            } else if (strn.equals("reflect")) {
                 spreadMethod = SM_REFLECT;
-            } else
-            {
+            } else {
                 spreadMethod = SM_PAD;
             }
         }
 
-        if (getPres(sty.setName("gradientUnits")))
-        {
+        if (getPres(sty.setName("gradientUnits"))) {
             strn = sty.getStringValue().toLowerCase();
-            if (strn.equals("userspaceonuse"))
-            {
+            if (strn.equals("userspaceonuse")) {
                 gradientUnits = GU_USER_SPACE_ON_USE;
-            } else
-            {
+            } else {
                 gradientUnits = GU_OBJECT_BOUNDING_BOX;
             }
         }
 
-        if (getPres(sty.setName("gradientTransform")))
-        {
+        if (getPres(sty.setName("gradientTransform"))) {
             gradientTransform = parseTransform(sty.getStringValue());
         }
         //If we still don't have one, set it to identity
-        if (gradientTransform == null)
-        {
+        if (gradientTransform == null) {
             gradientTransform = new AffineTransform();
         }
 
 
         //Check to see if we're using our own stops or referencing someone else's
-        if (getPres(sty.setName("xlink:href")))
-        {
-            try
-            {
+        if (getPres(sty.setName("xlink:href"))) {
+            try {
                 stopRef = sty.getURIValue(getXMLBase());
 //System.err.println("Gradient: " + sty.getStringValue() + ", " + getXMLBase() + ", " + src);
 //                URI src = getXMLBase().resolve(href);
 //                stopRef = (Gradient)diagram.getUniverse().getElement(src);
-            } catch (Exception e)
-            {
+            } catch (Exception e) {
                 throw new SVGException("Could not resolve relative URL in Gradient: " + sty.getStringValue() + ", " + getXMLBase(), e);
             }
         }
     }
 
-    private void buildStops()
-    {
+    private void buildStops() {
         ArrayList<Stop> stopList = new ArrayList<Stop>(stops);
-        stopList.sort(new Comparator<Stop>(){
-            public int compare(Stop o1, Stop o2)
-            {
+        stopList.sort(new Comparator<Stop>() {
+            public int compare(Stop o1, Stop o2) {
                 return Float.compare(o1.offset, o2.offset);
             }
         });
 
         //Remove doubles
-        for (int i = stopList.size() - 2; i >= 0; --i)
-        {
-            if (stopList.get(i + 1).offset == stopList.get(i).offset)
-            {
+        for (int i = stopList.size() - 2; i >= 0; --i) {
+            if (stopList.get(i + 1).offset == stopList.get(i).offset) {
                 stopList.remove(i + 1);
             }
         }
-        
-        
+
+
         stopFractions = new float[stopList.size()];
         stopColors = new Color[stopList.size()];
         int idx = 0;
-        for (Stop stop : stopList)
-        {
+        for (Stop stop : stopList) {
             int stopColorVal = stop.color.getRGB();
             Color stopColor = new Color((stopColorVal >> 16) & 0xff, (stopColorVal >> 8) & 0xff, stopColorVal & 0xff, clamp((int) (stop.opacity * 255), 0, 255));
 
@@ -192,19 +171,16 @@ abstract public class Gradient extends FillElement
             stopFractions[idx] = stop.offset;
             idx++;
         }
-        
+
     }
-    
-    public float[] getStopFractions()
-    {
-        if (stopRef != null)
-        {
+
+    public float[] getStopFractions() {
+        if (stopRef != null) {
             Gradient grad = (Gradient) diagram.getUniverse().getElement(stopRef);
             return grad.getStopFractions();
         }
 
-        if (stopFractions != null)
-        {
+        if (stopFractions != null) {
             return stopFractions;
         }
 
@@ -213,16 +189,13 @@ abstract public class Gradient extends FillElement
         return stopFractions;
     }
 
-    public Color[] getStopColors()
-    {
-        if (stopRef != null)
-        {
+    public Color[] getStopColors() {
+        if (stopRef != null) {
             Gradient grad = (Gradient) diagram.getUniverse().getElement(stopRef);
             return grad.getStopColors();
         }
 
-        if (stopColors != null)
-        {
+        if (stopColors != null) {
             return stopColors;
         }
 
@@ -243,26 +216,21 @@ abstract public class Gradient extends FillElement
 //        stopRef = null;
 //    }
 
-    private int clamp(int val, int min, int max)
-    {
-        if (val < min)
-        {
+    private int clamp(int val, int min, int max) {
+        if (val < min) {
             return min;
         }
-        if (val > max)
-        {
+        if (val > max) {
             return max;
         }
         return val;
     }
 
-    public void setStopRef(URI grad)
-    {
+    public void setStopRef(URI grad) {
         stopRef = grad;
     }
 
-    public void appendStop(Stop stop)
-    {
+    public void appendStop(Stop stop) {
         stops.add(stop);
     }
 
@@ -274,8 +242,7 @@ abstract public class Gradient extends FillElement
      * update
      */
     @Override
-    public boolean updateTime(double curTime) throws SVGException
-    {
+    public boolean updateTime(double curTime) throws SVGException {
 //        if (trackManager.getNumTracks() == 0) return false;
         boolean stateChange = false;
 
@@ -284,50 +251,39 @@ abstract public class Gradient extends FillElement
         String strn;
 
 
-        if (getPres(sty.setName("spreadMethod")))
-        {
+        if (getPres(sty.setName("spreadMethod"))) {
             int newVal;
             strn = sty.getStringValue().toLowerCase();
-            if (strn.equals("repeat"))
-            {
+            if (strn.equals("repeat")) {
                 newVal = SM_REPEAT;
-            } else if (strn.equals("reflect"))
-            {
+            } else if (strn.equals("reflect")) {
                 newVal = SM_REFLECT;
-            } else
-            {
+            } else {
                 newVal = SM_PAD;
             }
-            if (spreadMethod != newVal)
-            {
+            if (spreadMethod != newVal) {
                 spreadMethod = newVal;
                 stateChange = true;
             }
         }
 
-        if (getPres(sty.setName("gradientUnits")))
-        {
+        if (getPres(sty.setName("gradientUnits"))) {
             int newVal;
             strn = sty.getStringValue().toLowerCase();
-            if (strn.equals("userspaceonuse"))
-            {
+            if (strn.equals("userspaceonuse")) {
                 newVal = GU_USER_SPACE_ON_USE;
-            } else
-            {
+            } else {
                 newVal = GU_OBJECT_BOUNDING_BOX;
             }
-            if (newVal != gradientUnits)
-            {
+            if (newVal != gradientUnits) {
                 gradientUnits = newVal;
                 stateChange = true;
             }
         }
 
-        if (getPres(sty.setName("gradientTransform")))
-        {
+        if (getPres(sty.setName("gradientTransform"))) {
             AffineTransform newVal = parseTransform(sty.getStringValue());
-            if (newVal != null && newVal.equals(gradientTransform))
-            {
+            if (newVal != null && newVal.equals(gradientTransform)) {
                 gradientTransform = newVal;
                 stateChange = true;
             }
@@ -335,27 +291,22 @@ abstract public class Gradient extends FillElement
 
 
         //Check to see if we're using our own stops or referencing someone else's
-        if (getPres(sty.setName("xlink:href")))
-        {
-            try
-            {
+        if (getPres(sty.setName("xlink:href"))) {
+            try {
                 URI newVal = sty.getURIValue(getXMLBase());
-                if ((newVal == null && stopRef != null) || !newVal.equals(stopRef))
-                {
+                if ((newVal == null && stopRef != null) || !newVal.equals(stopRef)) {
                     stopRef = newVal;
                     stateChange = true;
                 }
-            } catch (Exception e)
-            {
+            } catch (Exception e) {
                 Logger.getLogger(SVGConst.SVG_LOGGER).log(Level.WARNING,
-                    "Could not parse xlink:href", e);
+                        "Could not parse xlink:href", e);
             }
         }
 
         //Check stops, if any
         for (Stop stop : stops) {
-            if (stop.updateTime(curTime))
-            {
+            if (stop.updateTime(curTime)) {
                 stateChange = true;
                 stopFractions = null;
                 stopColors = null;

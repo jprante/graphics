@@ -3,16 +3,16 @@
  * Copyright (c) 2004, Mark McKay
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or 
+ * Redistribution and use in source and binary forms, with or
  * without modification, are permitted provided that the following
  * conditions are met:
  *
- *   - Redistributions of source code must retain the above 
+ *   - Redistributions of source code must retain the above
  *     copyright notice, this list of conditions and the following
  *     disclaimer.
  *   - Redistributions in binary form must reproduce the above
  *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/or other materials 
+ *     disclaimer in the documentation and/or other materials
  *     provided with the distribution.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -26,8 +26,8 @@
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE. 
- * 
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
  * Mark McKay can be contacted at mark@kitfox.com.  Salamander and other
  * projects can be found at http://www.kitfox.com
  *
@@ -37,7 +37,8 @@
 package org.xbib.graphics.svg.pathcmd;
 
 //import org.apache.batik.ext.awt.geom.ExtendedGeneralPath;
-import java.awt.geom.*;
+
+import java.awt.geom.GeneralPath;
 
 /**
  * @author Mark McKay
@@ -48,13 +49,14 @@ public class QuadraticSmooth extends PathCommand {
     public float x = 0f;
     public float y = 0f;
 
-    /** Creates a new instance of MoveTo */
+    /**
+     * Creates a new instance of MoveTo
+     */
     public QuadraticSmooth() {
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "T " + x + " " + y;
     }
 
@@ -64,10 +66,9 @@ public class QuadraticSmooth extends PathCommand {
         this.y = y;
     }
 
-//    public void appendPath(ExtendedGeneralPath path, BuildHistory hist)
+    //    public void appendPath(ExtendedGeneralPath path, BuildHistory hist)
     @Override
-    public void appendPath(GeneralPath path, BuildHistory hist)
-    {
+    public void appendPath(GeneralPath path, BuildHistory hist) {
         float offx = isRelative ? hist.lastPoint.x : 0f;
         float offy = isRelative ? hist.lastPoint.y : 0f;
 
@@ -85,8 +86,7 @@ public class QuadraticSmooth extends PathCommand {
     }
 
     @Override
-    public int getNumKnotsAdded()
-    {
+    public int getNumKnotsAdded() {
         return 4;
     }
 }

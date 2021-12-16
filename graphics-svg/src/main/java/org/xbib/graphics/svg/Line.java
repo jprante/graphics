@@ -3,16 +3,16 @@
  * Copyright (c) 2004, Mark McKay
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or 
+ * Redistribution and use in source and binary forms, with or
  * without modification, are permitted provided that the following
  * conditions are met:
  *
- *   - Redistributions of source code must retain the above 
+ *   - Redistributions of source code must retain the above
  *     copyright notice, this list of conditions and the following
  *     disclaimer.
  *   - Redistributions in binary form must reproduce the above
  *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/or other materials 
+ *     disclaimer in the documentation and/or other materials
  *     provided with the distribution.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -26,8 +26,8 @@
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE. 
- * 
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
  * Mark McKay can be contacted at mark@kitfox.com.  Salamander and other
  * projects can be found at http://www.kitfox.com
  *
@@ -36,19 +36,20 @@
 package org.xbib.graphics.svg;
 
 import org.xbib.graphics.svg.xml.StyleAttribute;
+
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
+import java.io.IOException;
 
 /**
  * @author Mark McKay
  * @author <a href="mailto:mark@kitfox.com">Mark McKay</a>
  */
-public class Line extends ShapeElement
-{
+public class Line extends ShapeElement {
     public static final String TAG_NAME = "line";
-    
+
     float x1 = 0f;
     float y1 = 0f;
     float x2 = 0f;
@@ -58,40 +59,33 @@ public class Line extends ShapeElement
     /**
      * Creates a new instance of Rect
      */
-    public Line()
-    {
+    public Line() {
     }
 
     @Override
-    public String getTagName()
-    {
+    public String getTagName() {
         return TAG_NAME;
     }
 
     @Override
-    protected void build() throws SVGException
-    {
+    protected void build() throws SVGException, IOException {
         super.build();
 
         StyleAttribute sty = new StyleAttribute();
 
-        if (getPres(sty.setName("x1")))
-        {
+        if (getPres(sty.setName("x1"))) {
             x1 = sty.getFloatValueWithUnits();
         }
 
-        if (getPres(sty.setName("y1")))
-        {
+        if (getPres(sty.setName("y1"))) {
             y1 = sty.getFloatValueWithUnits();
         }
 
-        if (getPres(sty.setName("x2")))
-        {
+        if (getPres(sty.setName("x2"))) {
             x2 = sty.getFloatValueWithUnits();
         }
 
-        if (getPres(sty.setName("y2")))
-        {
+        if (getPres(sty.setName("y2"))) {
             y2 = sty.getFloatValueWithUnits();
         }
 
@@ -99,22 +93,19 @@ public class Line extends ShapeElement
     }
 
     @Override
-    protected void doRender(Graphics2D g) throws SVGException
-    {
+    protected void doRender(Graphics2D g) throws SVGException, IOException {
         beginLayer(g);
         renderShape(g, line);
         finishLayer(g);
     }
 
     @Override
-    public Shape getShape()
-    {
+    public Shape getShape() {
         return shapeToParent(line);
     }
 
     @Override
-    public Rectangle2D getBoundingBox() throws SVGException
-    {
+    public Rectangle2D getBoundingBox() throws SVGException {
         return boundsToParent(includeStrokeInBounds(line.getBounds2D()));
     }
 
@@ -126,8 +117,7 @@ public class Line extends ShapeElement
      * update
      */
     @Override
-    public boolean updateTime(double curTime) throws SVGException
-    {
+    public boolean updateTime(double curTime) throws SVGException, IOException {
 //        if (trackManager.getNumTracks() == 0) return false;
         boolean changeState = super.updateTime(curTime);
 
@@ -135,48 +125,39 @@ public class Line extends ShapeElement
         StyleAttribute sty = new StyleAttribute();
         boolean shapeChange = false;
 
-        if (getPres(sty.setName("x1")))
-        {
+        if (getPres(sty.setName("x1"))) {
             float newVal = sty.getFloatValueWithUnits();
-            if (newVal != x1)
-            {
+            if (newVal != x1) {
                 x1 = newVal;
                 shapeChange = true;
             }
         }
 
-        if (getPres(sty.setName("y1")))
-        {
+        if (getPres(sty.setName("y1"))) {
             float newVal = sty.getFloatValueWithUnits();
-            if (newVal != y1)
-            {
+            if (newVal != y1) {
                 y1 = newVal;
                 shapeChange = true;
             }
         }
 
-        if (getPres(sty.setName("x2")))
-        {
+        if (getPres(sty.setName("x2"))) {
             float newVal = sty.getFloatValueWithUnits();
-            if (newVal != x2)
-            {
+            if (newVal != x2) {
                 x2 = newVal;
                 shapeChange = true;
             }
         }
 
-        if (getPres(sty.setName("y2")))
-        {
+        if (getPres(sty.setName("y2"))) {
             float newVal = sty.getFloatValueWithUnits();
-            if (newVal != y2)
-            {
+            if (newVal != y2) {
                 y2 = newVal;
                 shapeChange = true;
             }
         }
 
-        if (shapeChange)
-        {
+        if (shapeChange) {
             build();
         }
 

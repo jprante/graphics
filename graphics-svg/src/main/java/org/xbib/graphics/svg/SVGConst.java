@@ -5,10 +5,8 @@
 package org.xbib.graphics.svg;
 
 /**
- *
  * @author kitfox
  */
-public interface SVGConst
-{
-    public static final String SVG_LOGGER = "svgSalamandeLogger";
+public interface SVGConst {
+    String SVG_LOGGER = "svgSalamandeLogger";
 }

@@ -3,16 +3,16 @@
  * Copyright (c) 2004, Mark McKay
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or 
+ * Redistribution and use in source and binary forms, with or
  * without modification, are permitted provided that the following
  * conditions are met:
  *
- *   - Redistributions of source code must retain the above 
+ *   - Redistributions of source code must retain the above
  *     copyright notice, this list of conditions and the following
  *     disclaimer.
  *   - Redistributions in binary form must reproduce the above
  *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/or other materials 
+ *     disclaimer in the documentation and/or other materials
  *     provided with the distribution.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -26,8 +26,8 @@
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE. 
- * 
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
  * Mark McKay can be contacted at mark@kitfox.com.  Salamander and other
  * projects can be found at http://www.kitfox.com
  *
@@ -37,17 +37,18 @@ package org.xbib.graphics.svg;
 
 import org.xbib.graphics.svg.xml.StyleAttribute;
 import org.xbib.graphics.svg.xml.XMLParseUtil;
+
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D;
+import java.io.IOException;
 
 /**
  * @author Mark McKay
  * @author <a href="mailto:mark@kitfox.com">Mark McKay</a>
  */
-public class Polygon extends ShapeElement
-{
+public class Polygon extends ShapeElement {
     public static final String TAG_NAME = "polygon";
 
     int fillRule = GeneralPath.WIND_NON_ZERO;
@@ -57,25 +58,21 @@ public class Polygon extends ShapeElement
     /**
      * Creates a new instance of Rect
      */
-    public Polygon()
-    {
+    public Polygon() {
     }
 
     @Override
-    public String getTagName()
-    {
+    public String getTagName() {
         return TAG_NAME;
     }
 
     @Override
-    protected void build() throws SVGException
-    {
+    protected void build() throws SVGException, IOException {
         super.build();
 
         StyleAttribute sty = new StyleAttribute();
 
-        if (getPres(sty.setName("points")))
-        {
+        if (getPres(sty.setName("points"))) {
             pointsStrn = sty.getStringValue();
         }
 
@@ -85,36 +82,31 @@ public class Polygon extends ShapeElement
         buildPath();
     }
 
-    protected void buildPath()
-    {
+    protected void buildPath() {
         float[] points = XMLParseUtil.parseFloatList(pointsStrn);
         path = new GeneralPath(fillRule, points.length / 2);
 
         path.moveTo(points[0], points[1]);
-        for (int i = 2; i < points.length; i += 2)
-        {
+        for (int i = 2; i < points.length; i += 2) {
             path.lineTo(points[i], points[i + 1]);
         }
         path.closePath();
     }
 
     @Override
-    protected void doRender(Graphics2D g) throws SVGException
-    {
+    protected void doRender(Graphics2D g) throws SVGException, IOException {
         beginLayer(g);
         renderShape(g, path);
         finishLayer(g);
     }
 
     @Override
-    public Shape getShape()
-    {
+    public Shape getShape() {
         return shapeToParent(path);
     }
 
     @Override
-    public Rectangle2D getBoundingBox() throws SVGException
-    {
+    public Rectangle2D getBoundingBox() throws SVGException {
         return boundsToParent(includeStrokeInBounds(path.getBounds2D()));
     }
 
@@ -126,8 +118,7 @@ public class Polygon extends ShapeElement
      * update
      */
     @Override
-    public boolean updateTime(double curTime) throws SVGException
-    {
+    public boolean updateTime(double curTime) throws SVGException, IOException {
 //        if (trackManager.getNumTracks() == 0) return false;
         boolean changeState = super.updateTime(curTime);
 
@@ -135,31 +126,26 @@ public class Polygon extends ShapeElement
         StyleAttribute sty = new StyleAttribute();
         boolean shapeChange = false;
 
-        if (getStyle(sty.setName("fill-rule")))
-        {
+        if (getStyle(sty.setName("fill-rule"))) {
             int newVal = sty.getStringValue().equals("evenodd")
-                ? GeneralPath.WIND_EVEN_ODD
-                : GeneralPath.WIND_NON_ZERO;
-            if (newVal != fillRule)
-            {
+                    ? GeneralPath.WIND_EVEN_ODD
+                    : GeneralPath.WIND_NON_ZERO;
+            if (newVal != fillRule) {
                 fillRule = newVal;
                 shapeChange = true;
             }
         }
 
-        if (getPres(sty.setName("points")))
-        {
+        if (getPres(sty.setName("points"))) {
             String newVal = sty.getStringValue();
-            if (!newVal.equals(pointsStrn))
-            {
+            if (!newVal.equals(pointsStrn)) {
                 pointsStrn = newVal;
                 shapeChange = true;
             }
         }
 
 
-        if (shapeChange)
-        {
+        if (shapeChange) {
             build();
 //            buildPath();
 //            return true;

@@ -1,41 +1,7 @@
-/*
- * SVG Salamander
- * Copyright (c) 2004, Mark McKay
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or 
- * without modification, are permitted provided that the following
- * conditions are met:
- *
- *   - Redistributions of source code must retain the above 
- *     copyright notice, this list of conditions and the following
- *     disclaimer.
- *   - Redistributions in binary form must reproduce the above
- *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/or other materials 
- *     provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
- * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- * COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE. 
- * 
- * Mark McKay can be contacted at mark@kitfox.com.  Salamander and other
- * projects can be found at http://www.kitfox.com
- *
- * Created on January 26, 2004, 1:56 AM
- */
 package org.xbib.graphics.svg;
 
 import org.xbib.graphics.svg.xml.StyleAttribute;
+
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
@@ -43,298 +9,171 @@ import java.awt.geom.Area;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * @author Mark McKay
- * @author <a href="mailto:mark@kitfox.com">Mark McKay</a>
- */
-public class Group extends ShapeElement
-{
+public class Group extends ShapeElement {
+
     public static final String TAG_NAME = "group";
-    
-    //Cache bounding box for faster clip testing
+
     Rectangle2D boundingBox;
     Shape cachedShape;
 
-    /**
-     * Creates a new instance of Stop
-     */
-    public Group()
-    {
+    public Group() {
     }
 
     @Override
-    public String getTagName()
-    {
+    public String getTagName() {
         return TAG_NAME;
     }
 
-    /**
-     * Called after the start element but before the end element to indicate
-     * each child tag that has been processed
-     */
     @Override
-    public void loaderAddChild(SVGLoaderHelper helper, SVGElement child) throws SVGElementException
-    {
+    public void loaderAddChild(SVGLoaderHelper helper, SVGElement child) throws SVGElementException {
         super.loaderAddChild(helper, child);
     }
 
-    protected boolean outsideClip(Graphics2D g) throws SVGException
-    {
+    protected boolean outsideClip(Graphics2D g) throws SVGException {
         Shape clip = g.getClip();
-        if (clip == null)
-        {
+        if (clip == null) {
             return false;
         }
-        //g.getClipBounds(clipBounds);
         Rectangle2D rect = getBoundingBox();
-
-        if (clip.intersects(rect))
-        {
-            return false;
-        }
-
-        return true;
+        return !clip.intersects(rect);
     }
 
     @Override
-    protected void doPick(Point2D point, boolean boundingBox, List<List<SVGElement>> retVec) throws SVGException
-    {
+    protected void doPick(Point2D point, boolean boundingBox, List<List<SVGElement>> retVec) throws SVGException, IOException {
         Point2D xPoint = new Point2D.Double(point.getX(), point.getY());
-        if (xform != null)
-        {
-            try
-            {
+        if (xform != null) {
+            try {
                 xform.inverseTransform(point, xPoint);
-            } catch (NoninvertibleTransformException ex)
-            {
+            } catch (NoninvertibleTransformException ex) {
                 throw new SVGException(ex);
             }
         }
-
-
         for (SVGElement ele : children) {
-            if (ele instanceof RenderableElement)
-            {
+            if (ele instanceof RenderableElement) {
                 RenderableElement rendEle = (RenderableElement) ele;
-
                 rendEle.pick(xPoint, boundingBox, retVec);
             }
         }
     }
 
     @Override
-    protected void doPick(Rectangle2D pickArea, AffineTransform ltw, boolean boundingBox, List<List<SVGElement>> retVec) throws SVGException
-    {
-        if (xform != null)
-        {
+    protected void doPick(Rectangle2D pickArea, AffineTransform ltw, boolean boundingBox, List<List<SVGElement>> retVec) throws SVGException, IOException {
+        if (xform != null) {
             ltw = new AffineTransform(ltw);
             ltw.concatenate(xform);
         }
-
-
         for (SVGElement ele : children) {
-            if (ele instanceof RenderableElement)
-            {
+            if (ele instanceof RenderableElement) {
                 RenderableElement rendEle = (RenderableElement) ele;
-
                 rendEle.pick(pickArea, ltw, boundingBox, retVec);
             }
         }
     }
 
     @Override
-    protected void doRender(Graphics2D g) throws SVGException
-    {
-        //Don't process if not visible
+    protected void doRender(Graphics2D g) throws SVGException, IOException {
         StyleAttribute styleAttrib = new StyleAttribute();
-        //Visibility can be overridden by children
-
-        if (getStyle(styleAttrib.setName("display")))
-        {
-            if (styleAttrib.getStringValue().equals("none"))
-            {
+        if (getStyle(styleAttrib.setName("display"))) {
+            if (styleAttrib.getStringValue().equals("none")) {
                 return;
             }
         }
-        
-        //Do not process offscreen groups
         boolean ignoreClip = diagram.ignoringClipHeuristic();
-//        if (!ignoreClip && outsideClip(g))
-//        {
-//            return;
-//        }
-
         beginLayer(g);
-
         Iterator<SVGElement> it = children.iterator();
-
-//        try
-//        {
-//            g.getClipBounds(clipBounds);
-//        }
-//        catch (Exception e)
-//        {
-//            //For some reason, getClipBounds can throw a null pointer exception for
-//            // some types of Graphics2D
-//            ignoreClip = true;
-//        }
-
         Shape clip = g.getClip();
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             SVGElement ele = it.next();
-            if (ele instanceof RenderableElement)
-            {
+            if (ele instanceof RenderableElement) {
                 RenderableElement rendEle = (RenderableElement) ele;
-
-//                if (shapeEle == null) continue;
-
-                if (!(ele instanceof Group))
-                {
-                    //Skip if clipping area is outside our bounds
+                if (!(ele instanceof Group)) {
                     if (!ignoreClip && clip != null
-                        && !clip.intersects(rendEle.getBoundingBox()))
-                    {
+                            && !clip.intersects(rendEle.getBoundingBox())) {
                         continue;
                     }
                 }
-
                 rendEle.render(g);
             }
         }
-
         finishLayer(g);
     }
 
-    /**
-     * Retrieves the cached bounding box of this group
-     */
     @Override
-    public Shape getShape()
-    {
-        if (cachedShape == null)
-        {
+    public Shape getShape() {
+        if (cachedShape == null) {
             calcShape();
         }
         return cachedShape;
     }
 
-    public void calcShape()
-    {
+    public void calcShape() {
         Area retShape = new Area();
-
         for (SVGElement ele : children) {
-            if (ele instanceof ShapeElement)
-            {
+            if (ele instanceof ShapeElement) {
                 ShapeElement shpEle = (ShapeElement) ele;
                 Shape shape = shpEle.getShape();
-                if (shape != null)
-                {
+                if (shape != null) {
                     retShape.add(new Area(shape));
                 }
             }
         }
-
         cachedShape = shapeToParent(retShape);
     }
 
-    /**
-     * Retrieves the cached bounding box of this group
-     */
     @Override
-    public Rectangle2D getBoundingBox() throws SVGException
-    {
-        if (boundingBox == null)
-        {
+    public Rectangle2D getBoundingBox() throws SVGException {
+        if (boundingBox == null) {
             calcBoundingBox();
         }
-//        calcBoundingBox();
         return boundingBox;
     }
 
-    /**
-     * Recalculates the bounding box by taking the union of the bounding boxes
-     * of all children. Caches the result.
-     * @throws SVGException
-     */
-    public void calcBoundingBox() throws SVGException
-    {
+    public void calcBoundingBox() throws SVGException {
         Rectangle2D retRect = null;
-
         for (SVGElement ele : children) {
-            if (ele instanceof RenderableElement)
-            {
+            if (ele instanceof RenderableElement) {
                 RenderableElement rendEle = (RenderableElement) ele;
                 Rectangle2D bounds = rendEle.getBoundingBox();
-                if (bounds != null && (bounds.getWidth() != 0 || bounds.getHeight() != 0))
-                {
-                    if (retRect == null)
-                    {
+                if (bounds != null && (bounds.getWidth() != 0 || bounds.getHeight() != 0)) {
+                    if (retRect == null) {
                         retRect = bounds;
-                    }
-                    else
-                    {
-                        if (retRect.getWidth() != 0 || retRect.getHeight() != 0)
-                        {
+                    } else {
+                        if (retRect.getWidth() != 0 || retRect.getHeight() != 0) {
                             retRect = retRect.createUnion(bounds);
                         }
                     }
                 }
             }
         }
-
-//        if (xform != null)
-//        {
-//            retRect = xform.createTransformedShape(retRect).getBounds2D();
-//        }
-
-        //If no contents, use degenerate rectangle
-        if (retRect == null)
-        {
+        if (retRect == null) {
             retRect = new Rectangle2D.Float();
         }
-
         boundingBox = boundsToParent(retRect);
     }
 
     @Override
-    public boolean updateTime(double curTime) throws SVGException
-    {
+    public boolean updateTime(double curTime) throws SVGException, IOException {
         boolean changeState = super.updateTime(curTime);
-        Iterator<SVGElement> it = children.iterator();
-
-        //Distribute message to all members of this group
-        while (it.hasNext())
-        {
-            SVGElement ele = it.next();
+        for (SVGElement ele : children) {
             boolean updateVal = ele.updateTime(curTime);
-
-            if (updateVal && ele instanceof RenderableElement)
-            {
+            if (updateVal && ele instanceof RenderableElement) {
                 ((RenderableElement) ele).setBufferImage(null);
             }
-
             changeState = changeState || updateVal;
-
-            //Update our shape if shape aware children change
-            if (ele instanceof ShapeElement)
-            {
+            if (ele instanceof ShapeElement) {
                 cachedShape = null;
             }
-            if (ele instanceof RenderableElement)
-            {
+            if (ele instanceof RenderableElement) {
                 boundingBox = null;
             }
         }
-
-        if (changeState)
-        {
+        if (changeState) {
             setBufferImage(null);
         }
-
         return changeState;
     }
 }

@@ -3,16 +3,16 @@
  * Copyright (c) 2004, Mark McKay
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or 
+ * Redistribution and use in source and binary forms, with or
  * without modification, are permitted provided that the following
  * conditions are met:
  *
- *   - Redistributions of source code must retain the above 
+ *   - Redistributions of source code must retain the above
  *     copyright notice, this list of conditions and the following
  *     disclaimer.
  *   - Redistributions in binary form must reproduce the above
  *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/or other materials 
+ *     disclaimer in the documentation and/or other materials
  *     provided with the distribution.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -26,8 +26,8 @@
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE. 
- * 
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
  * Mark McKay can be contacted at mark@kitfox.com.  Salamander and other
  * projects can be found at http://www.kitfox.com
  *
@@ -36,17 +36,18 @@
 package org.xbib.graphics.svg;
 
 import org.xbib.graphics.svg.xml.StyleAttribute;
+
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
+import java.io.IOException;
 
 /**
  * @author Mark McKay
  * @author <a href="mailto:mark@kitfox.com">Mark McKay</a>
  */
-public class Ellipse extends ShapeElement
-{
+public class Ellipse extends ShapeElement {
 
     public static final String TAG_NAME = "ellipse";
     float cx = 0.0f;
@@ -58,40 +59,33 @@ public class Ellipse extends ShapeElement
     /**
      * Creates a new instance of Rect
      */
-    public Ellipse()
-    {
+    public Ellipse() {
     }
 
     @Override
-    public String getTagName()
-    {
+    public String getTagName() {
         return TAG_NAME;
     }
 
     @Override
-    protected void build() throws SVGException
-    {
+    protected void build() throws SVGException, IOException {
         super.build();
 
         StyleAttribute sty = new StyleAttribute();
 
-        if (getPres(sty.setName("cx")))
-        {
+        if (getPres(sty.setName("cx"))) {
             cx = sty.getFloatValueWithUnits();
         }
 
-        if (getPres(sty.setName("cy")))
-        {
+        if (getPres(sty.setName("cy"))) {
             cy = sty.getFloatValueWithUnits();
         }
 
-        if (getPres(sty.setName("rx")))
-        {
+        if (getPres(sty.setName("rx"))) {
             rx = sty.getFloatValueWithUnits();
         }
 
-        if (getPres(sty.setName("ry")))
-        {
+        if (getPres(sty.setName("ry"))) {
             ry = sty.getFloatValueWithUnits();
         }
 
@@ -99,22 +93,19 @@ public class Ellipse extends ShapeElement
     }
 
     @Override
-    protected void doRender(Graphics2D g) throws SVGException
-    {
+    protected void doRender(Graphics2D g) throws SVGException, IOException {
         beginLayer(g);
         renderShape(g, ellipse);
         finishLayer(g);
     }
 
     @Override
-    public Shape getShape()
-    {
+    public Shape getShape() {
         return shapeToParent(ellipse);
     }
 
     @Override
-    public Rectangle2D getBoundingBox() throws SVGException
-    {
+    public Rectangle2D getBoundingBox() throws SVGException {
         return boundsToParent(includeStrokeInBounds(ellipse.getBounds2D()));
     }
 
@@ -126,8 +117,7 @@ public class Ellipse extends ShapeElement
      * update
      */
     @Override
-    public boolean updateTime(double curTime) throws SVGException
-    {
+    public boolean updateTime(double curTime) throws SVGException, IOException {
 //        if (trackManager.getNumTracks() == 0) return false;
         boolean changeState = super.updateTime(curTime);
 
@@ -135,48 +125,39 @@ public class Ellipse extends ShapeElement
         StyleAttribute sty = new StyleAttribute();
         boolean shapeChange = false;
 
-        if (getPres(sty.setName("cx")))
-        {
+        if (getPres(sty.setName("cx"))) {
             float newCx = sty.getFloatValueWithUnits();
-            if (newCx != cx)
-            {
+            if (newCx != cx) {
                 cx = newCx;
                 shapeChange = true;
             }
         }
 
-        if (getPres(sty.setName("cy")))
-        {
+        if (getPres(sty.setName("cy"))) {
             float newCy = sty.getFloatValueWithUnits();
-            if (newCy != cy)
-            {
+            if (newCy != cy) {
                 cy = newCy;
                 shapeChange = true;
             }
         }
 
-        if (getPres(sty.setName("rx")))
-        {
+        if (getPres(sty.setName("rx"))) {
             float newRx = sty.getFloatValueWithUnits();
-            if (newRx != rx)
-            {
+            if (newRx != rx) {
                 rx = newRx;
                 shapeChange = true;
             }
         }
 
-        if (getPres(sty.setName("ry")))
-        {
+        if (getPres(sty.setName("ry"))) {
             float newRy = sty.getFloatValueWithUnits();
-            if (newRy != ry)
-            {
+            if (newRy != ry) {
                 ry = newRy;
                 shapeChange = true;
             }
         }
 
-        if (shapeChange)
-        {
+        if (shapeChange) {
             build();
 //            ellipse.setFrame(cx - rx, cy - ry, rx * 2f, ry * 2f);
 //            return true;

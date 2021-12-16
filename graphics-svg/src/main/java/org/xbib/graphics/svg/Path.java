@@ -3,16 +3,16 @@
  * Copyright (c) 2004, Mark McKay
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or 
+ * Redistribution and use in source and binary forms, with or
  * without modification, are permitted provided that the following
  * conditions are met:
  *
- *   - Redistributions of source code must retain the above 
+ *   - Redistributions of source code must retain the above
  *     copyright notice, this list of conditions and the following
  *     disclaimer.
  *   - Redistributions in binary form must reproduce the above
  *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/or other materials 
+ *     disclaimer in the documentation and/or other materials
  *     provided with the distribution.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -26,8 +26,8 @@
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE. 
- * 
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
  * Mark McKay can be contacted at mark@kitfox.com.  Salamander and other
  * projects can be found at http://www.kitfox.com
  *
@@ -36,41 +36,39 @@
 package org.xbib.graphics.svg;
 
 import org.xbib.graphics.svg.xml.StyleAttribute;
+
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D;
+import java.io.IOException;
 
 /**
  * @author Mark McKay
  * @author <a href="mailto:mark@kitfox.com">Mark McKay</a>
  */
-public class Path extends ShapeElement
-{
+public class Path extends ShapeElement {
 
     public static final String TAG_NAME = "path";
-//    PathCommand[] commands = null;
+    //    PathCommand[] commands = null;
     int fillRule = GeneralPath.WIND_NON_ZERO;
     String d = "";
-//    ExtendedGeneralPath path;
+    //    ExtendedGeneralPath path;
     GeneralPath path;
 
     /**
      * Creates a new instance of Rect
      */
-    public Path()
-    {
+    public Path() {
     }
 
     @Override
-    public String getTagName()
-    {
+    public String getTagName() {
         return TAG_NAME;
     }
 
     @Override
-    protected void build() throws SVGException
-    {
+    protected void build() throws SVGException, IOException {
         super.build();
 
         StyleAttribute sty = new StyleAttribute();
@@ -79,8 +77,7 @@ public class Path extends ShapeElement
         String fillRuleStrn = (getStyle(sty.setName("fill-rule"))) ? sty.getStringValue() : "nonzero";
         fillRule = fillRuleStrn.equals("evenodd") ? GeneralPath.WIND_EVEN_ODD : GeneralPath.WIND_NON_ZERO;
 
-        if (getPres(sty.setName("d")))
-        {
+        if (getPres(sty.setName("d"))) {
             d = sty.getStringValue();
         }
 
@@ -88,22 +85,19 @@ public class Path extends ShapeElement
     }
 
     @Override
-    protected void doRender(Graphics2D g) throws SVGException
-    {
+    protected void doRender(Graphics2D g) throws SVGException, IOException {
         beginLayer(g);
         renderShape(g, path);
         finishLayer(g);
     }
 
     @Override
-    public Shape getShape()
-    {
+    public Shape getShape() {
         return shapeToParent(path);
     }
 
     @Override
-    public Rectangle2D getBoundingBox() throws SVGException
-    {
+    public Rectangle2D getBoundingBox() throws SVGException {
         return boundsToParent(includeStrokeInBounds(path.getBounds2D()));
     }
 
@@ -115,8 +109,7 @@ public class Path extends ShapeElement
      * update
      */
     @Override
-    public boolean updateTime(double curTime) throws SVGException
-    {
+    public boolean updateTime(double curTime) throws SVGException, IOException {
 //        if (trackManager.getNumTracks() == 0) return false;
         boolean changeState = super.updateTime(curTime);
 
@@ -124,30 +117,25 @@ public class Path extends ShapeElement
         StyleAttribute sty = new StyleAttribute();
         boolean shapeChange = false;
 
-        if (getStyle(sty.setName("fill-rule")))
-        {
+        if (getStyle(sty.setName("fill-rule"))) {
             int newVal = sty.getStringValue().equals("evenodd")
-                ? GeneralPath.WIND_EVEN_ODD
-                : GeneralPath.WIND_NON_ZERO;
-            if (newVal != fillRule)
-            {
+                    ? GeneralPath.WIND_EVEN_ODD
+                    : GeneralPath.WIND_NON_ZERO;
+            if (newVal != fillRule) {
                 fillRule = newVal;
                 changeState = true;
             }
         }
 
-        if (getPres(sty.setName("d")))
-        {
+        if (getPres(sty.setName("d"))) {
             String newVal = sty.getStringValue();
-            if (!newVal.equals(d))
-            {
+            if (!newVal.equals(d)) {
                 d = newVal;
                 shapeChange = true;
             }
         }
 
-        if (shapeChange)
-        {
+        if (shapeChange) {
             build();
 //            path = buildPath(d, fillRule);
 //            return true;

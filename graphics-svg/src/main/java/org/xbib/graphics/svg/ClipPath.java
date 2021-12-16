@@ -3,16 +3,16 @@
  * Copyright (c) 2004, Mark McKay
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or 
+ * Redistribution and use in source and binary forms, with or
  * without modification, are permitted provided that the following
  * conditions are met:
  *
- *   - Redistributions of source code must retain the above 
+ *   - Redistributions of source code must retain the above
  *     copyright notice, this list of conditions and the following
  *     disclaimer.
  *   - Redistributions in binary form must reproduce the above
  *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/or other materials 
+ *     disclaimer in the documentation and/or other materials
  *     provided with the distribution.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -26,8 +26,8 @@
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE. 
- * 
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
  * Mark McKay can be contacted at mark@kitfox.com.  Salamander and other
  * projects can be found at http://www.kitfox.com
  *
@@ -36,15 +36,16 @@
 package org.xbib.graphics.svg;
 
 import org.xbib.graphics.svg.xml.StyleAttribute;
+
 import java.awt.Shape;
 import java.awt.geom.Area;
+import java.io.IOException;
 
 /**
  * @author Mark McKay
  * @author <a href="mailto:mark@kitfox.com">Mark McKay</a>
  */
-public class ClipPath extends SVGElement
-{
+public class ClipPath extends SVGElement {
 
     public static final String TAG_NAME = "clippath";
     public static final int CP_USER_SPACE_ON_USE = 0;
@@ -54,13 +55,11 @@ public class ClipPath extends SVGElement
     /**
      * Creates a new instance of Stop
      */
-    public ClipPath()
-    {
+    public ClipPath() {
     }
 
     @Override
-    public String getTagName()
-    {
+    public String getTagName() {
         return TAG_NAME;
     }
 
@@ -69,37 +68,31 @@ public class ClipPath extends SVGElement
      * each child tag that has been processed
      */
     @Override
-    public void loaderAddChild(SVGLoaderHelper helper, SVGElement child) throws SVGElementException
-    {
+    public void loaderAddChild(SVGLoaderHelper helper, SVGElement child) throws SVGElementException {
         super.loaderAddChild(helper, child);
     }
 
     @Override
-    protected void build() throws SVGException
-    {
+    protected void build() throws SVGException, IOException {
         super.build();
 
         StyleAttribute sty = new StyleAttribute();
 
         clipPathUnits = (getPres(sty.setName("clipPathUnits"))
-            && sty.getStringValue().equals("objectBoundingBox"))
-            ? CP_OBJECT_BOUNDING_BOX
-            : CP_USER_SPACE_ON_USE;
+                && sty.getStringValue().equals("objectBoundingBox"))
+                ? CP_OBJECT_BOUNDING_BOX
+                : CP_USER_SPACE_ON_USE;
     }
 
-    public int getClipPathUnits()
-    {
+    public int getClipPathUnits() {
         return clipPathUnits;
     }
 
-    public Shape getClipPathShape()
-    {
-        if (children.isEmpty())
-        {
+    public Shape getClipPathShape() {
+        if (children.isEmpty()) {
             return null;
         }
-        if (children.size() == 1)
-        {
+        if (children.size() == 1) {
             return ((ShapeElement) children.get(0)).getShape();
         }
 
@@ -107,19 +100,16 @@ public class ClipPath extends SVGElement
         for (SVGElement svgElement : children) {
             ShapeElement se = (ShapeElement) svgElement;
 
-            if (clipArea == null)
-            {
+            if (clipArea == null) {
                 Shape shape = se.getShape();
-                if (shape != null)
-                {
+                if (shape != null) {
                     clipArea = new Area(se.getShape());
                 }
                 continue;
             }
 
             Shape shape = se.getShape();
-            if (shape != null)
-            {
+            if (shape != null) {
                 clipArea.intersect(new Area(shape));
             }
         }
@@ -137,38 +127,33 @@ public class ClipPath extends SVGElement
      * @throws SVGException
      */
     @Override
-    public boolean updateTime(double curTime) throws SVGException
-    {
+    public boolean updateTime(double curTime) throws SVGException, IOException {
         //Get current values for parameters
         StyleAttribute sty = new StyleAttribute();
         boolean shapeChange = false;
 
 
-        if (getPres(sty.setName("clipPathUnits")))
-        {
+        if (getPres(sty.setName("clipPathUnits"))) {
             String newUnitsStrn = sty.getStringValue();
             int newUnits = newUnitsStrn.equals("objectBoundingBox")
-                ? CP_OBJECT_BOUNDING_BOX
-                : CP_USER_SPACE_ON_USE;
+                    ? CP_OBJECT_BOUNDING_BOX
+                    : CP_USER_SPACE_ON_USE;
 
-            if (newUnits != clipPathUnits)
-            {
+            if (newUnits != clipPathUnits) {
                 clipPathUnits = newUnits;
                 shapeChange = true;
             }
         }
 
-        if (shapeChange)
-        {
+        if (shapeChange) {
             build();
         }
 
-        for (int i = 0; i < children.size(); ++i)
-        {
-            SVGElement ele = (SVGElement) children.get(i);
+        for (int i = 0; i < children.size(); ++i) {
+            SVGElement ele = children.get(i);
             ele.updateTime(curTime);
         }
-        
+
         return shapeChange;
     }
 }
