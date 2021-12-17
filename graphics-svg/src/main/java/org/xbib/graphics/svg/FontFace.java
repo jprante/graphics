@@ -1,5 +1,7 @@
 package org.xbib.graphics.svg;
 
+import org.xbib.graphics.svg.element.Font;
+import org.xbib.graphics.svg.element.SVGElement;
 import org.xbib.graphics.svg.xml.StyleAttribute;
 
 import java.io.IOException;

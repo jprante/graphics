@@ -1,5 +1,23 @@
 package org.xbib.graphics.svg;
 
+import org.xbib.graphics.svg.element.Circle;
+import org.xbib.graphics.svg.element.ClipPath;
+import org.xbib.graphics.svg.element.Defs;
+import org.xbib.graphics.svg.element.Desc;
+import org.xbib.graphics.svg.element.Ellipse;
+import org.xbib.graphics.svg.element.Filter;
+import org.xbib.graphics.svg.element.Font;
+import org.xbib.graphics.svg.element.Group;
+import org.xbib.graphics.svg.element.Line;
+import org.xbib.graphics.svg.element.Mask;
+import org.xbib.graphics.svg.element.SVGElement;
+import org.xbib.graphics.svg.element.ShapeElement;
+import org.xbib.graphics.svg.element.Style;
+import org.xbib.graphics.svg.element.filtereffects.GaussianBlur;
+import org.xbib.graphics.svg.element.glyph.Glyph;
+import org.xbib.graphics.svg.element.glyph.MissingGlyph;
+import org.xbib.graphics.svg.element.gradient.LinearGradient;
+import org.xbib.graphics.svg.element.gradient.RadialGradient;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -14,6 +32,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SVGLoader extends DefaultHandler {
+
+    private static final Logger logger = Logger.getLogger(SVGLoader.class.getName());
 
     final Map<String, Class<?>> nodeClasses = new HashMap<>();
 
@@ -38,7 +58,7 @@ public class SVGLoader extends DefaultHandler {
         nodeClasses.put("desc", Desc.class);
         nodeClasses.put("ellipse", Ellipse.class);
         nodeClasses.put("filter", Filter.class);
-        nodeClasses.put(FeGaussianBlur.TAG_NAME, FeGaussianBlur.class);
+        nodeClasses.put(GaussianBlur.TAG_NAME, GaussianBlur.class);
         nodeClasses.put("font", Font.class);
         nodeClasses.put("font-face", FontFace.class);
         nodeClasses.put("g", Group.class);
@@ -98,8 +118,7 @@ public class SVGLoader extends DefaultHandler {
             svgEle.loaderStartElement(helper, attrs, parent);
             buildStack.addLast(svgEle);
         } catch (Exception e) {
-            Logger.getLogger(SVGConst.SVG_LOGGER).log(Level.WARNING,
-                    "Could not load", e);
+            logger.log(Level.SEVERE, "Could not load", e);
             throw new SAXException(e);
         }
 
@@ -130,7 +149,7 @@ public class SVGLoader extends DefaultHandler {
                 diagram.setRoot((SVGRoot) svgEle);
             }
         } catch (Exception e) {
-            Logger.getLogger(SVGConst.SVG_LOGGER).log(Level.WARNING, "Could not parse", e);
+            logger.log(Level.WARNING, "Could not parse", e);
             throw new SAXException(e);
         }
     }

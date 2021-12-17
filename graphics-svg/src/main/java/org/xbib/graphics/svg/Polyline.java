@@ -1,5 +1,6 @@
 package org.xbib.graphics.svg;
 
+import org.xbib.graphics.svg.element.ShapeElement;
 import org.xbib.graphics.svg.xml.StyleAttribute;
 import org.xbib.graphics.svg.xml.XMLParseUtil;
 
@@ -49,7 +50,7 @@ public class Polyline extends ShapeElement {
     }
 
     @Override
-    protected void doRender(Graphics2D g) throws SVGException, IOException {
+    public void doRender(Graphics2D g) throws SVGException, IOException {
         beginLayer(g);
         renderShape(g, path);
         finishLayer(g);

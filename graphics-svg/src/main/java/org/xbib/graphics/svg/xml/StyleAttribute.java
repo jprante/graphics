@@ -1,7 +1,5 @@
 package org.xbib.graphics.svg.xml;
 
-import org.xbib.graphics.svg.SVGConst;
-
 import java.awt.Color;
 import java.awt.HeadlessException;
 import java.awt.Toolkit;
@@ -15,16 +13,16 @@ import java.util.regex.Pattern;
 
 public class StyleAttribute {
 
+    private static final Logger logger = Logger.getLogger(StyleAttribute.class.getName());
+
     static final Pattern patternUrl = Pattern.compile("\\s*url\\((.*)\\)\\s*");
 
     static final Matcher matchFpNumUnits = Pattern.compile("\\s*([-+]?((\\d*\\.\\d+)|(\\d+))([-+]?[eE]\\d+)?)\\s*(px|cm|mm|in|pc|pt|em|ex)\\s*").matcher("");
 
     String name;
+
     String stringValue;
 
-    /**
-     * Creates a new instance of StyleAttribute
-     */
     public StyleAttribute() {
         this(null, null);
     }
@@ -161,19 +159,7 @@ public class StyleAttribute {
         try {
             return new URL(docRoot, fragment);
         } catch (Exception e) {
-            Logger.getLogger(SVGConst.SVG_LOGGER).log(Level.WARNING, null, e);
-            return null;
-        }
-    }
-
-    public URL getURLValue(URI docRoot) {
-        String fragment = parseURLFn();
-        if (fragment == null) return null;
-        try {
-            URI ref = docRoot.resolve(fragment);
-            return ref.toURL();
-        } catch (Exception e) {
-            Logger.getLogger(SVGConst.SVG_LOGGER).log(Level.WARNING, null, e);
+            logger.log(Level.WARNING, null, e);
             return null;
         }
     }
@@ -206,7 +192,7 @@ public class StyleAttribute {
             }
             return new URI(base.getScheme() + ":" + relUri);
         } catch (Exception e) {
-            Logger.getLogger(SVGConst.SVG_LOGGER).log(Level.WARNING, null, e);
+            logger.log(Level.WARNING, null, e);
             return null;
         }
     }

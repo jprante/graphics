@@ -1,5 +1,6 @@
 package org.xbib.graphics.svg;
 
+import org.xbib.graphics.svg.element.Group;
 import org.xbib.graphics.svg.xml.StyleAttribute;
 
 import java.awt.Graphics2D;
@@ -49,7 +50,7 @@ public class Symbol extends Group {
     }
 
     @Override
-    protected void doRender(Graphics2D g) throws SVGException, IOException {
+    public void doRender(Graphics2D g) throws SVGException, IOException {
         AffineTransform oldXform = g.getTransform();
         g.transform(viewXform);
         super.doRender(g);

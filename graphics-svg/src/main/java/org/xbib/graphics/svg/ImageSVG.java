@@ -1,6 +1,7 @@
 package org.xbib.graphics.svg;
 
-import org.xbib.graphics.svg.app.data.Handler;
+import org.xbib.graphics.svg.element.RenderableElement;
+import org.xbib.graphics.svg.element.SVGElement;
 import org.xbib.graphics.svg.xml.StyleAttribute;
 
 import java.awt.AlphaComposite;
@@ -18,6 +19,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ImageSVG extends RenderableElement {
+
+    private static final Logger logger = Logger.getLogger(ImageSVG.class.getName());
 
     public static final String TAG_NAME = "image";
 
@@ -67,8 +70,7 @@ public class ImageSVG extends RenderableElement {
                 try {
                     imageSrc = src.toURL();
                 } catch (Exception e) {
-                    Logger.getLogger(SVGConst.SVG_LOGGER).log(Level.WARNING,
-                            "Could not parse xlink:href " + src, e);
+                    logger.log(Level.SEVERE, "Could not parse xlink:href " + src, e);
                     imageSrc = null;
                 }
             }
@@ -111,21 +113,21 @@ public class ImageSVG extends RenderableElement {
     }
 
     @Override
-    protected void doPick(Point2D point, boolean boundingBox, List<List<SVGElement>> retVec) {
+    public void doPick(Point2D point, boolean boundingBox, List<List<SVGElement>> retVec) {
         if (getBoundingBox().contains(point)) {
             retVec.add(getPath(null));
         }
     }
 
     @Override
-    protected void doPick(Rectangle2D pickArea, AffineTransform ltw, boolean boundingBox, List<List<SVGElement>> retVec) {
+    public void doPick(Rectangle2D pickArea, AffineTransform ltw, boolean boundingBox, List<List<SVGElement>> retVec) {
         if (ltw.createTransformedShape(getBoundingBox()).intersects(pickArea)) {
             retVec.add(getPath(null));
         }
     }
 
     @Override
-    protected void doRender(Graphics2D g) throws SVGException, IOException {
+    public void doRender(Graphics2D g) throws SVGException, IOException {
         StyleAttribute styleAttrib = new StyleAttribute();
         if (getStyle(styleAttrib.setName("visibility"))) {
             if (!styleAttrib.getStringValue().equals("visible")) {
@@ -218,12 +220,10 @@ public class ImageSVG extends RenderableElement {
                 }
             }
         } catch (IllegalArgumentException ie) {
-            Logger.getLogger(SVGConst.SVG_LOGGER).log(Level.WARNING,
-                    "Image provided with illegal value for href: \""
+            logger.log(Level.SEVERE, "Image provided with illegal value for href: \""
                             + sty.getStringValue() + '"', ie);
         } catch (Exception e) {
-            Logger.getLogger(SVGConst.SVG_LOGGER).log(Level.WARNING,
-                    "Could not parse xlink:href", e);
+            logger.log(Level.WARNING, "Could not parse xlink:href", e);
         }
         if (shapeChange) {
             build();

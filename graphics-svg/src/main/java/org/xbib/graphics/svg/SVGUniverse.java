@@ -4,7 +4,9 @@ import javax.imageio.ImageIO;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import org.xbib.graphics.svg.app.beans.SVGIcon;
+
+import org.xbib.graphics.svg.element.Font;
+import org.xbib.graphics.svg.element.SVGElement;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -26,19 +28,22 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
 public class SVGUniverse {
 
-    final HashMap<URI, SVGDiagram> loadedDocs = new HashMap<URI, SVGDiagram>();
+    private static final Logger logger = Logger.getLogger(SVGUniverse.class.getName());
 
-    final HashMap<String, Font> loadedFonts = new HashMap<String, Font>();
+    final Map<URI, SVGDiagram> loadedDocs = new HashMap<>();
 
-    final HashMap<URL, SoftReference<BufferedImage>> loadedImages = new HashMap<URL, SoftReference<BufferedImage>>();
+    final Map<String, Font> loadedFonts = new HashMap<>();
 
-    public static final String INPUTSTREAM_SCHEME = "svgSalamander";
+    final Map<URL, SoftReference<BufferedImage>> loadedImages = new HashMap<>();
+
+    public static final String INPUTSTREAM_SCHEME = "svgXbib";
 
     protected double curTime = 0.0;
 
@@ -70,7 +75,7 @@ public class SVGUniverse {
         }
     }
 
-    void registerFont(Font font) {
+    public void registerFont(Font font) {
         loadedFonts.put(font.getFontFace().getFontFamily(), font);
     }
 
@@ -110,8 +115,7 @@ public class SVGUniverse {
                     loadedImages.put(url, ref);
                     return url;
                 } catch (IOException ex) {
-                    Logger.getLogger(SVGConst.SVG_LOGGER).log(Level.WARNING,
-                            "Could not decode inline image", ex);
+                    logger.log(Level.SEVERE, "Could not decode inline image", ex);
                 }
             }
             return null;
@@ -121,8 +125,7 @@ public class SVGUniverse {
                 registerImage(url);
                 return url;
             } catch (MalformedURLException ex) {
-                Logger.getLogger(SVGConst.SVG_LOGGER).log(Level.WARNING,
-                        "Bad url", ex);
+                logger.log(Level.SEVERE, "Bad url", ex);
             }
             return null;
         }
@@ -149,8 +152,7 @@ public class SVGUniverse {
             }
             loadedImages.put(imageURL, ref);
         } catch (Exception e) {
-            Logger.getLogger(SVGConst.SVG_LOGGER).log(Level.WARNING,
-                    "Could not load image: " + imageURL, e);
+            logger.log(Level.SEVERE, "Could not load image: " + imageURL, e);
         }
     }
 
@@ -177,8 +179,7 @@ public class SVGUniverse {
             URI uri = new URI(path.toString());
             return getElement(uri, true);
         } catch (Exception e) {
-            Logger.getLogger(SVGConst.SVG_LOGGER).log(Level.WARNING,
-                    "Could not parse url " + path, e);
+            logger.log(Level.SEVERE, "Could not parse url " + path, e);
         }
         return null;
     }
@@ -216,8 +217,7 @@ public class SVGUniverse {
             String fragment = path.getFragment();
             return fragment == null ? dia.getRoot() : dia.getElement(fragment);
         } catch (Exception e) {
-            Logger.getLogger(SVGConst.SVG_LOGGER).log(Level.WARNING,
-                    "Could not parse path " + path, e);
+            logger.log(Level.SEVERE, "Could not parse path " + path, e);
             return null;
         }
     }
@@ -245,8 +245,7 @@ public class SVGUniverse {
             dia = loadedDocs.get(xmlBase);
             return dia;
         } catch (Exception e) {
-            Logger.getLogger(SVGConst.SVG_LOGGER).log(Level.WARNING,
-                    "Could not parse", e);
+            logger.log(Level.SEVERE, "Could not parse", e);
         }
         return null;
     }
@@ -259,30 +258,8 @@ public class SVGUniverse {
         if ((b1 << 8 | b0) == GZIPInputStream.GZIP_MAGIC) {
             return new GZIPInputStream(bin);
         } else {
-            //Plain text
             return bin;
         }
-    }
-
-    public URI loadSVG(URL docRoot) {
-        return loadSVG(docRoot, false);
-    }
-
-    public URI loadSVG(URL docRoot, boolean forceLoad) {
-        try {
-            URI uri = new URI(docRoot.toString());
-            if (loadedDocs.containsKey(uri) && !forceLoad) {
-                return uri;
-            }
-            InputStream is = docRoot.openStream();
-            URI result = loadSVG(uri, new InputSource(createDocumentInputStream(is)));
-            is.close();
-            return result;
-        } catch (URISyntaxException | IOException ex) {
-            Logger.getLogger(SVGConst.SVG_LOGGER).log(Level.WARNING,
-                    "Could not parse", ex);
-        }
-        return null;
     }
 
     public URI loadSVG(InputStream is, String name) throws IOException {
@@ -300,6 +277,28 @@ public class SVGUniverse {
 
         return loadSVG(uri, new InputSource(createDocumentInputStream(is)));
     }
+
+    public URI loadSVG(URL docRoot) {
+        return loadSVG(docRoot, false);
+    }
+
+    public URI loadSVG(URL docRoot, boolean forceLoad) {
+        try {
+            URI uri = new URI(docRoot.toString());
+            if (loadedDocs.containsKey(uri) && !forceLoad) {
+                return uri;
+            }
+            InputStream is = docRoot.openStream();
+            URI result = loadSVG(uri, new InputSource(createDocumentInputStream(is)));
+            is.close();
+            return result;
+        } catch (URISyntaxException | IOException ex) {
+            logger.log(Level.SEVERE, "Could not parse", ex);
+        }
+        return null;
+    }
+
+
 
     public URI loadSVG(Reader reader, String name) {
         return loadSVG(reader, name, false);
@@ -326,8 +325,7 @@ public class SVGUniverse {
         try {
             return new URI(INPUTSTREAM_SCHEME, name, null);
         } catch (Exception e) {
-            Logger.getLogger(SVGConst.SVG_LOGGER).log(Level.WARNING,
-                    "Could not parse", e);
+            logger.log(Level.SEVERE, "Could not parse", e);
             return null;
         }
     }
@@ -357,13 +355,11 @@ public class SVGUniverse {
             handler.getLoadedDiagram().updateTime(curTime);
             return xmlBase;
         } catch (SAXParseException sex) {
-            Logger.getLogger(SVGConst.SVG_LOGGER).log(Level.WARNING,
-                    "Error processing " + xmlBase, sex);
+            logger.log(Level.SEVERE, "Error processing " + xmlBase, sex);
             loadedDocs.remove(xmlBase);
             return null;
         } catch (Throwable e) {
-            Logger.getLogger(SVGConst.SVG_LOGGER).log(Level.WARNING,
-                    "Could not load SVG " + xmlBase, e);
+            logger.log(Level.SEVERE, "Could not load SVG " + xmlBase, e);
         }
         return null;
     }

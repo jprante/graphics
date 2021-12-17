@@ -1,5 +1,7 @@
 package org.xbib.graphics.svg;
 
+import org.xbib.graphics.svg.element.SVGElement;
+
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
@@ -15,6 +17,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SVGDiagram {
+
+    private static final Logger logger = Logger.getLogger(SVGDiagram.class.getName());
 
     final Map<String, SVGElement> idMap = new HashMap<>();
 
@@ -132,7 +136,7 @@ public class SVGDiagram {
             try {
                 root.build();
             } catch (SVGException | IOException ex) {
-                Logger.getLogger(SVGConst.SVG_LOGGER).log(Level.WARNING, "Could not build document", ex);
+                logger.log(Level.SEVERE, "Could not build document", ex);
             }
         }
     }

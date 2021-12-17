@@ -1,5 +1,9 @@
 package org.xbib.graphics.svg;
 
+import org.xbib.graphics.svg.element.Font;
+import org.xbib.graphics.svg.element.SVGElement;
+import org.xbib.graphics.svg.element.ShapeElement;
+import org.xbib.graphics.svg.element.glyph.MissingGlyph;
 import org.xbib.graphics.svg.util.FontUtil;
 import org.xbib.graphics.svg.xml.StyleAttribute;
 
@@ -200,7 +204,7 @@ public class Tspan extends ShapeElement {
     }
 
     @Override
-    protected void doRender(Graphics2D g) throws SVGException, IOException {
+    public void doRender(Graphics2D g) throws SVGException, IOException {
         beginLayer(g);
         for (TextSegment segment : segments) {
             if (segment.textPath != null) {

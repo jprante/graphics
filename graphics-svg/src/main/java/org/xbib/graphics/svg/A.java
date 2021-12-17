@@ -1,5 +1,6 @@
 package org.xbib.graphics.svg;
 
+import org.xbib.graphics.svg.element.Group;
 import org.xbib.graphics.svg.xml.StyleAttribute;
 
 import java.io.IOException;

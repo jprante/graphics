@@ -1,7 +1,5 @@
 package org.xbib.graphics.svg.xml;
 
-import org.xbib.graphics.svg.SVGConst;
-
 import java.awt.Toolkit;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,7 +12,9 @@ import java.util.regex.Pattern;
 
 public class XMLParseUtil {
 
-    static final Matcher fpMatch = Pattern.compile("([-+]?((\\d*\\.\\d+)|(\\d+))([eE][+-]?\\d+)?)(\\%|in|cm|mm|pt|pc|px|em|ex)?").matcher("");
+    private static final Logger logger = Logger.getLogger(XMLParseUtil.class.getName());
+
+    static final Matcher fpMatch = Pattern.compile("([-+]?((\\d*\\.\\d+)|(\\d+))([eE][+-]?\\d+)?)(%|in|cm|mm|pt|pc|px|em|ex)?").matcher("");
 
     static final Matcher intMatch = Pattern.compile("[-+]?\\d+").matcher("");
 
@@ -48,7 +48,7 @@ public class XMLParseUtil {
                 return 0;
             }
         } catch (StringIndexOutOfBoundsException e) {
-            Logger.getLogger(SVGConst.SVG_LOGGER).log(Level.WARNING,
+            logger.log(Level.WARNING,
                     "XMLParseUtil: regex parse problem: '" + val + "'", e);
         }
         val = fpMatch.group(1);
@@ -188,13 +188,14 @@ public class XMLParseUtil {
     }
 
     public static NumberWithUnits parseNumberWithUnits(String val) {
-        if (val == null) return null;
-
+        if (val == null) {
+            return null;
+        }
         return new NumberWithUnits(val);
     }
 
     public static HashMap<String, StyleAttribute> parseStyle(String styleString, HashMap<String, StyleAttribute> map) {
-        final Pattern patSemi = Pattern.compile(";");
+        Pattern patSemi = Pattern.compile(";");
         String[] styles = patSemi.split(styleString);
         for (String style : styles) {
             if (style.length() == 0) {

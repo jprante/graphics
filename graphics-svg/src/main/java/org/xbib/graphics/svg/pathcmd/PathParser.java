@@ -1,51 +1,16 @@
-/*
- * SVG Salamander
- * Copyright (c) 2004, Mark McKay
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or
- * without modification, are permitted provided that the following
- * conditions are met:
- *
- *   - Redistributions of source code must retain the above
- *     copyright notice, this list of conditions and the following
- *     disclaimer.
- *   - Redistributions in binary form must reproduce the above
- *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/or other materials
- *     provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
- * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- * COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * Mark McKay can be contacted at mark@kitfox.com.  Salamander and other
- * projects can be found at http://www.kitfox.com
- *
- */
 package org.xbib.graphics.svg.pathcmd;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A helper for parsing {@link PathCommand}s.
- *
- * @author Jannis Weis
- */
 public class PathParser {
+
     private final String input;
+
     private final int inputLength;
+
     private int index;
+
     private char currentCommand;
 
     public PathParser(String input) {
@@ -73,13 +38,9 @@ public class PathParser {
         return index < inputLength;
     }
 
-    // This only checks for the rough structure of a number as we need to know
-    // when to separate the next token.
-    // Explicit parsing is done by Float#parseFloat.
     private boolean isValidNumberChar(char c, NumberCharState state) {
         boolean valid = '0' <= c && c <= '9';
         if (valid && state.iteration == 1 && input.charAt(index - 1) == '0') {
-            // Break up combined zeros into multiple numbers.
             return false;
         }
         state.signAllowed = state.signAllowed && !valid;
@@ -92,7 +53,6 @@ public class PathParser {
             state.signAllowed = valid;
         }
         if (state.exponentAllowed && !valid) {
-            // Possible exponent notation. Needs at least one preceding number
             valid = c == 'e' || c == 'E';
             state.exponentAllowed = !valid;
             state.signAllowed = valid;
@@ -128,7 +88,6 @@ public class PathParser {
 
     public PathCommand[] parsePathCommand() {
         List<PathCommand> commands = new ArrayList<>();
-
         currentCommand = 'Z';
         while (hasNext()) {
             char peekChar = peek();
@@ -137,7 +96,6 @@ public class PathParser {
                 currentCommand = peekChar;
             }
             consumeWhiteSpaceOrSeparator();
-
             PathCommand cmd;
             switch (currentCommand) {
                 case 'M':

@@ -1,5 +1,8 @@
 package org.xbib.graphics.svg;
 
+import org.xbib.graphics.svg.element.RenderableElement;
+import org.xbib.graphics.svg.element.SVGElement;
+import org.xbib.graphics.svg.element.ShapeElement;
 import org.xbib.graphics.svg.xml.StyleAttribute;
 
 import java.awt.Graphics2D;
@@ -57,7 +60,7 @@ public class Use extends ShapeElement {
     }
 
     @Override
-    protected void doRender(Graphics2D g) throws SVGException, IOException {
+    public void doRender(Graphics2D g) throws SVGException, IOException {
         beginLayer(g);
         AffineTransform oldXform = g.getTransform();
         g.transform(refXform);

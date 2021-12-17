@@ -1,5 +1,9 @@
 package org.xbib.graphics.svg;
 
+import org.xbib.graphics.svg.element.Defs;
+import org.xbib.graphics.svg.element.Group;
+import org.xbib.graphics.svg.element.SVGElement;
+import org.xbib.graphics.svg.element.Style;
 import org.xbib.graphics.svg.xml.NumberWithUnits;
 import org.xbib.graphics.svg.xml.StyleAttribute;
 import org.xbib.graphics.svg.xml.StyleSheet;
@@ -194,7 +198,7 @@ public class SVGRoot extends Group {
     }
 
     @Override
-    protected void doRender(Graphics2D g) throws SVGException, IOException {
+    public void doRender(Graphics2D g) throws SVGException, IOException {
         prepareViewport();
         Rectangle targetViewport;
         Rectangle deviceViewport = diagram.getDeviceViewport();
