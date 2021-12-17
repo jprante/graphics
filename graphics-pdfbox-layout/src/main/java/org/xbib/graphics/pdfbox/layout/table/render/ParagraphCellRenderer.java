@@ -3,7 +3,7 @@ package org.xbib.graphics.pdfbox.layout.table.render;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.xbib.graphics.pdfbox.layout.elements.Paragraph;
+import org.xbib.graphics.pdfbox.layout.element.Paragraph;
 import org.xbib.graphics.pdfbox.layout.table.HorizontalAlignment;
 import org.xbib.graphics.pdfbox.layout.table.ParagraphCell;
 import org.xbib.graphics.pdfbox.layout.text.Alignment;

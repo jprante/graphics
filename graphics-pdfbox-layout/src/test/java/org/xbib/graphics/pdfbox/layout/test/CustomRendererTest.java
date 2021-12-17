@@ -1,15 +1,15 @@
 package org.xbib.graphics.pdfbox.layout.test;
 
 import org.junit.jupiter.api.Test;
-import org.xbib.graphics.pdfbox.layout.elements.Document;
-import org.xbib.graphics.pdfbox.layout.elements.Element;
-import org.xbib.graphics.pdfbox.layout.elements.HorizontalRuler;
-import org.xbib.graphics.pdfbox.layout.elements.Paragraph;
-import org.xbib.graphics.pdfbox.layout.elements.render.LayoutHint;
-import org.xbib.graphics.pdfbox.layout.elements.render.RenderContext;
-import org.xbib.graphics.pdfbox.layout.elements.render.RenderListener;
-import org.xbib.graphics.pdfbox.layout.elements.render.Renderer;
-import org.xbib.graphics.pdfbox.layout.elements.render.VerticalLayoutHint;
+import org.xbib.graphics.pdfbox.layout.element.Document;
+import org.xbib.graphics.pdfbox.layout.element.Element;
+import org.xbib.graphics.pdfbox.layout.element.HorizontalRuler;
+import org.xbib.graphics.pdfbox.layout.element.Paragraph;
+import org.xbib.graphics.pdfbox.layout.element.render.LayoutHint;
+import org.xbib.graphics.pdfbox.layout.element.render.RenderContext;
+import org.xbib.graphics.pdfbox.layout.element.render.RenderListener;
+import org.xbib.graphics.pdfbox.layout.element.render.Renderer;
+import org.xbib.graphics.pdfbox.layout.element.render.VerticalLayoutHint;
 import org.xbib.graphics.pdfbox.layout.font.FontDescriptor;
 import org.xbib.graphics.pdfbox.layout.shape.Stroke;
 import org.xbib.graphics.pdfbox.layout.shape.Stroke.CapStyle;

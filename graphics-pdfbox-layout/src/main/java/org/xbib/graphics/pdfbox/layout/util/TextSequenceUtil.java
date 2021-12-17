@@ -1,8 +1,8 @@
 package org.xbib.graphics.pdfbox.layout.util;
 
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.xbib.graphics.pdfbox.layout.elements.Dividable.Divided;
-import org.xbib.graphics.pdfbox.layout.elements.Paragraph;
+import org.xbib.graphics.pdfbox.layout.element.Dividable.Divided;
+import org.xbib.graphics.pdfbox.layout.element.Paragraph;
 import org.xbib.graphics.pdfbox.layout.font.FontDescriptor;
 import org.xbib.graphics.pdfbox.layout.text.Alignment;
 import org.xbib.graphics.pdfbox.layout.text.DrawListener;

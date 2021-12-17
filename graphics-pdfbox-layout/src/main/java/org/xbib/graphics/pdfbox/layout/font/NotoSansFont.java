@@ -3,7 +3,7 @@ package org.xbib.graphics.pdfbox.layout.font;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
-import org.xbib.graphics.pdfbox.layout.elements.Document;
+import org.xbib.graphics.pdfbox.layout.element.Document;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.Objects;

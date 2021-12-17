@@ -1,9 +1,9 @@
 package org.xbib.graphics.pdfbox.layout.test;
 
 import org.junit.jupiter.api.Test;
-import org.xbib.graphics.pdfbox.layout.elements.Document;
-import org.xbib.graphics.pdfbox.layout.elements.PageFormats;
-import org.xbib.graphics.pdfbox.layout.elements.Paragraph;
+import org.xbib.graphics.pdfbox.layout.element.Document;
+import org.xbib.graphics.pdfbox.layout.element.PageFormats;
+import org.xbib.graphics.pdfbox.layout.element.Paragraph;
 import org.xbib.graphics.pdfbox.layout.font.Font;
 import org.xbib.graphics.pdfbox.layout.font.NotoSansFont;
 import org.xbib.graphics.pdfbox.layout.text.Indent;

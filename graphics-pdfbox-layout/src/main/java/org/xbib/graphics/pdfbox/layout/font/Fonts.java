@@ -1,6 +1,6 @@
 package org.xbib.graphics.pdfbox.layout.font;
 
-import org.xbib.graphics.pdfbox.layout.elements.Document;
+import org.xbib.graphics.pdfbox.layout.element.Document;
 
 import java.util.HashMap;
 import java.util.Map;

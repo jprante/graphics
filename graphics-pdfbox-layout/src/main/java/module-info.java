@@ -1,11 +1,11 @@
 module org.xbib.graphics.layout.pdfbox {
     exports org.xbib.graphics.pdfbox.layout.boxable;
     exports org.xbib.graphics.pdfbox.layout.color;
-    exports org.xbib.graphics.pdfbox.layout.elements;
-    exports org.xbib.graphics.pdfbox.layout.elements.render;
+    exports org.xbib.graphics.pdfbox.layout.element;
+    exports org.xbib.graphics.pdfbox.layout.element.render;
     exports org.xbib.graphics.pdfbox.layout.font;
-    exports org.xbib.graphics.pdfbox.layout.script;
-    exports org.xbib.graphics.pdfbox.layout.script.command;
+    exports org.xbib.graphics.pdfbox.layout.element.scripting;
+    exports org.xbib.graphics.pdfbox.layout.element.scripting.command;
     exports org.xbib.graphics.pdfbox.layout.shape;
     exports org.xbib.graphics.pdfbox.layout.table;
     exports org.xbib.graphics.pdfbox.layout.table.render;

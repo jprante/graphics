@@ -1,8 +1,8 @@
 package org.xbib.graphics.pdfbox.layout.test;
 
 import org.junit.jupiter.api.Test;
-import org.xbib.graphics.pdfbox.layout.elements.Document;
-import org.xbib.graphics.pdfbox.layout.elements.Paragraph;
+import org.xbib.graphics.pdfbox.layout.element.Document;
+import org.xbib.graphics.pdfbox.layout.element.Paragraph;
 import org.xbib.graphics.pdfbox.layout.font.BaseFont;
 import java.io.FileOutputStream;
 

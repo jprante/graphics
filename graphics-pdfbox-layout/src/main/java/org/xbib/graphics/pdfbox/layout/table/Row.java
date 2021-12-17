@@ -1,8 +1,8 @@
 package org.xbib.graphics.pdfbox.layout.table;
 
-import org.xbib.graphics.pdfbox.layout.elements.Drawable;
-import org.xbib.graphics.pdfbox.layout.elements.Element;
-import org.xbib.graphics.pdfbox.layout.elements.HorizontalRuler;
+import org.xbib.graphics.pdfbox.layout.element.Drawable;
+import org.xbib.graphics.pdfbox.layout.element.Element;
+import org.xbib.graphics.pdfbox.layout.element.HorizontalRuler;
 import org.xbib.graphics.pdfbox.layout.font.Font;
 
 import java.awt.Color;

@@ -1,10 +1,10 @@
 package org.xbib.graphics.pdfbox.layout.test;
 
 import org.junit.jupiter.api.Test;
-import org.xbib.graphics.pdfbox.layout.elements.Document;
-import org.xbib.graphics.pdfbox.layout.elements.ImageElement;
-import org.xbib.graphics.pdfbox.layout.elements.Paragraph;
-import org.xbib.graphics.pdfbox.layout.elements.render.VerticalLayoutHint;
+import org.xbib.graphics.pdfbox.layout.element.Document;
+import org.xbib.graphics.pdfbox.layout.element.ImageElement;
+import org.xbib.graphics.pdfbox.layout.element.Paragraph;
+import org.xbib.graphics.pdfbox.layout.element.render.VerticalLayoutHint;
 import org.xbib.graphics.pdfbox.layout.text.Alignment;
 import org.xbib.graphics.pdfbox.layout.font.BaseFont;
 import java.io.FileOutputStream;

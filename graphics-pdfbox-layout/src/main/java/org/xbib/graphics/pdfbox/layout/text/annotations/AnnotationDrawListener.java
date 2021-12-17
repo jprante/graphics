@@ -2,8 +2,8 @@ package org.xbib.graphics.pdfbox.layout.text.annotations;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
-import org.xbib.graphics.pdfbox.layout.elements.render.RenderContext;
-import org.xbib.graphics.pdfbox.layout.elements.render.RenderListener;
+import org.xbib.graphics.pdfbox.layout.element.render.RenderContext;
+import org.xbib.graphics.pdfbox.layout.element.render.RenderListener;
 import org.xbib.graphics.pdfbox.layout.text.Alignment;
 import org.xbib.graphics.pdfbox.layout.text.DrawContext;
 import org.xbib.graphics.pdfbox.layout.text.DrawListener;

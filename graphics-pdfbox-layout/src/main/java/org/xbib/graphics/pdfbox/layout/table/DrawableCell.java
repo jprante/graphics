@@ -1,6 +1,6 @@
 package org.xbib.graphics.pdfbox.layout.table;
 
-import org.xbib.graphics.pdfbox.layout.elements.Drawable;
+import org.xbib.graphics.pdfbox.layout.element.Drawable;
 import org.xbib.graphics.pdfbox.layout.table.render.DrawableCellRenderer;
 import org.xbib.graphics.pdfbox.layout.table.render.Renderer;
 

@@ -1,6 +1,6 @@
 package org.xbib.graphics.pdfbox.layout.table;
 
-import org.xbib.graphics.pdfbox.layout.elements.Paragraph;
+import org.xbib.graphics.pdfbox.layout.element.Paragraph;
 import org.xbib.graphics.pdfbox.layout.font.Font;
 import org.xbib.graphics.pdfbox.layout.font.FontDescriptor;
 import org.xbib.graphics.pdfbox.layout.text.annotations.AnnotatedStyledText;

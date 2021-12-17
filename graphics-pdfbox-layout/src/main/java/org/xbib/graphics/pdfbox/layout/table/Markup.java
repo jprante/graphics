@@ -1,6 +1,6 @@
 package org.xbib.graphics.pdfbox.layout.table;
 
-import org.xbib.graphics.pdfbox.layout.elements.Paragraph;
+import org.xbib.graphics.pdfbox.layout.element.Paragraph;
 import org.xbib.graphics.pdfbox.layout.font.Font;
 
 public class Markup implements ParagraphProcessor {

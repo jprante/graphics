@@ -1,11 +1,11 @@
 package org.xbib.graphics.pdfbox.layout.test;
 
 import org.junit.jupiter.api.Test;
-import org.xbib.graphics.pdfbox.layout.elements.Document;
-import org.xbib.graphics.pdfbox.layout.elements.Frame;
-import org.xbib.graphics.pdfbox.layout.elements.PageFormats;
-import org.xbib.graphics.pdfbox.layout.elements.Paragraph;
-import org.xbib.graphics.pdfbox.layout.elements.render.VerticalLayoutHint;
+import org.xbib.graphics.pdfbox.layout.element.Document;
+import org.xbib.graphics.pdfbox.layout.element.Frame;
+import org.xbib.graphics.pdfbox.layout.element.PageFormats;
+import org.xbib.graphics.pdfbox.layout.element.Paragraph;
+import org.xbib.graphics.pdfbox.layout.element.render.VerticalLayoutHint;
 import org.xbib.graphics.pdfbox.layout.shape.Ellipse;
 import org.xbib.graphics.pdfbox.layout.shape.Rect;
 import org.xbib.graphics.pdfbox.layout.shape.RoundRect;

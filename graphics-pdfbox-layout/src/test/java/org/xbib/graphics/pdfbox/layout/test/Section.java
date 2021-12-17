@@ -1,6 +1,6 @@
 package org.xbib.graphics.pdfbox.layout.test;
 
-import org.xbib.graphics.pdfbox.layout.elements.Paragraph;
+import org.xbib.graphics.pdfbox.layout.element.Paragraph;
 import org.xbib.graphics.pdfbox.layout.font.BaseFont;
 
 public class Section extends Paragraph {

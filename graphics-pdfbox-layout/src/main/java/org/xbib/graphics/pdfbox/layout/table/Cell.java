@@ -1,6 +1,6 @@
 package org.xbib.graphics.pdfbox.layout.table;
 
-import org.xbib.graphics.pdfbox.layout.elements.Element;
+import org.xbib.graphics.pdfbox.layout.element.Element;
 import org.xbib.graphics.pdfbox.layout.table.render.Renderer;
 
 import java.awt.Color;

@@ -4,7 +4,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.junit.jupiter.api.Test;
-import org.xbib.graphics.pdfbox.layout.elements.PageFormat;
+import org.xbib.graphics.pdfbox.layout.element.PageFormat;
 import org.xbib.graphics.pdfbox.layout.font.FontDescriptor;
 import org.xbib.graphics.pdfbox.layout.shape.RoundRect;
 import org.xbib.graphics.pdfbox.layout.shape.Shape;
