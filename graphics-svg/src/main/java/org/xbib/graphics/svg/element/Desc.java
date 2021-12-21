@@ -4,13 +4,11 @@ import org.xbib.graphics.svg.SVGLoaderHelper;
 
 public class Desc extends SVGElement {
 
-    public static final String TAG_NAME = "desc";
-
-    StringBuilder text = new StringBuilder();
+    private final StringBuilder text = new StringBuilder();
 
     @Override
     public String getTagName() {
-        return TAG_NAME;
+        return "desc";
     }
 
     @Override

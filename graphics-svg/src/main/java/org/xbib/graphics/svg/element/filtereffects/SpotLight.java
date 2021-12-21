@@ -7,27 +7,25 @@ import java.io.IOException;
 
 public class SpotLight extends Light {
 
-    public static final String TAG_NAME = "fespotlight";
+    private float x = 0f;
 
-    float x = 0f;
+    private float y = 0f;
 
-    float y = 0f;
+    private float z = 0f;
 
-    float z = 0f;
+    private float pointsAtX = 0f;
 
-    float pointsAtX = 0f;
+    private float pointsAtY = 0f;
 
-    float pointsAtY = 0f;
+    private float pointsAtZ = 0f;
 
-    float pointsAtZ = 0f;
+    private float specularComponent = 0f;
 
-    float specularComponent = 0f;
-
-    float limitingConeAngle = 0f;
+    private float limitingConeAngle = 0f;
 
     @Override
     public String getTagName() {
-        return TAG_NAME;
+        return "fespotlight";
     }
 
     @Override

@@ -3,7 +3,7 @@ package org.xbib.graphics.svg.element.gradient;
 import org.xbib.graphics.svg.SVGElementException;
 import org.xbib.graphics.svg.SVGException;
 import org.xbib.graphics.svg.SVGLoaderHelper;
-import org.xbib.graphics.svg.Stop;
+import org.xbib.graphics.svg.element.Stop;
 import org.xbib.graphics.svg.element.FillElement;
 import org.xbib.graphics.svg.element.SVGElement;
 import org.xbib.graphics.svg.xml.StyleAttribute;
@@ -17,38 +17,33 @@ import java.util.List;
 
 public abstract class Gradient extends FillElement {
 
-    public static final String TAG_NAME = "gradient";
+    protected static final int SM_PAD = 0;
 
-    public static final int SM_PAD = 0;
+    protected static final int SM_REPEAT = 1;
 
-    public static final int SM_REPEAT = 1;
+    protected static final int SM_REFLECT = 2;
 
-    public static final int SM_REFLECT = 2;
+    protected int spreadMethod = SM_PAD;
 
-    public int spreadMethod = SM_PAD;
+    protected static final int GU_OBJECT_BOUNDING_BOX = 0;
 
-    public static final int GU_OBJECT_BOUNDING_BOX = 0;
-
-    public static final int GU_USER_SPACE_ON_USE = 1;
+    protected static final int GU_USER_SPACE_ON_USE = 1;
 
     protected int gradientUnits = GU_OBJECT_BOUNDING_BOX;
 
-    List<Stop> stops = new ArrayList<>();
+    private final List<Stop> stops = new ArrayList<>();
 
-    URI stopRef = null;
+    private URI stopRef = null;
 
     protected AffineTransform gradientTransform = null;
 
-    float[] stopFractions;
+    private float[] stopFractions;
 
-    Color[] stopColors;
-
-    public Gradient() {
-    }
+    private Color[] stopColors;
 
     @Override
     public String getTagName() {
-        return TAG_NAME;
+        return "gradient";
     }
 
     @Override
@@ -100,9 +95,9 @@ public abstract class Gradient extends FillElement {
 
     private void buildStops() {
         ArrayList<Stop> stopList = new ArrayList<>(stops);
-        stopList.sort((o1, o2) -> Float.compare(o1.offset, o2.offset));
+        stopList.sort((o1, o2) -> Float.compare(o1.getOffset(), o2.getOffset()));
         for (int i = stopList.size() - 2; i >= 0; --i) {
-            if (stopList.get(i + 1).offset == stopList.get(i).offset) {
+            if (stopList.get(i + 1).getOffset() == stopList.get(i).getOffset()) {
                 stopList.remove(i + 1);
             }
         }
@@ -110,10 +105,10 @@ public abstract class Gradient extends FillElement {
         stopColors = new Color[stopList.size()];
         int idx = 0;
         for (Stop stop : stopList) {
-            int stopColorVal = stop.color.getRGB();
-            Color stopColor = new Color((stopColorVal >> 16) & 0xff, (stopColorVal >> 8) & 0xff, stopColorVal & 0xff, clamp((int) (stop.opacity * 255), 0, 255));
+            int stopColorVal = stop.getColor().getRGB();
+            Color stopColor = new Color((stopColorVal >> 16) & 0xff, (stopColorVal >> 8) & 0xff, stopColorVal & 0xff, clamp((int) (stop.getOpacity() * 255), 0, 255));
             stopColors[idx] = stopColor;
-            stopFractions[idx] = stop.offset;
+            stopFractions[idx] = stop.getOffset();
             idx++;
         }
     }

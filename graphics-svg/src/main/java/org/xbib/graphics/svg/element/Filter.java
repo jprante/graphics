@@ -14,38 +14,51 @@ import java.util.List;
 
 public class Filter extends SVGElement {
 
-    public static final String TAG_NAME = "filter";
+    private static final int FU_OBJECT_BOUNDING_BOX = 0;
 
-    public static final int FU_OBJECT_BOUNDING_BOX = 0;
+    private static final int FU_USER_SPACE_ON_USE = 1;
 
-    public static final int FU_USER_SPACE_ON_USE = 1;
+    private static final int PU_OBJECT_BOUNDING_BOX = 0;
 
-    public int filterUnits = FU_OBJECT_BOUNDING_BOX;
+    private static final int PU_USER_SPACE_ON_USE = 1;
 
-    public static final int PU_OBJECT_BOUNDING_BOX = 0;
+    private int filterUnits = FU_OBJECT_BOUNDING_BOX;
 
-    public static final int PU_USER_SPACE_ON_USE = 1;
+    private float x = 0f;
 
-    protected int primitiveUnits = PU_OBJECT_BOUNDING_BOX;
+    private float y = 0f;
 
-    float x = 0f;
+    private float width = 1f;
 
-    float y = 0f;
+    private float height = 1f;
 
-    float width = 1f;
+    private URL href = null;
 
-    float height = 1f;
-
-    URL href = null;
-
-    public final List<FilterEffects> filterEffects = new ArrayList<>();
-
-    public Filter() {
-    }
+    private final List<FilterEffects> filterEffects = new ArrayList<>();
 
     @Override
     public String getTagName() {
-        return TAG_NAME;
+        return "filter";
+    }
+
+    public List<FilterEffects> getFilterEffects() {
+        return filterEffects;
+    }
+
+    public float getX() {
+        return x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public float getWidth() {
+        return width;
+    }
+
+    public float getHeight() {
+        return height;
     }
 
     @Override
@@ -71,11 +84,6 @@ public class Filter extends SVGElement {
         }
         if (getPres(sty.setName("primitiveUnits"))) {
             strn = sty.getStringValue().toLowerCase();
-            if (strn.equals("userspaceonuse")) {
-                primitiveUnits = PU_USER_SPACE_ON_USE;
-            } else {
-                primitiveUnits = PU_OBJECT_BOUNDING_BOX;
-            }
         }
         if (getPres(sty.setName("x"))) {
             x = sty.getFloatValueWithUnits();
@@ -98,22 +106,6 @@ public class Filter extends SVGElement {
             throw new SVGException(e);
         }
 
-    }
-
-    public float getX() {
-        return x;
-    }
-
-    public float getY() {
-        return y;
-    }
-
-    public float getWidth() {
-        return width;
-    }
-
-    public float getHeight() {
-        return height;
     }
 
     @Override
@@ -183,7 +175,6 @@ public class Filter extends SVGElement {
                 newVal = PU_OBJECT_BOUNDING_BOX;
             }
             if (newVal != filterUnits) {
-                primitiveUnits = newVal;
                 stateChange = true;
             }
         }

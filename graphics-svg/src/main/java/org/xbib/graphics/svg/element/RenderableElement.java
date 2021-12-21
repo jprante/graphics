@@ -1,8 +1,11 @@
 package org.xbib.graphics.svg.element;
 
 import org.xbib.graphics.svg.SVGException;
+import org.xbib.graphics.svg.element.shape.Mask;
+import org.xbib.graphics.svg.util.ClipPathConstants;
 import org.xbib.graphics.svg.util.PaintCache;
 import org.xbib.graphics.svg.util.PaintUtil;
+import org.xbib.graphics.svg.util.VectorEffect;
 import org.xbib.graphics.svg.xml.StyleAttribute;
 
 import java.awt.Graphics2D;
@@ -15,19 +18,15 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 
-public abstract class RenderableElement extends TransformableElement {
+public abstract class RenderableElement extends TransformableElement implements VectorEffect {
 
-    protected AffineTransform cachedXform = null;
+    protected AffineTransform cachedXform;
 
-    public Mask cachedMask;
+    private Mask cachedMask;
 
-    public Filter filter;
+    private Filter filter;
 
-    protected Shape cachedClip = null;
-
-    public static final int VECTOR_EFFECT_NONE = 0;
-
-    public static final int VECTOR_EFFECT_NON_SCALING_STROKE = 1;
+    private Shape cachedClip;
 
     protected int vectorEffect;
 
@@ -38,6 +37,14 @@ public abstract class RenderableElement extends TransformableElement {
 
     public RenderableElement(String id, SVGElement parent) {
         super(id, parent);
+    }
+
+    public Mask getCachedMask() {
+        return cachedMask;
+    }
+
+    public Filter getFilter() {
+        return filter;
     }
 
     public PaintCache getBufferCache() {
@@ -100,7 +107,7 @@ public abstract class RenderableElement extends TransformableElement {
         }
         StyleAttribute styleAttrib = new StyleAttribute();
         Shape clipPath = null;
-        int clipPathUnits = ClipPath.CP_USER_SPACE_ON_USE;
+        int clipPathUnits = ClipPathConstants.CP_USER_SPACE_ON_USE;
         if (getStyle(styleAttrib.setName("clip-path"), false)
                 && !"none".equals(styleAttrib.getStringValue())) {
             URI uri = styleAttrib.getURIValue(getXMLBase());
@@ -111,7 +118,7 @@ public abstract class RenderableElement extends TransformableElement {
             }
         }
         if (clipPath != null) {
-            if (clipPathUnits == ClipPath.CP_OBJECT_BOUNDING_BOX && (this instanceof ShapeElement)) {
+            if (clipPathUnits == ClipPathConstants.CP_OBJECT_BOUNDING_BOX && (this instanceof ShapeElement)) {
                 Rectangle2D rect = this.getBoundingBox();
                 AffineTransform at = new AffineTransform();
                 at.scale(rect.getWidth(), rect.getHeight());

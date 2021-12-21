@@ -5,12 +5,20 @@ import java.awt.image.BufferedImageOp;
 
 public class FilterOp {
 
-    public final BufferedImageOp op;
+    private final BufferedImageOp op;
 
-    public final Rectangle requiredImageBounds;
+    private final Rectangle requiredImageBounds;
 
     public FilterOp(BufferedImageOp op, Rectangle requiredImageBounds) {
         this.op = op;
         this.requiredImageBounds = requiredImageBounds;
+    }
+
+    public BufferedImageOp getOp() {
+        return op;
+    }
+
+    public Rectangle getRequiredImageBounds() {
+        return requiredImageBounds;
     }
 }

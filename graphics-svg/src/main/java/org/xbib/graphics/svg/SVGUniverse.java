@@ -37,13 +37,11 @@ public class SVGUniverse {
 
     private static final Logger logger = Logger.getLogger(SVGUniverse.class.getName());
 
-    final Map<URI, SVGDiagram> loadedDocs = new HashMap<>();
+    private final Map<URI, SVGDiagram> loadedDocs = new HashMap<>();
 
-    final Map<String, Font> loadedFonts = new HashMap<>();
+    private final Map<String, Font> loadedFonts = new HashMap<>();
 
-    final Map<URL, SoftReference<BufferedImage>> loadedImages = new HashMap<>();
-
-    public static final String INPUTSTREAM_SCHEME = "svgXbib";
+    private final Map<URL, SoftReference<BufferedImage>> loadedImages = new HashMap<>();
 
     protected double curTime = 0.0;
 
@@ -131,7 +129,7 @@ public class SVGUniverse {
         }
     }
 
-    void registerImage(URL imageURL) {
+    public void registerImage(URL imageURL) {
         if (loadedImages.containsKey(imageURL)) {
             return;
         }
@@ -156,7 +154,7 @@ public class SVGUniverse {
         }
     }
 
-    BufferedImage getImage(URL imageURL) throws IOException {
+    public BufferedImage getImage(URL imageURL) throws IOException {
         SoftReference<BufferedImage> ref = loadedImages.get(imageURL);
         if (ref == null) {
             return null;
@@ -202,12 +200,13 @@ public class SVGUniverse {
     }
 
     public SVGElement getElement(URI path, boolean loadIfAbsent) {
+        path = cleanUri(path);
         try {
-            path = cleanUri(path);
             URI xmlBase = new URI(path.getScheme(), path.getSchemeSpecificPart(), null);
             SVGDiagram dia = loadedDocs.get(xmlBase);
             if (dia == null && loadIfAbsent) {
-                URL url = xmlBase.toURL();
+                URL url;
+                url = xmlBase.toURL();
                 loadSVG(url, false);
                 dia = loadedDocs.get(xmlBase);
                 if (dia == null) {
@@ -216,7 +215,7 @@ public class SVGUniverse {
             }
             String fragment = path.getFragment();
             return fragment == null ? dia.getRoot() : dia.getElement(fragment);
-        } catch (Exception e) {
+        } catch (MalformedURLException | URISyntaxException e) {
             logger.log(Level.SEVERE, "Could not parse path " + path, e);
             return null;
         }
@@ -323,7 +322,7 @@ public class SVGUniverse {
             name = '/' + name;
         }
         try {
-            return new URI(INPUTSTREAM_SCHEME, name, null);
+            return new URI("svg", name, null);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Could not parse", e);
             return null;

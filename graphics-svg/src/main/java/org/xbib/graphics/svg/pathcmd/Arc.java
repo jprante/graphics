@@ -7,19 +7,19 @@ import java.awt.geom.GeneralPath;
 
 public class Arc extends PathCommand {
 
-    public float rx = 0f;
+    private float rx = 0f;
 
-    public float ry = 0f;
+    private float ry = 0f;
 
-    public float xAxisRot = 0f;
+    private float xAxisRot = 0f;
 
-    public boolean largeArc = false;
+    private boolean largeArc = false;
 
-    public boolean sweep = false;
+    private boolean sweep = false;
 
-    public float x = 0f;
+    private float x = 0f;
 
-    public float y = 0f;
+    private float y = 0f;
 
     public Arc() {
     }
@@ -37,11 +37,11 @@ public class Arc extends PathCommand {
 
     @Override
     public void appendPath(GeneralPath path, BuildHistory hist) {
-        float offx = isRelative ? hist.lastPoint.x : 0f;
-        float offy = isRelative ? hist.lastPoint.y : 0f;
+        float offx = isRelative() ? hist.getLastPoint().x : 0f;
+        float offy = isRelative() ? hist.getLastPoint().y : 0f;
         arcTo(path, rx, ry, xAxisRot, largeArc, sweep,
                 x + offx, y + offy,
-                hist.lastPoint.x, hist.lastPoint.y);
+                hist.getLastPoint().x, hist.getLastPoint().y);
         hist.setLastPoint(x + offx, y + offy);
         hist.setLastKnot(x + offx, y + offy);
     }

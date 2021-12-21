@@ -10,20 +10,13 @@ import java.io.IOException;
 
 public class Style extends SVGElement {
 
-    public static final String TAG_NAME = "style";
+    private final StringBuilder text = new StringBuilder();
 
-    String type;
-
-    StringBuilder text = new StringBuilder();
-
-    StyleSheet styleSheet;
-
-    public Style() {
-    }
+    private StyleSheet styleSheet;
 
     @Override
     public String getTagName() {
-        return TAG_NAME;
+        return "style";
     }
 
     @Override
@@ -37,7 +30,7 @@ public class Style extends SVGElement {
         super.build();
         StyleAttribute sty = new StyleAttribute();
         if (getPres(sty.setName("type"))) {
-            type = sty.getStringValue();
+            String type = sty.getStringValue();
         }
     }
 

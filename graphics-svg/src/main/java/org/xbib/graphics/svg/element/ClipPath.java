@@ -1,28 +1,20 @@
 package org.xbib.graphics.svg.element;
 
 import org.xbib.graphics.svg.SVGException;
+import org.xbib.graphics.svg.util.ClipPathConstants;
 import org.xbib.graphics.svg.xml.StyleAttribute;
 
 import java.awt.Shape;
 import java.awt.geom.Area;
 import java.io.IOException;
 
-public class ClipPath extends SVGElement {
+public class ClipPath extends SVGElement implements ClipPathConstants {
 
-    public static final String TAG_NAME = "clippath";
-
-    public static final int CP_USER_SPACE_ON_USE = 0;
-
-    public static final int CP_OBJECT_BOUNDING_BOX = 1;
-
-    int clipPathUnits = CP_USER_SPACE_ON_USE;
-
-    public ClipPath() {
-    }
+    private int clipPathUnits = CP_USER_SPACE_ON_USE;
 
     @Override
     public String getTagName() {
-        return TAG_NAME;
+        return "clippath";
     }
 
     @Override

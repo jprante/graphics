@@ -4,13 +4,13 @@ import java.awt.geom.GeneralPath;
 
 public class CubicSmooth extends PathCommand {
 
-    public float x = 0f;
+    private float x = 0f;
 
-    public float y = 0f;
+    private float y = 0f;
 
-    public float k2x = 0f;
+    private float k2x = 0f;
 
-    public float k2y = 0f;
+    private float k2y = 0f;
 
     public CubicSmooth() {
     }
@@ -25,12 +25,12 @@ public class CubicSmooth extends PathCommand {
 
     @Override
     public void appendPath(GeneralPath path, BuildHistory hist) {
-        float offx = isRelative ? hist.lastPoint.x : 0f;
-        float offy = isRelative ? hist.lastPoint.y : 0f;
-        float oldKx = hist.lastKnot.x;
-        float oldKy = hist.lastKnot.y;
-        float oldX = hist.lastPoint.x;
-        float oldY = hist.lastPoint.y;
+        float offx = isRelative() ? hist.getLastPoint().x : 0f;
+        float offy = isRelative() ? hist.getLastPoint().y : 0f;
+        float oldKx = hist.getLastKnot().x;
+        float oldKy = hist.getLastKnot().y;
+        float oldX = hist.getLastPoint().x;
+        float oldY = hist.getLastPoint().y;
         float k1x = oldX * 2f - oldKx;
         float k1y = oldY * 2f - oldKy;
         path.curveTo(k1x, k1y, k2x + offx, k2y + offy, x + offx, y + offy);

@@ -4,16 +4,13 @@ import java.awt.geom.GeneralPath;
 
 public class Quadratic extends PathCommand {
 
-    public float kx = 0f;
+    private final float kx;
 
-    public float ky = 0f;
+    private final float ky;
 
-    public float x = 0f;
+    private final float x;
 
-    public float y = 0f;
-
-    public Quadratic() {
-    }
+    private final float y;
 
     public Quadratic(boolean isRelative, float kx, float ky, float x, float y) {
         super(isRelative);
@@ -25,8 +22,8 @@ public class Quadratic extends PathCommand {
 
     @Override
     public void appendPath(GeneralPath path, BuildHistory hist) {
-        float offx = isRelative ? hist.lastPoint.x : 0f;
-        float offy = isRelative ? hist.lastPoint.y : 0f;
+        float offx = isRelative() ? hist.getLastPoint().x : 0f;
+        float offy = isRelative() ? hist.getLastPoint().y : 0f;
         path.quadTo(kx + offx, ky + offy, x + offx, y + offy);
         hist.setLastPoint(x + offx, y + offy);
         hist.setLastKnot(kx + offx, ky + offy);

@@ -6,44 +6,26 @@ import org.xbib.graphics.svg.xml.StyleAttribute;
 
 import java.awt.Rectangle;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
 public abstract class FilterEffects extends SVGElement {
 
-    public static final String TAG_NAME = "filtereffects";
+    private float x = 0f;
 
-    public static final int FP_SOURCE_GRAPHIC = 0;
+    private float y = 0f;
 
-    public static final int FP_SOURCE_ALPHA = 1;
+    private float width = 1f;
 
-    public static final int FP_BACKGROUND_IMAGE = 2;
+    private float height = 1f;
 
-    public static final int FP_BACKGROUND_ALPHA = 3;
-
-    public static final int FP_FILL_PAINT = 4;
-
-    public static final int FP_STROKE_PAINT = 5;
-
-    public static final int FP_CUSTOM = 5;
-
-    float x = 0f;
-
-    float y = 0f;
-
-    float width = 1f;
-
-    float height = 1f;
-
-    URL href = null;
-
-    public FilterEffects() {
-    }
+    private URL href;
 
     @Override
     public String getTagName() {
-        return TAG_NAME;
+        return "filtereffects";
     }
 
     @Override
@@ -103,17 +85,18 @@ public abstract class FilterEffects extends SVGElement {
                 stateChange = true;
             }
         }
-        try {
-            if (getPres(sty.setName("xlink:href"))) {
-                URI src = sty.getURIValue(getXMLBase());
-                URL newVal = src.toURL();
-                if (!newVal.equals(href)) {
-                    href = newVal;
-                    stateChange = true;
-                }
+        if (getPres(sty.setName("xlink:href"))) {
+            URI src = sty.getURIValue(getXMLBase());
+            URL newVal;
+            try {
+                newVal = src.toURL();
+            } catch (MalformedURLException e) {
+                throw new SVGException(e);
             }
-        } catch (Exception e) {
-            throw new SVGException(e);
+            if (!newVal.equals(href)) {
+                href = newVal;
+                stateChange = true;
+            }
         }
         return stateChange;
     }

@@ -7,16 +7,11 @@ import java.io.IOException;
 
 public class Glyph extends MissingGlyph {
 
-    public static final String TAG_NAME = "missingglyph";
-
-    String unicode;
-
-    public Glyph() {
-    }
+    private String unicode;
 
     @Override
     public String getTagName() {
-        return TAG_NAME;
+        return "glyph";
     }
 
     @Override

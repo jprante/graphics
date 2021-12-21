@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,25 +33,25 @@ public abstract class SVGElement {
 
     public static final String SVG_NS = "http://www.w3.org/2000/svg";
 
-    LinkedList<SVGElement> contexts = new LinkedList<>();
+    private static final Pattern TRANSFORM_PATTERN = Pattern.compile("\\w+\\([^)]*\\)");
+
+    private final LinkedList<SVGElement> contexts = new LinkedList<>();
 
     protected SVGElement parent;
 
-    protected final ArrayList<SVGElement> children = new ArrayList<>();
+    protected final List<SVGElement> children = new ArrayList<>();
 
     protected String id;
 
     protected String cssClass;
 
-    protected final HashMap<String, StyleAttribute> inlineStyles = new HashMap<>();
+    protected final Map<String, StyleAttribute> inlineStyles = new HashMap<>();
 
-    protected final HashMap<String, StyleAttribute> presAttribs = new HashMap<>();
+    protected final Map<String, StyleAttribute> presAttribs = new HashMap<>();
 
     protected URI xmlBase = null;
 
     protected SVGDiagram diagram;
-
-    private static final Pattern TRANSFORM_PATTERN = Pattern.compile("\\w+\\([^)]*\\)");
 
     public SVGElement() {
         this(null, null, null);
@@ -131,7 +132,7 @@ public abstract class SVGElement {
         this.cssClass = (className == null || className.equals("")) ? null : className.intern();
         String style = attrs.getValue("style");
         if (style != null) {
-            HashMap<?, ?> map = XMLParseUtil.parseStyle(style, inlineStyles);
+            Map<?, ?> map = XMLParseUtil.parseStyle(style, inlineStyles);
         }
         String base = attrs.getValue("xml:base");
         if (base != null && !base.equals("")) {
@@ -294,7 +295,6 @@ public abstract class SVGElement {
         while (matchExpression.find()) {
             retXform.concatenate(parseSingleTransform(matchExpression.group()));
         }
-
         return retXform;
     }
 

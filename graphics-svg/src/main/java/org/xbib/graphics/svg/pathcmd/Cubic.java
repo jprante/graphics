@@ -4,12 +4,17 @@ import java.awt.geom.GeneralPath;
 
 public class Cubic extends PathCommand {
 
-    public float k1x = 0f;
-    public float k1y = 0f;
-    public float k2x = 0f;
-    public float k2y = 0f;
-    public float x = 0f;
-    public float y = 0f;
+    private float k1x = 0f;
+
+    private float k1y = 0f;
+
+    private float k2x = 0f;
+
+    private float k2y = 0f;
+
+    private float x = 0f;
+
+    private float y = 0f;
 
     public Cubic() {
     }
@@ -26,8 +31,8 @@ public class Cubic extends PathCommand {
 
     @Override
     public void appendPath(GeneralPath path, BuildHistory hist) {
-        float offx = isRelative ? hist.lastPoint.x : 0f;
-        float offy = isRelative ? hist.lastPoint.y : 0f;
+        float offx = isRelative() ? hist.getLastPoint().x : 0f;
+        float offy = isRelative() ? hist.getLastPoint().y : 0f;
         path.curveTo(k1x + offx, k1y + offy,
                 k2x + offx, k2y + offy,
                 x + offx, y + offy);

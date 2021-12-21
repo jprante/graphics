@@ -1,10 +1,10 @@
 package org.xbib.graphics.svg.xml;
 
 import java.awt.Toolkit;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -194,7 +194,7 @@ public class XMLParseUtil {
         return new NumberWithUnits(val);
     }
 
-    public static HashMap<String, StyleAttribute> parseStyle(String styleString, HashMap<String, StyleAttribute> map) {
+    public static Map<String, StyleAttribute> parseStyle(String styleString, Map<String, StyleAttribute> map) {
         Pattern patSemi = Pattern.compile(";");
         String[] styles = patSemi.split(styleString);
         for (String style : styles) {

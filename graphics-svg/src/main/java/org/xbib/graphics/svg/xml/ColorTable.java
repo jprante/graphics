@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 public class ColorTable {
 
-    static final Map<String, Color> colorTable;
+    private static final Map<String, Color> colorTable;
 
     static {
         Map<String, Color> table = new HashMap<>();

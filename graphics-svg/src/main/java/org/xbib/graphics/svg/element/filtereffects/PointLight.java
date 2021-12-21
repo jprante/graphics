@@ -7,20 +7,15 @@ import java.io.IOException;
 
 public class PointLight extends Light {
 
-    public static final String TAG_NAME = "fepointlight";
+    private float x = 0f;
 
-    float x = 0f;
+    private float y = 0f;
 
-    float y = 0f;
-
-    float z = 0f;
-
-    public PointLight() {
-    }
+    private float z = 0f;
 
     @Override
     public String getTagName() {
-        return TAG_NAME;
+        return "fepointlight";
     }
 
     @Override

@@ -1,15 +1,20 @@
 package org.xbib.graphics.svg.util;
 
 import org.xbib.graphics.svg.element.Font;
-import org.xbib.graphics.svg.FontSystem;
+import org.xbib.graphics.svg.element.FontSystem;
 import org.xbib.graphics.svg.SVGDiagram;
 import org.xbib.graphics.svg.element.SVGElement;
 import org.xbib.graphics.svg.SVGException;
-import org.xbib.graphics.svg.Text;
+import org.xbib.graphics.svg.element.shape.Text;
 import org.xbib.graphics.svg.xml.StyleAttribute;
 
+import java.awt.GraphicsEnvironment;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,6 +29,8 @@ public final class FontUtil {
     private static final int DEFAULT_FONT_STYLE = Text.TXST_NORMAL;
 
     private static final int DEFAULT_FONT_WEIGHT = Text.TXWE_NORMAL;
+
+    private static final Set<String> sysFontNames = new HashSet<>();
 
     private FontUtil() {
     }
@@ -113,15 +120,42 @@ public final class FontUtil {
             if (font != null) break;
         }
         if (font == null) {
-            font = FontSystem.createFont(families, fontStyle, fontWeight, fontSize);
+            font = createFont(families, fontStyle, fontWeight, fontSize);
         }
         if (font == null) {
             Logger.getLogger(FontSystem.class.getName())
                     .log(Level.WARNING, "Could not create font " + Arrays.toString(families));
             String[] defaultFont = new String[]{FontUtil.DEFAULT_FONT_FAMILY};
-            font = FontSystem.createFont(defaultFont, fontStyle, fontWeight, fontSize);
+            font = createFont(defaultFont, fontStyle, fontWeight, fontSize);
         }
         return font;
     }
 
+    private static FontSystem createFont(String[] fontFamilies, int fontStyle, int fontWeight, float fontSize) {
+        for (String fontName : fontFamilies) {
+            String javaFontName = mapJavaFontName(fontName);
+            if (checkIfSystemFontExists(javaFontName)) {
+                return new FontSystem(javaFontName, fontStyle, fontWeight, fontSize);
+            }
+        }
+        return null;
+    }
+
+    private static boolean checkIfSystemFontExists(String fontName) {
+        if (sysFontNames.isEmpty()) {
+            Collections.addAll(sysFontNames, GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames(Locale.ENGLISH));
+        }
+        return sysFontNames.contains(fontName);
+    }
+
+    private static String mapJavaFontName(String fontName) {
+        if ("serif".equals(fontName)) {
+            return java.awt.Font.SERIF;
+        } else if ("sans-serif".equals(fontName)) {
+            return java.awt.Font.SANS_SERIF;
+        } else if ("monospace".equals(fontName)) {
+            return java.awt.Font.MONOSPACED;
+        }
+        return fontName;
+    }
 }

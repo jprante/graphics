@@ -7,14 +7,9 @@ import java.io.IOException;
 
 public class Defs extends TransformableElement {
 
-    public static final String TAG_NAME = "defs";
-
-    public Defs() {
-    }
-
     @Override
     public String getTagName() {
-        return TAG_NAME;
+        return "defs";
     }
 
     @Override

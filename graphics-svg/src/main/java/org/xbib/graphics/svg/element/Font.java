@@ -1,6 +1,5 @@
 package org.xbib.graphics.svg.element;
 
-import org.xbib.graphics.svg.FontFace;
 import org.xbib.graphics.svg.element.glyph.Glyph;
 import org.xbib.graphics.svg.element.glyph.MissingGlyph;
 import org.xbib.graphics.svg.SVGElementException;
@@ -15,32 +14,27 @@ import java.util.Map;
 
 public class Font extends SVGElement {
 
-    public static final String TAG_NAME = "font";
+    private int horizOriginX = 0;
 
-    int horizOriginX = 0;
+    private int horizOriginY = 0;
 
-    int horizOriginY = 0;
+    private int horizAdvX = -1;
 
-    int horizAdvX = -1;
+    private int vertOriginX = -1;
 
-    int vertOriginX = -1;
+    private int vertOriginY = -1;
 
-    int vertOriginY = -1;
+    private int vertAdvY = -1;
 
-    int vertAdvY = -1;
+    private FontFace fontFace = null;
 
-    FontFace fontFace = null;
+    private MissingGlyph missingGlyph = null;
 
-    MissingGlyph missingGlyph = null;
-
-    final Map<String, SVGElement> glyphs = new HashMap<>();
-
-    public Font() {
-    }
+    private final Map<String, SVGElement> glyphs = new HashMap<>();
 
     @Override
     public String getTagName() {
-        return TAG_NAME;
+        return "font";
     }
 
     @Override

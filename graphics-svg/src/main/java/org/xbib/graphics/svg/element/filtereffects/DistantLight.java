@@ -7,15 +7,13 @@ import java.io.IOException;
 
 public class DistantLight extends Light {
 
-    public static final String TAG_NAME = "fedistantlight";
+    private float azimuth = 0f;
 
-    float azimuth = 0f;
-
-    float elevation = 0f;
+    private float elevation = 0f;
 
     @Override
     public String getTagName() {
-        return TAG_NAME;
+        return "fedistantlight";
     }
 
     @Override

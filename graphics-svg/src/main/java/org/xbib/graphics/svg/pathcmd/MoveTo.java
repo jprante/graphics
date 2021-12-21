@@ -4,12 +4,9 @@ import java.awt.geom.GeneralPath;
 
 public class MoveTo extends PathCommand {
 
-    public float x = 0f;
+    private final float x;
 
-    public float y = 0f;
-
-    public MoveTo() {
-    }
+    private final float y;
 
     public MoveTo(boolean isRelative, float x, float y) {
         super(isRelative);
@@ -19,8 +16,8 @@ public class MoveTo extends PathCommand {
 
     @Override
     public void appendPath(GeneralPath path, BuildHistory hist) {
-        float offx = isRelative ? hist.lastPoint.x : 0f;
-        float offy = isRelative ? hist.lastPoint.y : 0f;
+        float offx = isRelative() ? hist.getLastPoint().x : 0f;
+        float offy = isRelative() ? hist.getLastPoint().y : 0f;
         path.moveTo(x + offx, y + offy);
         hist.setStartPoint(x + offx, y + offy);
         hist.setLastPoint(x + offx, y + offy);

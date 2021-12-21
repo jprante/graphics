@@ -14,5 +14,4 @@ public class SVGLoaderHelper {
         this.universe = universe;
         this.diagram = diagram;
     }
-
 }

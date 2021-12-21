@@ -21,8 +21,8 @@ public class PaintUtil {
     public static final boolean DEBUG_PAINT = false;
 
     public static void paintElement(Graphics2D g, RenderableElement element) throws SVGException, IOException {
-        if (element.cachedMask != null
-                || (element.filter != null && !element.filter.filterEffects.isEmpty())) {
+        if (element.getCachedMask() != null
+                || (element.getFilter() != null && !element.getFilter().getFilterEffects().isEmpty())) {
             renderElement(g, element);
         } else {
             element.doRender(g);
@@ -73,33 +73,33 @@ public class PaintUtil {
         float xScale = getTransformScale(origin, testPoint, transform);
         testPoint.setLocation(0, 1);
         float yScale = getTransformScale(origin, testPoint, transform);
-        List<FilterOp> filterOps = element.filter == null
+        List<FilterOp> filterOps = element.getFilter() == null
                 ? Collections.emptyList()
-                : element.filter.filterEffects.stream()
+                : element.getFilter().getFilterEffects().stream()
                 .flatMap(f -> f.getOperations(dstBounds, xScale, yScale).stream())
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
         for (FilterOp filterOp : filterOps) {
             int right = Math.max(dstBounds.x + dstBounds.width,
-                    filterOp.requiredImageBounds.x + filterOp.requiredImageBounds.width);
+                    filterOp.getRequiredImageBounds().x + filterOp.getRequiredImageBounds().width);
             int bottom = Math.max(dstBounds.y + dstBounds.height,
-                    filterOp.requiredImageBounds.y + filterOp.requiredImageBounds.height);
-            dstBounds.x = Math.min(dstBounds.x, filterOp.requiredImageBounds.x);
-            dstBounds.y = Math.min(dstBounds.y, filterOp.requiredImageBounds.y);
+                    filterOp.getRequiredImageBounds().y + filterOp.getRequiredImageBounds().height);
+            dstBounds.x = Math.min(dstBounds.x, filterOp.getRequiredImageBounds().x);
+            dstBounds.y = Math.min(dstBounds.y, filterOp.getRequiredImageBounds().y);
             dstBounds.width = right - dstBounds.x;
             dstBounds.height = bottom - dstBounds.y;
         }
         BufferedImage elementImage = PaintUtil.paintToBuffer(gg, transform, dstBounds, transformedBounds,
                 element, null, true);
         for (FilterOp filterOp : filterOps) {
-            elementImage = filterOp.op.filter(elementImage, null);
+            elementImage = filterOp.getOp().filter(elementImage, null);
         }
-        if (element.cachedMask != null) {
+        if (element.getCachedMask() != null) {
             BufferedImage maskImage = PaintUtil.paintToBuffer(gg, transform, dstBounds, transformedBounds,
-                    element.cachedMask, Color.BLACK, false);
+                    element.getCachedMask(), Color.BLACK, false);
             Graphics2D elementGraphics = (Graphics2D) elementImage.getGraphics();
             elementGraphics.setRenderingHints(gg.getRenderingHints());
-            elementGraphics.setComposite(element.cachedMask.createMaskComposite());
+            elementGraphics.setComposite(element.getCachedMask().createMaskComposite());
             elementGraphics.drawImage(maskImage, 0, 0, null);
             elementGraphics.dispose();
         }

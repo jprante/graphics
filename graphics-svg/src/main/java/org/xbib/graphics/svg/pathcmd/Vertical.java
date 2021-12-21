@@ -4,15 +4,7 @@ import java.awt.geom.GeneralPath;
 
 public class Vertical extends PathCommand {
 
-    public float y = 0f;
-
-    public Vertical() {
-    }
-
-    @Override
-    public String toString() {
-        return "V " + y;
-    }
+    private final float y;
 
     public Vertical(boolean isRelative, float y) {
         super(isRelative);
@@ -21,8 +13,8 @@ public class Vertical extends PathCommand {
 
     @Override
     public void appendPath(GeneralPath path, BuildHistory hist) {
-        float offx = hist.lastPoint.x;
-        float offy = isRelative ? hist.lastPoint.y : 0f;
+        float offx = hist.getLastPoint().x;
+        float offy = isRelative() ? hist.getLastPoint().y : 0f;
         path.lineTo(offx, y + offy);
         hist.setLastPoint(offx, y + offy);
         hist.setLastKnot(offx, y + offy);
@@ -31,5 +23,10 @@ public class Vertical extends PathCommand {
     @Override
     public int getNumKnotsAdded() {
         return 2;
+    }
+
+    @Override
+    public String toString() {
+        return "V " + y;
     }
 }

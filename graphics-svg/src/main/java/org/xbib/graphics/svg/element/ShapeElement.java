@@ -1,9 +1,9 @@
 package org.xbib.graphics.svg.element;
 
-import org.xbib.graphics.svg.Marker;
-import org.xbib.graphics.svg.MarkerLayout;
-import org.xbib.graphics.svg.MarkerPos;
+import org.xbib.graphics.svg.util.MarkerLayout;
+import org.xbib.graphics.svg.util.MarkerPos;
 import org.xbib.graphics.svg.SVGException;
+import org.xbib.graphics.svg.element.shape.Marker;
 import org.xbib.graphics.svg.xml.StyleAttribute;
 
 import java.awt.AlphaComposite;
@@ -23,9 +23,6 @@ import java.util.List;
 public abstract class ShapeElement extends RenderableElement {
 
     protected float strokeWidthScalar = 1f;
-
-    public ShapeElement() {
-    }
 
     @Override
     public abstract void doRender(Graphics2D g) throws SVGException, IOException;

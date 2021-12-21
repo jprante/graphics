@@ -20,17 +20,17 @@ public class SVGDiagram {
 
     private static final Logger logger = Logger.getLogger(SVGDiagram.class.getName());
 
-    final Map<String, SVGElement> idMap = new HashMap<>();
+    private final Map<String, SVGElement> idMap = new HashMap<>();
 
-    SVGRoot root;
+    private SVGRoot root;
 
-    final SVGUniverse universe;
+    private final SVGUniverse universe;
 
     private final Rectangle deviceViewport = new Rectangle(100, 100);
 
     protected boolean ignoreClipHeuristic = false;
 
-    final URI xmlBase;
+    private final URI xmlBase;
 
     public SVGDiagram(URI xmlBase, SVGUniverse universe) {
         this.universe = universe;

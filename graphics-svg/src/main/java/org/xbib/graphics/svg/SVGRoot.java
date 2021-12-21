@@ -1,7 +1,7 @@
 package org.xbib.graphics.svg;
 
 import org.xbib.graphics.svg.element.Defs;
-import org.xbib.graphics.svg.element.Group;
+import org.xbib.graphics.svg.element.shape.Group;
 import org.xbib.graphics.svg.element.SVGElement;
 import org.xbib.graphics.svg.element.Style;
 import org.xbib.graphics.svg.xml.NumberWithUnits;

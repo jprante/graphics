@@ -12,8 +12,6 @@ import java.util.List;
 
 public class GaussianBlur extends FilterEffects {
 
-    public static final String TAG_NAME = "fegaussianblur";
-
     private float[] stdDeviation;
 
     private float xCurrent;
@@ -26,7 +24,7 @@ public class GaussianBlur extends FilterEffects {
 
     @Override
     public String getTagName() {
-        return TAG_NAME;
+        return "fegaussianblur";
     }
 
     @Override
@@ -45,14 +43,8 @@ public class GaussianBlur extends FilterEffects {
     public List<FilterOp> getOperations(Rectangle inputBounds, float xScale, float yScale) {
         float xSigma = xScale * stdDeviation[0];
         float ySigma = yScale * stdDeviation[Math.min(stdDeviation.length - 1, 1)];
-        return Arrays.asList(
-                xSigma > 0
-                        ? getGaussianBlurFilter(inputBounds, xSigma, true)
-                        : null,
-                ySigma > 0
-                        ? getGaussianBlurFilter(inputBounds, ySigma, false)
-                        : null
-        );
+        return Arrays.asList(xSigma > 0 ? getGaussianBlurFilter(inputBounds, xSigma, true) : null,
+                ySigma > 0 ? getGaussianBlurFilter(inputBounds, ySigma, false) : null);
     }
 
     public FilterOp getGaussianBlurFilter(Rectangle inputBounds, float sigma, boolean horizontal) {
@@ -75,8 +67,7 @@ public class GaussianBlur extends FilterEffects {
             for (int i = 0; i < size; i++) {
                 float distance = middle - i;
                 distance *= distance;
-                data[i] = distance > radius2
-                        ? 0
+                data[i] = distance > radius2 ? 0
                         : (float) Math.exp(-distance / twoSigmaSquare) / sigmaRoot;
                 total += data[i];
             }

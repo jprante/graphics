@@ -20,8 +20,6 @@ import java.io.IOException;
 
 public class MissingGlyph extends ShapeElement {
 
-    public static final String TAG_NAME = "missingglyph";
-
     private Shape path = null;
 
     private float horizAdvX = -1;
@@ -32,12 +30,9 @@ public class MissingGlyph extends ShapeElement {
 
     private float vertAdvY = -1;
 
-    public MissingGlyph() {
-    }
-
     @Override
     public String getTagName() {
-        return TAG_NAME;
+        return "missingglyph";
     }
 
     @Override

@@ -12,57 +12,45 @@ import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.net.URI;
 
 @SuppressWarnings("serial")
 public class SVGIcon extends ImageIcon {
 
-    public static final String PROP_AUTOSIZE = "PROP_AUTOSIZE";
+    private SVGUniverse svgUniverse = new SVGUniverse();
 
-    private final PropertyChangeSupport changes = new PropertyChangeSupport(this);
+    private static final int INTERP_NEAREST_NEIGHBOR = 0;
 
-    SVGUniverse svgUniverse = new SVGUniverse();
+    private static final int INTERP_BILINEAR = 1;
 
-    public static final int INTERP_NEAREST_NEIGHBOR = 0;
+    private static final int INTERP_BICUBIC = 2;
 
-    public static final int INTERP_BILINEAR = 1;
+    private static final int AUTOSIZE_NONE = 0;
 
-    public static final int INTERP_BICUBIC = 2;
+    private static final int AUTOSIZE_HORIZ = 1;
+
+    private static final int AUTOSIZE_VERT = 2;
+
+    private static final int AUTOSIZE_BESTFIT = 3;
+
+    private static final int AUTOSIZE_STRETCH = 4;
 
     private boolean antiAlias;
+
     private int interpolation = INTERP_NEAREST_NEIGHBOR;
+
     private boolean clipToViewbox;
 
-    URI svgURI;
+    private URI svgURI;
 
-    AffineTransform scaleXform = new AffineTransform();
-
-    public static final int AUTOSIZE_NONE = 0;
-
-    public static final int AUTOSIZE_HORIZ = 1;
-
-    public static final int AUTOSIZE_VERT = 2;
-
-    public static final int AUTOSIZE_BESTFIT = 3;
-
-    public static final int AUTOSIZE_STRETCH = 4;
+    private final AffineTransform scaleXform = new AffineTransform();
 
     private int autosize = AUTOSIZE_NONE;
 
-    Dimension preferredSize;
+    private Dimension preferredSize;
 
     public SVGIcon() {
-    }
-
-    public void addPropertyChangeListener(PropertyChangeListener p) {
-        changes.addPropertyChangeListener(p);
-    }
-
-    public void removePropertyChangeListener(PropertyChangeListener p) {
-        changes.removePropertyChangeListener(p);
     }
 
     @Override
@@ -211,7 +199,6 @@ public class SVGIcon extends ImageIcon {
     public void setSvgUniverse(SVGUniverse svgUniverse) {
         SVGUniverse old = this.svgUniverse;
         this.svgUniverse = svgUniverse;
-        changes.firePropertyChange("svgUniverse", old, svgUniverse);
     }
 
     public URI getSvgURI() {
@@ -229,14 +216,12 @@ public class SVGIcon extends ImageIcon {
             }
             diagram.setDeviceViewport(new Rectangle(0, 0, size.width, size.height));
         }
-        changes.firePropertyChange("svgURI", old, svgURI);
     }
 
     public void setSvgResourcePath(String resourcePath) {
         URI old = this.svgURI;
         try {
             svgURI = new URI(getClass().getResource(resourcePath).toString());
-            changes.firePropertyChange("svgURI", old, svgURI);
             SVGDiagram diagram = svgUniverse.getDiagram(svgURI);
             if (diagram != null) {
                 diagram.setDeviceViewport(new Rectangle(0, 0, preferredSize.width, preferredSize.height));
@@ -272,8 +257,6 @@ public class SVGIcon extends ImageIcon {
         if (diagram != null) {
             diagram.setDeviceViewport(new Rectangle(0, 0, preferredSize.width, preferredSize.height));
         }
-
-        changes.firePropertyChange("preferredSize", old, preferredSize);
     }
 
     public boolean getUseAntiAlias() {
@@ -291,7 +274,6 @@ public class SVGIcon extends ImageIcon {
     public void setAntiAlias(boolean antiAlias) {
         boolean old = this.antiAlias;
         this.antiAlias = antiAlias;
-        changes.firePropertyChange("antiAlias", old, antiAlias);
     }
 
     public int getInterpolation() {
@@ -301,7 +283,6 @@ public class SVGIcon extends ImageIcon {
     public void setInterpolation(int interpolation) {
         int old = this.interpolation;
         this.interpolation = interpolation;
-        changes.firePropertyChange("interpolation", old, interpolation);
     }
 
     public boolean isClipToViewbox() {
@@ -319,6 +300,5 @@ public class SVGIcon extends ImageIcon {
     public void setAutosize(int autosize) {
         int oldAutosize = this.autosize;
         this.autosize = autosize;
-        changes.firePropertyChange(PROP_AUTOSIZE, oldAutosize, autosize);
     }
 }

@@ -6,6 +6,7 @@ import org.xbib.graphics.svg.SVGUniverse;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.logging.Logger;
 
 public class SimpleSVGLoadTest {
 
@@ -14,5 +15,6 @@ public class SimpleSVGLoadTest {
         InputStream inputStream = getClass().getResourceAsStream("test.svg");
         SVGUniverse svgUniverse = new SVGUniverse();
         SVGDiagram diagram = svgUniverse.getDiagram(svgUniverse.loadSVG(inputStream, "test.svg"));
+        Logger.getAnonymousLogger().info(diagram.toString());
     }
 }

@@ -4,17 +4,9 @@ import java.awt.geom.GeneralPath;
 
 public class QuadraticSmooth extends PathCommand {
 
-    public float x = 0f;
+    private final float x;
 
-    public float y = 0f;
-
-    public QuadraticSmooth() {
-    }
-
-    @Override
-    public String toString() {
-        return "T " + x + " " + y;
-    }
+    private final float y;
 
     public QuadraticSmooth(boolean isRelative, float x, float y) {
         super(isRelative);
@@ -24,12 +16,12 @@ public class QuadraticSmooth extends PathCommand {
 
     @Override
     public void appendPath(GeneralPath path, BuildHistory hist) {
-        float offx = isRelative ? hist.lastPoint.x : 0f;
-        float offy = isRelative ? hist.lastPoint.y : 0f;
-        float oldKx = hist.lastKnot.x;
-        float oldKy = hist.lastKnot.y;
-        float oldX = hist.lastPoint.x;
-        float oldY = hist.lastPoint.y;
+        float offx = isRelative() ? hist.getLastPoint().x : 0f;
+        float offy = isRelative() ? hist.getLastPoint().y : 0f;
+        float oldKx = hist.getLastKnot().x;
+        float oldKy = hist.getLastKnot().y;
+        float oldX = hist.getLastPoint().x;
+        float oldY = hist.getLastPoint().y;
         float kx = oldX * 2f - oldKx;
         float ky = oldY * 2f - oldKy;
         path.quadTo(kx, ky, x + offx, y + offy);
@@ -40,5 +32,10 @@ public class QuadraticSmooth extends PathCommand {
     @Override
     public int getNumKnotsAdded() {
         return 4;
+    }
+
+    @Override
+    public String toString() {
+        return "T " + x + " " + y;
     }
 }

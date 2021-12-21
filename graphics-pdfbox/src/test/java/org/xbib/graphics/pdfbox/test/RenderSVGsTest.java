@@ -24,10 +24,16 @@ import org.xbib.graphics.pdfbox.color.DefaultColorMapper;
 import org.xbib.graphics.pdfbox.color.RGBtoCMYKColorMapper;
 import org.xbib.graphics.pdfbox.font.DefaultFontDrawer;
 import org.xbib.graphics.pdfbox.font.FontDrawer;
+import org.xbib.graphics.svg.SVGDiagram;
+import org.xbib.graphics.svg.SVGException;
+import org.xbib.graphics.svg.SVGUniverse;
 
 import java.awt.color.ICC_Profile;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.logging.Logger;
 
 public class RenderSVGsTest extends PdfBoxGraphics2DTestBase {
 
@@ -63,7 +69,19 @@ public class RenderSVGsTest extends PdfBoxGraphics2DTestBase {
         renderSVGCMYK("atmospheric-composiition.svg", 0.7);
     }
 
-    private void renderSVG(String name, final double scale) throws IOException {
+    private void renderSVG(String name, final double scale) {
+        URL url = getClass().getResource(name);
+        SVGUniverse svgUniverse = new SVGUniverse();
+        SVGDiagram diagram = svgUniverse.getDiagram(svgUniverse.loadSVG(url));
+        exportGraphic("xbibsvg", name.replace(".svg", ""), gfx -> {
+            gfx.scale(scale, scale);
+            try {
+                diagram.render(gfx);
+            } catch (SVGException e) {
+                throw new IllegalArgumentException(e);
+            }
+        });
+
         /*String uri = RenderSVGsTest.class.getResource(name).toString();
         SAXSVGDocumentFactory f = new SAXSVGDocumentFactory();
         Document document = f.createDocument(uri, RenderSVGsTest.class.getResourceAsStream(name));

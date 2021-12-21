@@ -4,13 +4,18 @@ import java.awt.geom.GeneralPath;
 
 abstract public class PathCommand {
 
-    public boolean isRelative = false;
+    private final boolean isRelative;
 
     public PathCommand() {
+        this(true);
     }
 
     public PathCommand(boolean isRelative) {
         this.isRelative = isRelative;
+    }
+
+    public boolean isRelative() {
+        return isRelative;
     }
 
     abstract public void appendPath(GeneralPath path, BuildHistory hist);
