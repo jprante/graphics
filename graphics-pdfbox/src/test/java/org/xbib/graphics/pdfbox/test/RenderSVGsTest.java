@@ -70,7 +70,7 @@ public class RenderSVGsTest extends PdfBoxGraphics2DTestBase {
     }
 
     private void renderSVG(String name, final double scale) {
-        URL url = getClass().getResource(name);
+        /*URL url = getClass().getResource(name);
         SVGUniverse svgUniverse = new SVGUniverse();
         SVGDiagram diagram = svgUniverse.getDiagram(svgUniverse.loadSVG(url));
         exportGraphic("xbibsvg", name.replace(".svg", ""), gfx -> {
@@ -80,7 +80,7 @@ public class RenderSVGsTest extends PdfBoxGraphics2DTestBase {
             } catch (SVGException e) {
                 throw new IllegalArgumentException(e);
             }
-        });
+        });*/
 
         /*String uri = RenderSVGsTest.class.getResource(name).toString();
         SAXSVGDocumentFactory f = new SAXSVGDocumentFactory();
